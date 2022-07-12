@@ -1,12 +1,16 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
+
 
 setup(
     name='sklarpy',
-    packages=['sklarpy'],
+    packages=find_packages(),
     version='0.1',
     license='MIT',
-    description="Pronounced Sklar-Py, this is a Python library used for fitting and sampling from copula distributions."
-                "Named after Sklar's theorem and intern Abe Sklar.",
+    long_description="SklarPy (pronounced 'Sky-Lar-Pee' or 'Sky-La-Pie') is an open-source software for probability "
+                     "distribution fitting.  It contains useful tools for fitting copula and univariate probability "
+                     "distributions. Named after Sklar's theorem and Abe Sklar, the American mathematician who proved "
+                     "that multivariate cumulative distribution functions can be expressed in terms of copulas and "
+                     "their marginals.",
     author='Tyler Mitchell',
     author_email='sklarpy@gmail.com',
     url='https://github.com/sklarpy/sklarpy',
@@ -15,7 +19,7 @@ setup(
         'SklarPy',
         'Sklar',
         'Copula',
-        'Copulas'
+        'Copulas',
         'Probability',
         'Distribution',
         'Univariate',
@@ -30,11 +34,17 @@ setup(
         'SciPy'
     ],
     install_requires=[
-        'pandas',
-        'numpy',
-        'scipy',
-        'matplotlib'
+        'pandas~=1.4.3',
+        'numpy~=1.23.0',
+        'scipy~=1.8.1',
+        'matplotlib~=3.5.2'
     ],
+    extras_require={
+        "dev": [
+            "pytest==7.1.2",
+            "tox==3.25.1",
+        ]
+    },
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
