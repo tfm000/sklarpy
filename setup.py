@@ -3,14 +3,14 @@ from distutils.core import setup
 setup(
     name='sklarpy',
     packages=['sklarpy'],
-    version='0.1',
+    version='0.1.1',
     license='MIT',
     description="Pronounced Sklar-Py, this is a Python library used for fitting and sampling from copula distributions."
                 "Named after Sklar's theorem and intern Abe Sklar.",
     author='Tyler Mitchell',
     author_email='sklarpy@gmail.com',
     url='https://github.com/sklarpy/sklarpy',
-    download_url='https://github.com/sklarpy/sklarpy/archive/refs/tags/v0.1.0.tar.gz',
+    download_url='https://github.com/sklarpy/sklarpy/archive/refs/tags/v0.1.1.tar.gz',
     keywords=[
         'SklarPy',
         'Sklar',
