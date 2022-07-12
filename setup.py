@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 setup(
     name='sklarpy',
     packages=find_packages(),
-    version='0.1',
+    version='0.1.1',
     license='MIT',
     long_description="SklarPy (pronounced 'Sky-Lar-Pee' or 'Sky-La-Pie') is an open-source software for probability "
                      "distribution fitting.  It contains useful tools for fitting copula and univariate probability "
@@ -14,7 +14,7 @@ setup(
     author='Tyler Mitchell',
     author_email='sklarpy@gmail.com',
     url='https://github.com/sklarpy/sklarpy',
-    download_url='https://github.com/sklarpy/sklarpy/archive/refs/tags/v0.1.0.tar.gz',
+    download_url='https://github.com/sklarpy/sklarpy/archive/refs/tags/v0.1.1.tar.gz',
     keywords=[
         'SklarPy',
         'Sklar',
