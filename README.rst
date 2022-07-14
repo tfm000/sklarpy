@@ -20,7 +20,7 @@
 .. image:: https://img.shields.io/pypi/l/sklarpy.svg
    :alt: License
    :scale: 100%
-   :target: https://github.com/backtrader/sklarpy/blob/master/LICENSE
+   :target: https://github.com/sklarpy/sklarpy/blob/main/LICENSE
 
 .. image:: https://img.shields.io/pypi/pyversions/sklarpy.svg
    :alt: Python versions
