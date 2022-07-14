@@ -15,7 +15,7 @@
 .. image:: https://img.shields.io/pypi/dm/sklarpy.svg
    :alt: PyPi Monthly Downloads
    :scale: 100%
-   :target: https://pypi.python.org/pypi/sklarpyr/
+   :target: https://pypi.python.org/pypi/sklarpy/
 
 .. image:: https://img.shields.io/pypi/l/sklarpy.svg
    :alt: License
