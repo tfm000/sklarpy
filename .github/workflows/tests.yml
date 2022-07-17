@@ -9,7 +9,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubantu-latest, windows-latest, macos-latest]
+        os: [windows-latest, macos-latest]
         python-version: ['3.9']
 
     steps:
