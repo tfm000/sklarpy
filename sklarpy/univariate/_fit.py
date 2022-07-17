@@ -127,8 +127,8 @@ def kde_fit(data: np.ndarray):
     empirical_range = np.linspace(data.min(), data.max(), 100)
     ppf = scipy.interpolate.interp1d(cdf(empirical_range), empirical_range, 'cubic', bounds_error=False)
     support: tuple = (-np.inf, np.inf)
-    rvs = (lambda size: kde.resample(size))
-    return pdf, cdf, ppf, support, rvs
+    # rvs = (lambda size: kde.resample(size))
+    return pdf, cdf, ppf, support, kde.resample
 
 
 def discrete_empirical_fit(data: np.ndarray):
