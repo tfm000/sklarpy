@@ -537,13 +537,14 @@ class PreFitDiscreteUnivariate:
             support[1] = int(self.ppf(prob_bounds[1], *params))
 
         # Chi-squared gof test
-        chisq_stat = 0
         xrange = range(int(support[0]), int(support[1]) + 1)
         observed = np.array([np.count_nonzero(data == x) for x in xrange])
         expected = self.pdf(xrange, *params) * num
+        index = np.where(expected != 0)[0]
+        expected = expected[index]
+        observed = observed[index]
         chisq_stat = np.sum(((expected - observed) ** 2) / expected)
         chisq_pvalue = scipy.stats.chi2.sf(chisq_stat, dof)
-
         values = [float(chisq_stat), float(chisq_pvalue)]
         index = ['chi-square statistic', 'chi-square p-value']
         return pd.Series(values, index=index, name=self.name)
