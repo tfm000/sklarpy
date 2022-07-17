@@ -37,7 +37,8 @@ setup(
         'pandas~=1.4.3',
         'numpy~=1.23.0',
         'scipy~=1.8.1',
-        'matplotlib~=3.5.2'
+        'matplotlib~=3.5.2',
+        'dill~=0.3.5.1'
     ],
     extras_require={
         "dev": [

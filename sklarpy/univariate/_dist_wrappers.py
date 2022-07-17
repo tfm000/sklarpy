@@ -5,8 +5,10 @@ import scipy.stats
 import matplotlib.pyplot as plt
 import logging
 from typing import Union
+import dill
+import os
 
-from sklarpy._utils import prob_bounds
+from sklarpy._utils import prob_bounds, SaveError
 
 
 __all__ = ['PreFitParametricContinuousUnivariate', 'PreFitParametricDiscreteUnivariate', 'PreFitNumericalContinuousUnivariate', 'PreFitNumericalDiscreteUnivariate']
@@ -218,6 +220,56 @@ class FittedUnivariate:
         if data is None:
             return self._fit_info['gof']
         return self.__obj.gof(data, *self._params)
+
+    def save(self, file: Union[str, None] = None, fix_extension: bool = True, overwrite_existing: bool = True):
+        """Saves univariate distribution as a pickled file.
+
+        Parameters
+        ==========
+        file: Union[str, None]
+            The file to save. If None, the distribution is saved under the distribution's name in the current working
+            directory. If a file is given, it must include the full file path. The .pickle extension is optional
+            provided fix_extension is True.
+        fix_extension: bool
+            Whether to replace any existing extension with the '.pickle' file extension. Default is True.
+        overwrite_existing: bool
+            True to overwrite existing files saved under the same name. False to save under a unique name.
+            Default is True.
+
+        See Also
+        ---------
+        sklarpy.load
+        pickle
+        dill
+        """
+        # Input checks
+        if file is None:
+            dir_path: str = os.getcwd()
+            file = f'{dir_path}\\{self.name}'
+        if not isinstance(file, str):
+            raise TypeError("file argument must be a string.")
+        if not isinstance(fix_extension, bool):
+            raise TypeError("fix_extension argument must be a boolean.")
+
+        # Changing file extension to .pickle
+        file_name, extension = os.path.splitext(file)
+        if fix_extension:
+            extension = '.pickle'
+
+        if not overwrite_existing:
+            # Saving under a unique file name
+            count: int = 0
+            unique_str: str = ''
+            while os.path.exists(f'{file_name}{unique_str}{extension}'):
+                count += 1
+                unique_str = f'({count})'
+            file_name = f'{file_name}{unique_str}'
+
+        try:
+            with open(f'{file_name}{extension}', 'wb') as f:
+                dill.dump(self, f)
+        except Exception as e:
+            raise SaveError(e)
 
     @property
     def summary(self) -> pd.Series:
@@ -489,7 +541,7 @@ class PreFitDiscreteUnivariate:
         xrange = range(int(support[0]), int(support[1]) + 1)
         observed = np.array([np.count_nonzero(data == x) for x in xrange])
         expected = self.pdf(xrange, *params) * num
-        chisq_stat = np.sum(((expected - observed)**2)/expected)
+        chisq_stat = np.sum(((expected - observed) ** 2) / expected)
         chisq_pvalue = scipy.stats.chi2.sf(chisq_stat, dof)
 
         values = [float(chisq_stat), float(chisq_pvalue)]
