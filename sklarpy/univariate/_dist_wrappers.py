@@ -245,7 +245,7 @@ class FittedUnivariate:
         # Input checks
         if file is None:
             dir_path: str = os.getcwd()
-            file = f'{dir_path}\\{self.name}'
+            file = f'{dir_path}\\{self.name}.pickle'
         if not isinstance(file, str):
             raise TypeError("file argument must be a string.")
         if not isinstance(fix_extension, bool):
