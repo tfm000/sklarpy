@@ -15,11 +15,14 @@ class DiscreteError(Exception):
 
 class FitError(Exception):
     """Error to raise when unable to fit one or more distribution."""
+    pass
 
 
 class SaveError(Exception):
     """Error to raise when unable to serialize a distribution."""
+    pass
 
 
 class LoadError(Exception):
     """Error to raise when unable to load a serialized distribution."""
+    pass
