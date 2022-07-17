@@ -1,5 +1,6 @@
 # Contains fixtures for tests
 import pytest
+import os
 
 from sklarpy.univariate import normal, poisson
 
@@ -17,3 +18,9 @@ def normal_data2():
 @pytest.fixture(scope="session", autouse=True)
 def poisson_data():
     return poisson.rvs(1000, 10)
+
+
+# @pytest.fixture(scope="session", autouse=True)
+# def gamma_pickle():
+#     dir_path: str = os.path.dirname(os.path.abspath(__file__))
+#     return f'{dir_path}\\gamma_test'

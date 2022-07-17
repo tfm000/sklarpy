@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 setup(
     name='sklarpy',
     packages=find_packages(),
-    version='0.1.1',
+    version='0.1.2',
     license='MIT',
     long_description="SklarPy (pronounced 'Sky-Lar-Pee' or 'Sky-La-Pie') is an open-source software for probability "
                      "distribution fitting.  It contains useful tools for fitting copula and univariate probability "
@@ -37,7 +37,8 @@ setup(
         'pandas~=1.4.3',
         'numpy~=1.23.0',
         'scipy~=1.8.1',
-        'matplotlib~=3.5.2'
+        'matplotlib~=3.5.2',
+        'dill~=0.3.5.1'
     ],
     extras_require={
         "dev": [
