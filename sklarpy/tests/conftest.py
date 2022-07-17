@@ -20,7 +20,7 @@ def poisson_data():
     return poisson.rvs(1000, 10)
 
 
-@pytest.fixture(scope="session", autouse=True)
-def gamma_pickle():
-    dir_path: str = os.path.dirname(os.path.abspath(__file__))
-    return f'{dir_path}\\gamma_test'
+# @pytest.fixture(scope="session", autouse=True)
+# def gamma_pickle():
+#     dir_path: str = os.path.dirname(os.path.abspath(__file__))
+#     return f'{dir_path}\\gamma_test'
