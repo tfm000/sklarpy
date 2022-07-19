@@ -1,4 +1,9 @@
 from setuptools import setup, find_packages
+import sys
+
+
+if sys.version_info < (3, 9):
+    raise ValueError('Versions of Python before 3.9 are not supported')
 
 
 setup(
