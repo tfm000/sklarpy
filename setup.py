@@ -9,7 +9,7 @@ if sys.version_info < (3, 9):
 setup(
     name='sklarpy',
     packages=find_packages(),
-    version='0.1.2',
+    version='0.1.3',
     license='MIT',
     long_description="SklarPy (pronounced 'Sky-Lar-Pee' or 'Sky-La-Pie') is an open-source software for probability "
                      "distribution fitting.  It contains useful tools for fitting copula and univariate probability "
