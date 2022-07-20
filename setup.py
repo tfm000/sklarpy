@@ -6,6 +6,7 @@ setup(
     packages=find_packages(),
     version='0.1.3',
     license='MIT',
+    description="A Python library for copula and univariate probability distribution fitting.",
     long_description="SklarPy (pronounced 'Sky-Lar-Pee' or 'Sky-La-Pie') is an open-source software for probability "
                      "distribution fitting.  It contains useful tools for fitting copula and univariate probability "
                      "distributions. Named after Sklar's theorem and Abe Sklar, the American mathematician who proved "
