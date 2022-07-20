@@ -5,7 +5,7 @@ import os
 
 import sklarpy
 from sklarpy.univariate import *
-from sklarpy.univariate.distributions import all_common_names
+from sklarpy.univariate.distributions import all_common_names, all_numerical_names
 from sklarpy.univariate._dist_wrappers import FittedContinuousUnivariate, FittedDiscreteUnivariate
 from sklarpy._utils._errors import *
 
@@ -17,6 +17,15 @@ def test_individual_fit(poisson_data):
         fitted = dist.fit(poisson_data)
         assert (isinstance(fitted, FittedDiscreteUnivariate) or isinstance(fitted, FittedContinuousUnivariate)), \
             "Fitting failed"
+
+
+def test_numerical_fit(poisson_data):
+    """Checking we can fit all numerical/non-parametric distributions."""
+    for name in all_numerical_names:
+        dist = eval(name)
+        fitted = dist.fit(poisson_data)
+        assert (isinstance(fitted, FittedDiscreteUnivariate) or isinstance(fitted, FittedContinuousUnivariate)), \
+            "Fitting numerical discrete distributions failed."
 
 
 def test_univariate_fitter1(normal_data):
