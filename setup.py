@@ -1,9 +1,4 @@
 from setuptools import setup, find_packages
-import sys
-
-
-if sys.version_info < (3, 9):
-    raise ValueError('Versions of Python before 3.9 are not supported')
 
 
 setup(
@@ -11,6 +6,7 @@ setup(
     packages=find_packages(),
     version='0.1.3',
     license='MIT',
+    description="A Python library for copula and univariate probability distribution fitting.",
     long_description="SklarPy (pronounced 'Sky-Lar-Pee' or 'Sky-La-Pie') is an open-source software for probability "
                      "distribution fitting.  It contains useful tools for fitting copula and univariate probability "
                      "distributions. Named after Sklar's theorem and Abe Sklar, the American mathematician who proved "
@@ -38,12 +34,13 @@ setup(
         'Fitting'
         'SciPy'
     ],
+    python_requires='>=3.8',
     install_requires=[
         'pandas>=1.4.3',
         'numpy>=1.23.0',
         'scipy~=1.8.1',
-        'matplotlib~=3.5.2',
-        'dill~=0.3.5.1'
+        'matplotlib>=3.5.2',
+        'dill>=0.3.5.1'
     ],
     extras_require={
         "dev": [
@@ -58,6 +55,8 @@ setup(
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools',
         'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
     ],
 )

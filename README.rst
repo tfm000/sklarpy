@@ -27,12 +27,6 @@
    :scale: 100%
    :target: https://pepy.tech/project/sklarpy
 
-.. image:: https://img.shields.io/pypi/dm/sklarpy.svg
-   :alt: PyPi Monthly Downloads
-   :scale: 100%
-   :target: https://pypi.python.org/pypi/sklarpy/
-
-
 SklarPy (pronounced "Sky-Lar-Pee" or "Sky-La-Pie") is an open-source software for probability distribution fitting.
 It contains useful tools for fitting copula and univariate probability distributions.
 Named after Sklar's theorem and Abe Sklar, the American mathematician who proved that multivariate cumulative
