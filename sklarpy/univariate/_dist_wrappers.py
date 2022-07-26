@@ -154,9 +154,9 @@ class FittedUnivariate:
         else:
             fig, ax = plt.subplots(1, 3, figsize=figsize)
         if hist:
-            sample_plot = (lambda idx, rng, val, c, a, lab: ax[idx].bar(rng, val, color=c, alpha=a, label=lab))
+            sample_plot = (lambda idx, rng, val, w, c, a, lab: ax[idx].bar(rng, val, width=w, color=c, alpha=a, label=lab))
         else:
-            sample_plot = (lambda idx, rng, val, c, a, lab: ax[idx].plot(rng, val, color=c, alpha=a, label=lab))
+            sample_plot = (lambda idx, rng, val, w, c, a, lab: ax[idx].plot(rng, val, color=c, alpha=a, label=lab))
 
         # Plotting fitted distribution
         ax[0].plot(xrange, pdf, label=self.__name_w_params, c=dist_color)
@@ -165,12 +165,12 @@ class FittedUnivariate:
 
         if include_sample:
             # Getting our sample/empirical distribution values
-            sample_range, sample_pdf, sample_cdf = self._fit_info['histogram']
+            sample_range, sample_pdf, sample_cdf, sample_bin_widths = self._fit_info['histogram']
             qq: np.ndarray = self.ppf(sample_cdf)
 
             # Plotting sample
-            sample_plot(0, sample_range, sample_pdf, sample_color, sample_alpha, 'Sample')
-            sample_plot(1, sample_range, sample_cdf, sample_color, sample_alpha, 'Sample')
+            sample_plot(0, sample_range, sample_pdf, sample_bin_widths, sample_color, sample_alpha, 'Sample')
+            sample_plot(1, sample_range, sample_cdf, sample_bin_widths, sample_color, sample_alpha, 'Sample')
             ax[2].plot(sample_cdf, sample_range, c=sample_color, label='Sample')
             ax[3].plot(xrange, xrange, c='black', label='y=x')
             ax[3].scatter(qq[:-1], sample_range[:-1], label='quartiles')
@@ -181,7 +181,7 @@ class FittedUnivariate:
             ax[3].legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True, ncol=1)
 
         xlabels = ("x", "x", "P(X<=q)")
-        ylabels = ("P(X=x)", "P(X<=x)", "q")
+        ylabels = ("PDF", "P(X<=x)", "q")
         titles = ('PDF', 'CDF', 'Inverse CDF')
         for i in range(3):
             ax[i].set_xlabel(xlabels[i])
@@ -425,16 +425,28 @@ class PreFitContinuousUnivariate:
         Returns
         =======
         empirical: tuple
-            empirical_range, empirical_pdf, empirical_cdf, fitted_domain
+            empirical_range, empirical_pdf, empirical_cdf, bin_widths, fitted_domain
         """
         xmin, xmax, N = data.min(), data.max(), len(data)
-        num_bins: int = min(len(set(data)), 100)  # number of bins to group our continuous data into
+
+        # Determine number of bins to use
+        unique_n = len(set(data))
+        if unique_n > 1000:
+            num_bins = 100
+        elif unique_n >= 500:
+            num_bins = 50
+        elif unique_n >= 100:
+            num_bins = 20
+        else:
+            num_bins = min(10, unique_n)
+
+        # number of bins to group our continuous data into
         empirical_pdf, empirical_range = np.histogram(data, bins=num_bins)
+        bin_widths = np.diff(empirical_range)
         empirical_range = (empirical_range[1:] + empirical_range[:-1]) / 2
+        empirical_pdf = empirical_pdf / N
         empirical_cdf = np.cumsum(empirical_pdf)
-        bin_width = (xmax - xmin) / num_bins
-        empirical_cdf, empirical_pdf = empirical_cdf / N, empirical_pdf / (N * bin_width)
-        return empirical_range, empirical_pdf, empirical_cdf, (xmin, xmax)
+        return empirical_range, empirical_pdf, empirical_cdf, bin_widths, (xmin, xmax)
 
     def gof(self, data: np.ndarray, *params) -> pd.Series:
         """Calculates goodness of fit tests for the specified distribution against a random sample.
@@ -497,13 +509,14 @@ class PreFitDiscreteUnivariate:
         Returns
         =======
         empirical: tuple
-            empirical_range, empirical_pdf, empirical_cdf, fitted_domain
+            empirical_range, empirical_pdf, empirical_cdf, bin_widths, fitted_domain
         """
         xmin, xmax, N = data.min(), data.max(), len(data)
         empirical_range: np.ndarray = np.arange(xmin, xmax + 1)
         empirical_pdf: np.ndarray = np.array([np.count_nonzero(data == i)/N for i in empirical_range])
         empirical_cdf = np.cumsum(empirical_pdf)
-        return empirical_range, empirical_pdf, empirical_cdf, (xmin, xmax)
+        bin_widths: np.ndarray = np.full(len(empirical_range), 1)
+        return empirical_range, empirical_pdf, empirical_cdf, bin_widths, (xmin, xmax)
 
     def gof(self, data: np.ndarray, *params) -> pd.Series:
         """Calculates goodness of fit tests for the specified distribution against a random sample.
@@ -712,7 +725,7 @@ class PreFitParametricUnivariate:
         k: int = len(params)
 
         # Getting infomation about the empirical distribution
-        empirical_range, empirical_pdf, empirical_cdf, fitted_domain = self._empirical(data)
+        empirical_range, empirical_pdf, empirical_cdf, bin_widths, fitted_domain = self._empirical(data)
 
         # GoF info
         gof: pd.Series = self.gof(data, *params)
@@ -725,7 +738,7 @@ class PreFitParametricUnivariate:
         sse = np.sum((pdf_values - empirical_pdf) ** 2)
 
         fit_info: dict = {
-            "histogram": (empirical_range, empirical_pdf, empirical_cdf),
+            "histogram": (empirical_range, empirical_pdf, empirical_cdf, bin_widths),
             "fitted_domain": fitted_domain,
             "gof": gof,
             "loglikelihood": loglikelihood,
@@ -741,6 +754,7 @@ class PreFitParametricUnivariate:
     def dist_type(self) -> str:
         """Whether the distribution is continuous or discrete."""
         return self._DIST_TYPE
+
 
 class PreFitParametricContinuousUnivariate(PreFitContinuousUnivariate, PreFitParametricUnivariate):
     """Class for fitting or interacting with a continuous parametric probability distribution."""
@@ -831,7 +845,7 @@ class PreFitNumericalUnivariate(PreFitParametricUnivariate): #this inheritence w
         self._rvs = rvs
 
         # Getting infomation about the empirical distribution
-        empirical_range, empirical_pdf, empirical_cdf, fitted_domain = self._empirical(data)
+        empirical_range, empirical_pdf, empirical_cdf, bin_widths, fitted_domain = self._empirical(data)
 
         # GoF info
         gof: pd.Series = self.gof(data)
@@ -844,7 +858,7 @@ class PreFitNumericalUnivariate(PreFitParametricUnivariate): #this inheritence w
         sse = np.sum((pdf_values - empirical_pdf) ** 2)
 
         fit_info: dict = {
-            "histogram": (empirical_range, empirical_pdf, empirical_cdf),
+            "histogram": (empirical_range, empirical_pdf, empirical_cdf, bin_widths),
             "fitted_domain": fitted_domain,
             "gof": gof,
             "loglikelihood": loglikelihood,
