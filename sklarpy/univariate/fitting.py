@@ -332,17 +332,17 @@ class UnivariateFitter:
 
         if include_sample:
             num_dists += 1
-            sample_range, sample_pdf, sample_cdf = dists[0]._fit_info['histogram']
+            sample_range, sample_pdf, sample_cdf, bin_widths = dists[0]._fit_info['histogram']
             # sample_range, sample_pdf, sample_cdf, _ = normal._empirical(self.__fit_data)
             if hist:
-                sample_plot = (lambda idx, rng, val, c, a, lab: ax[idx].bar(rng, val, color=c, alpha=a, label=lab))
+                sample_plot = (lambda idx, rng, val, w, c, a, lab: ax[idx].bar(rng, val, width=w, color=c, alpha=a, label=lab))
             else:
                 sample_plot = (lambda idx, rng, val, c, a, lab: ax[idx].plot(rng, val, color=c, alpha=a, label=lab))
-            sample_plot(0, sample_range, sample_pdf, sample_color, sample_alpha, 'Sample')
-            sample_plot(1, sample_range, sample_cdf, sample_color, sample_alpha, 'Sample')
+            sample_plot(0, sample_range, sample_pdf, bin_widths, sample_color, sample_alpha, 'Sample')
+            sample_plot(1, sample_range, sample_cdf, bin_widths, sample_color, sample_alpha, 'Sample')
 
         xlabels = ("x", "x")
-        ylabels = ("P(X=x)", "P(X<=x)")
+        ylabels = ("PDF", "P(X<=x)")
         titles = ('PDF', 'CDF')
         for i in range(2):
             if include_sample and sample_color == 'royalblue':
