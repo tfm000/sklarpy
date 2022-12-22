@@ -38,7 +38,7 @@ setup(
     install_requires=[
         'pandas>=1.4.3',
         'numpy>=1.23.0',
-        'scipy~=1.8.1',
+        'scipy>=1.9.3',
         'matplotlib>=3.5.2',
         'dill>=0.3.5.1'
     ],

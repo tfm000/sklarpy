@@ -1,8 +1,11 @@
 # Contains fitting functions for univariate distributions.
+import math
+
 import numpy as np
 import scipy.interpolate
 import scipy.stats
-import math
+
+from sklarpy._utils import DiscreteError
 
 
 __all__ = ['dlaplace_fit', 'duniform_fit', 'geometric_fit', 'planck_fit', 'poisson_fit', 'kde_fit', 'discrete_empirical_fit', 'continuous_empirical_fit']
@@ -145,10 +148,14 @@ def discrete_empirical_fit(data: np.ndarray):
     pdf = (lambda x: np.array([np.count_nonzero(data == i) / N for i in x]))
 
     # Generating cdf and ppf functions via interpolation
-    empirical_range: np.ndarray = np.arange(support[0], support[1] + 1)
+    empirical_range: np.ndarray = np.arange(support[0], support[1] + 1, dtype=int)
     empirical_cdf = np.cumsum(pdf(empirical_range))
     _, idx = np.unique(empirical_cdf, return_index=True)
     empirical_range, empirical_cdf = empirical_range[idx], empirical_cdf[idx]
+
+    if (empirical_cdf.size == 1) and (empirical_cdf[0] == 0):
+        raise DiscreteError("Discrete empirical distribution cannot be fit on continuous data.")
+
     cdf = scipy.interpolate.interp1d(empirical_range, empirical_cdf, 'nearest', bounds_error=False)
 
     ppf = scipy.interpolate.interp1d(empirical_cdf, empirical_range, 'nearest', bounds_error=False)
