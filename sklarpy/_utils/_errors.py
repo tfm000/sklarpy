@@ -1,6 +1,6 @@
 # Contains custom errors for SklarPy
 
-__all__ = ['SignificanceError', 'FitError', 'DiscreteError', 'SaveError', 'LoadError']
+__all__ = ['SignificanceError', 'FitError', 'DiscreteError', 'SaveError', 'LoadError', 'DistributionError']
 
 
 class SignificanceError(Exception):
@@ -25,4 +25,9 @@ class SaveError(Exception):
 
 class LoadError(Exception):
     """Error to raise when unable to load a serialized distribution."""
+    pass
+
+
+class DistributionError(Exception):
+    """Error to raise in relation to a type of distribution."""
     pass

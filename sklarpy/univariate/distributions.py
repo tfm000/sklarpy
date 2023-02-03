@@ -1,16 +1,18 @@
 # Contains univariate probability distributions
 import scipy.stats
 
-from sklarpy.univariate._dist_wrappers import *
-from sklarpy.univariate._fit import *
+from sklarpy.univariate._prefitted_dists import PreFitParametricContinuousUnivariate, \
+    PreFitParametricDiscreteUnivariate, PreFitNumericalContinuousUnivariate, PreFitNumericalDiscreteUnivariate
+from sklarpy.univariate._fit import dlaplace_fit, duniform_fit, geometric_fit, planck_fit, poisson_fit, kde_fit, \
+    discrete_empirical_fit, continuous_empirical_fit
+from sklarpy.univariate.distributions_map import distributions_map
+
+__all__ = [*distributions_map['all']]
+
 
 ########################################################################################################################
 # Continuous (Parametric)
 ########################################################################################################################
-continuous_parametric_names: tuple = ('alpha', 'anglit', 'arcsine', 'argus', 'beta', 'betaprime', 'bradford', 'burr', 'burr12', 'cauchy', 'chi', 'chi2', 'cosine', 'crystalball', 'dgamma', 'dweibull', 'erlang', 'expon', 'exponnorm', 'exponpow', 'exponweib', 'f', 'fatiguelife', 'fisk', 'foldcauchy', 'foldnorm', 'gamma', 'gausshyper', 'genexpon', 'genextreme', 'gengamma', 'genhalflogistic', 'genhyperbolic', 'geninvgauss', 'genlogistic', 'gennorm', 'genpareto', 'gilbrat', 'gompertz', 'gumbel_l', 'gumbel_r', 'halfcauchy', 'halfgennorm', 'halflogistic', 'halfnorm', 'hypsecant', 'invgamma', 'invgauss', 'invweibull', 'johnsonsb', 'johnsonsu', 'kappa3', 'kappa4', 'ksone', 'kstwo', 'kstwobign', 'laplace', 'laplace_asymmetric', 'levy', 'levy_l', 'levy_stable', 'loggamma', 'logistic', 'loglaplace', 'lognorm', 'loguniform', 'lomax', 'maxwell', 'mielke', 'moyal', 'nakagami', 'ncf', 'nct', 'ncx2', 'normal', 'norminvgauss', 'pareto', 'pearson3', 'powerlaw', 'powerlognorm', 'powernorm', 'rayleigh', 'rdist', 'recipinvgauss', 'reciprocal', 'rice', 'semicircular', 'skewcauchy', 'skewnorm', 't', 'trapezoid', 'trapz', 'triang', 'truncexpon', 'truncnorm', 'tukeylambda', 'uniform', 'vonmises', 'vonmises_line', 'wald', 'weibull_max', 'weibull_min', 'wrapcauchy')
-common_continuous_parametric_names: tuple = ('cauchy', 'chi2', 'expon', 'gamma', 'lognorm', 'normal', 'powerlaw', 'rayleigh', 't', 'uniform')
-continuous_multimodal_parametric_names: tuple = ('arcsine', 'beta')
-
 alpha = PreFitParametricContinuousUnivariate('alpha', scipy.stats.alpha.pdf, scipy.stats.alpha.cdf, scipy.stats.alpha.ppf, scipy.stats.alpha.support, scipy.stats.alpha.fit, scipy.stats.alpha.rvs)
 anglit = PreFitParametricContinuousUnivariate('anglit', scipy.stats.anglit.pdf, scipy.stats.anglit.cdf, scipy.stats.anglit.ppf, scipy.stats.anglit.support, scipy.stats.anglit.fit, scipy.stats.anglit.rvs)
 arcsine = PreFitParametricContinuousUnivariate('arcsine', scipy.stats.arcsine.pdf, scipy.stats.arcsine.cdf, scipy.stats.arcsine.ppf, scipy.stats.arcsine.support, scipy.stats.arcsine.fit, scipy.stats.arcsine.rvs)
@@ -43,7 +45,7 @@ genexpon = PreFitParametricContinuousUnivariate('genexpon', scipy.stats.genexpon
 genextreme = PreFitParametricContinuousUnivariate('genextreme', scipy.stats.genextreme.pdf, scipy.stats.genextreme.cdf, scipy.stats.genextreme.ppf, scipy.stats.genextreme.support, scipy.stats.genextreme.fit, scipy.stats.genextreme.rvs)
 gengamma = PreFitParametricContinuousUnivariate('gengamma', scipy.stats.gengamma.pdf, scipy.stats.gengamma.cdf, scipy.stats.gengamma.ppf, scipy.stats.gengamma.support, scipy.stats.gengamma.fit, scipy.stats.gengamma.rvs)
 genhalflogistic = PreFitParametricContinuousUnivariate('genhalflogistic', scipy.stats.genhalflogistic.pdf, scipy.stats.genhalflogistic.cdf, scipy.stats.genhalflogistic.ppf, scipy.stats.genhalflogistic.support, scipy.stats.genhalflogistic.fit, scipy.stats.genhalflogistic.rvs)
-genhyperbolic = PreFitParametricContinuousUnivariate('genhyperbolic', scipy.stats.genhyperbolic.pdf, scipy.stats.genhyperbolic.cdf, scipy.stats.genhyperbolic.ppf, scipy.stats.genhyperbolic.support, scipy.stats.genhyperbolic.fit, scipy.stats.genhyperbolic.rvs)
+# genhyperbolic = PreFitParametricContinuousUnivariate('genhyperbolic', scipy.stats.genhyperbolic.pdf, scipy.stats.genhyperbolic.cdf, scipy.stats.genhyperbolic.ppf, scipy.stats.genhyperbolic.support, scipy.stats.genhyperbolic.fit, scipy.stats.genhyperbolic.rvs)  # cdf is not monotonically increasing
 geninvgauss = PreFitParametricContinuousUnivariate('geninvgauss', scipy.stats.geninvgauss.pdf, scipy.stats.geninvgauss.cdf, scipy.stats.geninvgauss.ppf, scipy.stats.geninvgauss.support, scipy.stats.geninvgauss.fit, scipy.stats.geninvgauss.rvs)
 genlogistic = PreFitParametricContinuousUnivariate('genlogistic', scipy.stats.genlogistic.pdf, scipy.stats.genlogistic.cdf, scipy.stats.genlogistic.ppf, scipy.stats.genlogistic.support, scipy.stats.genlogistic.fit, scipy.stats.genlogistic.rvs)
 gennorm = PreFitParametricContinuousUnivariate('gennorm', scipy.stats.gennorm.pdf, scipy.stats.gennorm.cdf, scipy.stats.gennorm.ppf, scipy.stats.gennorm.support, scipy.stats.gennorm.fit, scipy.stats.gennorm.rvs)
@@ -116,33 +118,10 @@ weibull_max = PreFitParametricContinuousUnivariate('weibull_max', scipy.stats.we
 weibull_min = PreFitParametricContinuousUnivariate('weibull_min', scipy.stats.weibull_min.pdf, scipy.stats.weibull_min.cdf, scipy.stats.weibull_min.ppf, scipy.stats.weibull_min.support, scipy.stats.weibull_min.fit, scipy.stats.weibull_min.rvs)
 wrapcauchy = PreFitParametricContinuousUnivariate('wrapcauchy', scipy.stats.wrapcauchy.pdf, scipy.stats.wrapcauchy.cdf, scipy.stats.wrapcauchy.ppf, scipy.stats.wrapcauchy.support, scipy.stats.wrapcauchy.fit, scipy.stats.wrapcauchy.rvs)
 
-# normal = PreFitContinuousUnivariate('normal', scipy.stats.norm.pdf, scipy.stats.norm.cdf, scipy.stats.norm.ppf, scipy.stats.norm.support, scipy.stats.norm.fit, scipy.stats.norm.rvs)
-# all_continuous: list = scipy.stats._continuous_distns._distn_names
-# all_continuous.remove('norm')
-# required: tuple = ('pdf', 'cdf', 'ppf', 'support', 'fit')
-# optional: tuple = ('rvs', )
-# for name in all_continuous:
-#     dist = eval(f"scipy.stats.{name}")
-#     dist_dir = eval(f"dir(dist)")
-#     has_req: bool = True
-#     for req in required:
-#         if req not in dist_dir:
-#             has_req = False
-#     if has_req:
-#         s: str = f"{name} = PreFitContinuousUnivariate('{name}', scipy.stats.{name}.pdf, scipy.stats.{name}.cdf, scipy.stats.{name}.ppf, scipy.stats.{name}.support, scipy.stats.{name}.fit"
-#         for opt in optional:
-#             if opt in dist_dir:
-#                 s += f", scipy.stats.{name}.{opt}"
-#         exec(f"{s})")
-#         __all__ += [name]
 
 ########################################################################################################################
 # Discrete (Parametric)
 ########################################################################################################################
-discrete_parametric_names: tuple = ('discrete_laplace', 'discrete_uniform', 'geometric', 'planck', 'poisson')
-common_discrete_parametric_names: tuple = ('discrete_laplace', 'discrete_uniform', 'geometric', 'poisson')
-discrete_multimodal_parametric_names: tuple = ()
-
 discrete_laplace = PreFitParametricDiscreteUnivariate('discrete-laplace', scipy.stats.dlaplace.pmf, scipy.stats.dlaplace.cdf, scipy.stats.dlaplace.ppf, scipy.stats.dlaplace.support, dlaplace_fit, scipy.stats.dlaplace.rvs)
 discrete_uniform = PreFitParametricDiscreteUnivariate('discrete-uniform', scipy.stats.randint.pmf, scipy.stats.randint.cdf, scipy.stats.randint.ppf, scipy.stats.randint.support, duniform_fit, scipy.stats.randint.rvs)
 geometric = PreFitParametricDiscreteUnivariate('geometric', scipy.stats.geom.pmf, scipy.stats.geom.cdf, scipy.stats.geom.ppf, scipy.stats.geom.support, geometric_fit, scipy.stats.geom.rvs)
@@ -153,38 +132,6 @@ poisson = PreFitParametricDiscreteUnivariate('poisson', scipy.stats.poisson.pmf,
 ########################################################################################################################
 # Numerical/Non-Parametric
 ########################################################################################################################
-continuous_numerical_names: tuple = ('gaussian_kde', 'empirical')
-discrete_numerical_names: tuple = ('discrete_empirical',)
-
 gaussian_kde = PreFitNumericalContinuousUnivariate('gaussian-kde', kde_fit)
 empirical = PreFitNumericalContinuousUnivariate('empirical', continuous_empirical_fit)
 discrete_empirical = PreFitNumericalDiscreteUnivariate('discrete-empirical', discrete_empirical_fit)
-
-########################################################################################################################
-all_continuous_names: tuple = (*continuous_parametric_names, *continuous_numerical_names)
-all_discrete_names: tuple = (*discrete_parametric_names, *discrete_numerical_names)
-all_common_names: tuple = (*common_continuous_parametric_names, *common_discrete_parametric_names)
-all_multimodal_names: tuple = (*continuous_multimodal_parametric_names, *discrete_multimodal_parametric_names)
-all_parametric_names: tuple = (*continuous_parametric_names, *discrete_parametric_names)
-all_numerical_names: tuple = (*continuous_numerical_names, *discrete_numerical_names)
-all_distributions: tuple = (*all_continuous_names, *all_discrete_names)
-
-distributions_map: dict = {
-    'all': all_distributions,
-    'all continuous': all_continuous_names,
-    'all discrete': all_discrete_names,
-    'all common': all_common_names,
-    'all multimodal': all_multimodal_names,
-    'all parametric': all_parametric_names,
-    'all numerical': all_numerical_names,
-    'all continuous parametric': continuous_parametric_names,
-    'all discrete parametric': discrete_parametric_names,
-    'all continuous numerical': continuous_numerical_names,
-    'all discrete numerical': discrete_numerical_names,
-    'common continuous': common_continuous_parametric_names,
-    'common discrete': common_discrete_parametric_names,
-    'continuous multimodal': continuous_multimodal_parametric_names,
-    'discrete multimodal': discrete_multimodal_parametric_names,
-}
-
-__all__ = [*all_distributions]
