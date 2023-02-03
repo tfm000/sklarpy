@@ -1,24 +1,103 @@
-from numpy import ndarray, asarray
+# Contains functions for handling user inputs
+import numpy as np
+from pandas import Series, DataFrame
+from typing import Iterable
 
-from sklarpy._utils._variable_types import num_or_array
+from sklarpy._utils._variable_types import num_or_array, data_iterable
+
+__all__ = ['univariate_num_to_array', 'check_params', 'check_univariate_data', 'check_array_datatype']
 
 
-def univariate_num_to_array(x: num_or_array) -> ndarray:
-    if isinstance(x, ndarray):
+def univariate_num_to_array(x: num_or_array) -> np.ndarray:
+    """
+    Convert a number or numpy array to a flattened numpy array.
+
+    Parameters
+    ----------
+    x: num_or_array
+        The number or array to convert.
+
+    Returns
+    -------
+    numpy.ndarray
+        The numpy array.
+    """
+    if isinstance(x, np.ndarray):
         return x.flatten()
     elif isinstance(x, float) or isinstance(x, int):
-        return asarray(x).flatten()
+        return np.asarray(x).flatten()
     raise TypeError("input must be a numpy array, float or integer")
 
 
 def check_params(params: tuple) -> tuple:
+    """
+    Checks whether the given parameters match those required by SklarPy's probability distributions.
+
+    Parameters
+    ----------
+    params: tuple
+        The parameters of the probability distribution.
+
+    Returns
+    -------
+    tuple
+        The parameters of the probability distribution.
+    """
     if isinstance(params, tuple):
         return params
     raise TypeError("params must be a tuple")
 
 
-def check_univariate_data(data: ndarray) -> ndarray:
-    if isinstance(data, ndarray):
+def check_univariate_data(data: data_iterable) -> np.ndarray:
+    """
+    Checks user inputted data for univariate distribution fitting.
+
+    Parameters
+    ----------
+    data: data_iterable
+        The data to check.
+
+    Returns
+    -------
+    data: np.ndarray
+        The input data converted into a flattened numpy array.
+    """
+    if isinstance(data, np.ndarray):
         return data.flatten()
+    elif isinstance(data, DataFrame):
+        if len(data.columns) != 1:
+            raise ValueError("data must be a single column dataframe for it to be considered univariate.")
+        return data.to_numpy()
+    elif isinstance(data, Series):
+        return data.to_numpy()
+    elif isinstance(data, Iterable):
+        return np.asarray(data).flatten()
     else:
-        raise TypeError("data must be a np.ndarray.")
+        raise TypeError("data must be an iterable.")
+
+
+def check_array_datatype(arr: np.ndarray, must_be_numeric: bool = True):
+    """
+    Checks the data-type of numpy arrays.
+
+    Parameters
+    ----------
+    arr: np.ndarray
+        The numpy array whose data-type must be determined.
+    must_be_numeric: bool
+        Whether the data-type must be numeric (float or integer) or not.
+
+    Returns
+    -------
+    data-type
+        the data-type of the numpy array.
+    """
+    if not ((arr.dtype == float) or (arr.dtype == int)):
+        if must_be_numeric:
+            raise TypeError("Array must contain integer or float values.")
+        return arr.dtype
+
+    arr_int: np.ndarray = arr.astype(int)
+    if np.all((arr - arr_int) == 0):
+        return int
+    return float

@@ -1,7 +1,10 @@
+# Contains functions for loading saved SklarPy objects.
 import dill
 import os
 
 from sklarpy._utils._errors import LoadError
+
+__all__ = ['load']
 
 
 def load(file: str, fix_extension: bool = True):
@@ -17,7 +20,6 @@ def load(file: str, fix_extension: bool = True):
 
     See Also
     ---------
-    sklarpy.save
     pickle
     dill
     """
@@ -33,9 +35,11 @@ def load(file: str, fix_extension: bool = True):
         extension = '.pickle'
     file = f'{file_name}{extension}'
 
+    # Checking file exists at the specified location
     if not os.path.exists(file):
         raise LoadError(f"Unable to find file at {file}")
 
+    # Loading file
     try:
         with open(file, 'rb') as f:
             dist = dill.load(f)
