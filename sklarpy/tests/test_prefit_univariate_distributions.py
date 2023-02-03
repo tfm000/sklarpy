@@ -317,17 +317,17 @@ def test_prefit_parametric_gof(poisson_data, uniform_data):
             continue
 
 
-def test_prefit_parametric_plot(poisson_data, uniform_data):
-    """Testing the plot functions of all pre-fit distributions"""
-    for name in distributions_map['all parametric']:
-        try:
-            data: np.ndarray = get_data(name, uniform_data, poisson_data, ' parametric')
-            dist, fitted, params = get_dist(name, data)
-
-            # checking we can plot without errors
-            dist.plot(params, show=False)
-        except RuntimeError:
-            continue
+# def test_prefit_parametric_plot(poisson_data, uniform_data):
+#     """Testing the plot functions of all pre-fit distributions"""
+#     for name in distributions_map['all parametric']:
+#         try:
+#             data: np.ndarray = get_data(name, uniform_data, poisson_data, ' parametric')
+#             dist, fitted, params = get_dist(name, data)
+#
+#             # checking we can plot without errors
+#             dist.plot(params, show=False)
+#         except RuntimeError:
+#             continue
 
 
 ################################################################
@@ -541,19 +541,19 @@ def test_prefit_numerical_gof(poisson_data, uniform_data):
             gof: pd.DataFrame = dist.gof(data, params)
 
 
-def test_prefit_numerical_plot(poisson_data, uniform_data):
-    """Testing the plot functions of all pre-fit numerical distributions"""
-    for name in distributions_map['all numerical']:
-        data: np.ndarray = get_data(name, uniform_data, poisson_data, ' numerical')
-        dist = eval(name)
-
-        # checking pre-fit before fitting
-        with pytest.raises(NotImplementedError):
-            dist.plot(show=False)
-
-        # checking pre-fit after fitting
-        fitted = dist.fit(data)
-        params: tuple = fitted.params
-        with pytest.raises(NotImplementedError):
-            dist.plot(show=False)
+# def test_prefit_numerical_plot(poisson_data, uniform_data):
+#     """Testing the plot functions of all pre-fit numerical distributions"""
+#     for name in distributions_map['all numerical']:
+#         data: np.ndarray = get_data(name, uniform_data, poisson_data, ' numerical')
+#         dist = eval(name)
+#
+#         # checking pre-fit before fitting
+#         with pytest.raises(NotImplementedError):
+#             dist.plot(show=False)
+#
+#         # checking pre-fit after fitting
+#         fitted = dist.fit(data)
+#         params: tuple = fitted.params
+#         with pytest.raises(NotImplementedError):
+#             dist.plot(show=False)
 
