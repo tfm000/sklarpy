@@ -1,19 +1,16 @@
 # Contains classes for holding fitted univariate distributions
-import os
-from pathlib import Path
 from typing import Callable
 import logging
 import numpy as np
 import pandas as pd
-import dill
 import matplotlib.pyplot as plt
 
-from sklarpy._utils import num_or_array, SaveError, prob_bounds
+from sklarpy._utils import num_or_array, prob_bounds, Savable
 
 __all__ = ['FittedDiscreteUnivariate', 'FittedContinuousUnivariate']
 
 
-class FittedUnivariateBase:
+class FittedUnivariateBase(Savable):
     """Base class for holding a fitted probability distribution."""
 
     def __init__(self, obj, fit_info: dict):
@@ -60,7 +57,7 @@ class FittedUnivariateBase:
         Parameters
         ==========
         x: num_or_array
-            The value/values to calculate the cdf values, P(X<=x) of.
+            The value/values to calculate the cdf values, P(X<=x), of.
 
         Returns
         =======
@@ -358,65 +355,6 @@ class FittedUnivariateBase:
         plt.tight_layout()
         if show:
             plt.show()
-
-    def save(self, file_path: str = None, overwrite: bool = False, fix_extension: bool = True) -> str:
-        """Saves univariate distribution as a pickled file.
-
-        Parameters
-        ==========
-        file_path: Union[str, None]
-            The location and file name where you are saving your distribution. If None, the distribution is saved under
-            the distribution's name in the current working directory. If a file is given, it must include the full file
-            path. The .pickle extension is optional provided fix_extension is True.
-        overwrite: bool
-            True to overwrite existing files saved under the same name. False to save under a unique name.
-            Default is False.
-        fix_extension: bool
-            Whether to replace any existing extension with the '.pickle' file extension. Default is True.
-
-        Returns
-        =======
-        file_name: str
-            The path to the saved fitted distribution object
-
-        See Also
-        ---------
-        sklarpy.load
-        pickle
-        dill
-        """
-        # argument checks
-        if file_path is None:
-            dir_path: str = os.getcwd()
-            file_path = f'{dir_path}/{self.name}.pickle'
-        elif not isinstance(file_path, str):
-            raise TypeError("file argument must be a string.")
-
-        for bool_arg in (overwrite, fix_extension):
-            if not isinstance(bool_arg, bool):
-                raise TypeError("overwrite, fix_extension arguments must both be boolean.")
-
-        # Changing file extension to .pickle
-        file_name, extension = os.path.splitext(file_path)
-        if fix_extension:
-            extension = '.pickle'
-
-        if not overwrite:
-            # Saving under a unique file name
-            count: int = 0
-            unique_str: str = ''
-            while Path(f'{file_name}{unique_str}{extension}').exists():
-                count += 1
-                unique_str = f' ({count})'
-            file_name = f'{file_name}{unique_str}{extension}'
-
-        # saving object
-        try:
-            with open(file_name, 'wb') as f:
-                dill.dump(self, f)
-            return file_name
-        except Exception as e:
-            raise SaveError(e)
 
     @property
     def name(self) -> str:
