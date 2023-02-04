@@ -234,7 +234,7 @@ class UnivariateFitter:
                     filtered_dists[name] = dist
                     filtered_summaries[name] = self._fitted_summaries[name]
 
-            elif dist._DISCRETE_CONTINUOUS == 'discrete':
+            elif dist.continuous_or_discrete == 'discrete':
                 # Chi-squared gof tests for discrete distributions
                 chisq_pvalue: float = gof.loc['chi-square p-value'].values[0]
 
@@ -299,7 +299,7 @@ class UnivariateFitter:
             return summary
         return summary.sort_values(by=sortby)
 
-    def get_best(self, significant: bool = False, pvalue: float = 0.05, raise_error: bool = False):
+    def get_best(self, significant: bool = True, pvalue: float = 0.05, raise_error: bool = False):
         """Returns the fitted probability distribution which minimises the sum of squared error between the empirical
         and fitted pdfs.
 

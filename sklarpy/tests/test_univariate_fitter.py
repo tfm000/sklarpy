@@ -8,7 +8,7 @@ from sklarpy._utils import FitError, SignificanceError
 
 
 def test_init(poisson_data, uniform_data, normal_data):
-    """Testing UnivariateFitter initialises without errors"""
+    """Testing whether UnivariateFitter initialises without errors"""
     for data in (poisson_data, uniform_data, normal_data):
         fitter = UnivariateFitter(data)
 
