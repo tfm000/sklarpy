@@ -27,7 +27,7 @@ def poisson_data():
 
 
 @pytest.fixture(scope="session", autouse=True)
-def continuous_mixed_data():
+def continuous_multivariate_data():
     data: np.ndarray = np.full((num, 10), np.NaN)
     data[:, 0] = np.random.normal(0, 1, (num, ))
     data[:, 1] = np.random.normal(4, 2, (num, ))
@@ -41,10 +41,26 @@ def continuous_mixed_data():
 
 
 @pytest.fixture(scope="session", autouse=True)
-def discrete_mixed_data():
+def discrete_multivariate_data():
     data: np.ndarray = np.full((num, 5), np.NaN)
     data[:, :2] = np.random.poisson(4, (num, 2))
     data[:, 2] = np.random.randint(-5, 5, (num, ))
     data[:, 3] = data[:, :2].sum(axis=1)
     data[:, 4] = data[:, 0] + data[:, 3]
     return data
+
+
+@pytest.fixture(scope="session", autouse=True)
+def mixed_multivariate_data():
+    data: np.ndarray = np.full((num, 10), np.NaN)
+    data[:, :2] = np.random.poisson(4, (num, 2))
+    data[:, 2] = np.random.randint(-5, 5, (num,))
+    data[:, 3] = data[:, :2].sum(axis=1)
+    data[:, 4] = data[:, 0] + data[:, 3]
+    data[:, 5] = np.random.normal(4, 2, (num,))
+    data[:, 6] = np.random.gamma(2, 1, (num,))
+    data[:, 7:9] = np.random.standard_t(3, (num, 2))
+    data[:, 9] = np.random.uniform(0, 1, (num, ))
+    return data
+
+
