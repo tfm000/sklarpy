@@ -131,7 +131,7 @@ def cdf(x):
     # cdf_vals = np.where(np.all(x<=xmaxs, axis=1), cdf_vals, 1.0)
 
     # TDO: doesnt handle cases like [a, inf] etc...
-    
+
     # have it so that when one var is out of its range, its replaced by its min or max value. should fix the issue.
     # return cdf_vals
 
