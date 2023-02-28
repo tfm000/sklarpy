@@ -1,2 +1,2 @@
-from sklarpy._utils._serialize import load
+from sklarpy._other._serialize import load
 from sklarpy._utils._object_printing import print_full_arrays_and_dataframes
