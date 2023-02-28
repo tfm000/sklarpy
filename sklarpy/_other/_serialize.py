@@ -50,9 +50,20 @@ def load(file: str, fix_extension: bool = True):
 
 
 class Savable:
+    """Class used for saving."""
+    _OBJ_NAME: str
+
+    def __init__(self, name: str):
+        if name is None:
+            name = self._OBJ_NAME
+        elif not isinstance(name, str):
+            raise TypeError("name must be a string")
+        self._name: str = name
+
     @property
-    def name(self):
-        return 'NAME_REQUIRED'
+    def name(self) -> str:
+        """The name of your object"""
+        return self._name
 
     def save(self, file_path: str = None, overwrite: bool = False, fix_extension: bool = True) -> str:
         """Saves object as a pickled file.
