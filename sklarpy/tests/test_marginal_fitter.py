@@ -4,7 +4,7 @@ import numpy as np
 from pathlib import Path
 import os
 
-from sklarpy.copulae import MarginalFitter
+from sklarpy.copulas import MarginalFitter
 from sklarpy._utils import FitError, SaveError
 
 
@@ -41,8 +41,9 @@ def test_fit(continuous_multivariate_data, discrete_multivariate_data, mixed_mul
 def test_pdfs_cdfs_ppfs_logpdf(mixed_multivariate_data):
     """Testing the cdfs method for MarginalFitter"""
     for func in ('marginal_pdfs', 'marginal_cdfs', 'marginal_ppfs', 'marginal_logpdfs'):
+        # df = pd.DataFrame(mixed_multivariate_data, columns=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'])
+        # mfitter = MarginalFitter(df).fit()
         mfitter: MarginalFitter = MarginalFitter(mixed_multivariate_data)
-
         if func == 'marginal_ppfs':
             data = np.random.uniform(0, 1, mixed_multivariate_data.shape)
             alternative_data: np.ndarray = np.random.uniform(0, 1, (567, mixed_multivariate_data.shape[1]))
