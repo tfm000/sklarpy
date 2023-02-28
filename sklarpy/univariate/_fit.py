@@ -1,8 +1,10 @@
 # Contains fitting functions for univariate distributions.
 import math
 import numpy as np
-import scipy.interpolate
+from scipy.interpolate import interp1d
+from scipy.misc import derivative  # TODO: replace. this is being deprecated in 1.12. use FinDiff
 import scipy.stats
+from collections import deque
 from typing import Callable
 from functools import partial
 from pandas import isna
@@ -279,8 +281,7 @@ def kde_fit(data: np.ndarray) -> tuple:
 
     F_xmin, F_xmax = cdf(np.array([xmin, xmax]))
     empirical_range: np.ndarray = np.linspace(xmin, xmax, 100)
-    ppf_: Callable = scipy.interpolate.interp1d(cdf(empirical_range), empirical_range, interpolation_method,
-                                               bounds_error=False)
+    ppf_: Callable = interp1d(cdf(empirical_range), empirical_range, interpolation_method, bounds_error=False)
     ppf: Callable = partial(numerical_ppf, ppf_=ppf_, xmin=xmin, xmax=xmax, F_xmin=F_xmin, F_xmax=F_xmax)
     support: Callable = partial(numerical_support, xmin=xmin, xmax=xmax)
     rvs: Callable = partial(kde_rvs, kde=kde)
@@ -326,32 +327,81 @@ def discrete_empirical_fit(data: np.ndarray) -> tuple:
         raise DiscreteError("Discrete empirical distribution cannot be fit on continuous data.")
 
     # Fitting cdf, ppf and support functions
-    cdf_: Callable = scipy.interpolate.interp1d(empirical_range, empirical_cdf, interpolation_method,
-                                                bounds_error=False)
+    cdf_: Callable = interp1d(empirical_range, empirical_cdf, interpolation_method, bounds_error=False)
     cdf: Callable = partial(numerical_cdf, cdf_=cdf_, xmin=xmin, xmax=xmax)
     F_xmin, F_xmax = cdf(np.array([xmin, xmax]))
-    ppf_: Callable = scipy.interpolate.interp1d(empirical_cdf, empirical_range, interpolation_method, bounds_error=False)
+    ppf_: Callable = interp1d(empirical_cdf, empirical_range, interpolation_method, bounds_error=False)
     ppf: Callable = partial(numerical_ppf, ppf_=ppf_, xmin=xmin, xmax=xmax, F_xmin=F_xmin, F_xmax=F_xmax)
     support: Callable = partial(numerical_support, xmin=xmin, xmax=xmax)
 
     return pdf, cdf, ppf, support, None
 
 
-def calc_num_bins(num_unique_points: int) -> int:
-    """Function used to determine the number of bins to use when producing the empirical pdf values via a histogram.
-    Works on the idea that we should have more bins if we have more data.
-    """
-    if num_unique_points >= 10000:
-        num_bins: int = 100
-    elif num_unique_points > 2000:
-        # if spread evenly, roughly at least 100 unique data points in each bin
-        num_bins: int = math.floor(0.01 * (num_unique_points))
-    elif num_unique_points >= 100:
-        # if spread evenly, roughly at least 10 unique data points in each bin
-        num_bins: int = math.floor((180 / 19) + (num_unique_points / 190))
-    else:
-        num_bins: int = min(num_unique_points, 10)
-    return num_bins
+# def calc_num_bins(num_unique_points: int) -> int:
+#     """Function used to determine the number of bins to use when producing the empirical pdf values via a histogram.
+#     Works on the idea that we should have more bins if we have more data.
+#     """
+#     if num_unique_points >= 10000:
+#         num_bins: int = 100
+#     elif num_unique_points > 2000:
+#         # if spread evenly, roughly at least 100 unique data points in each bin
+#         num_bins: int = math.floor(0.01 * (num_unique_points))
+#     elif num_unique_points >= 100:
+#         # if spread evenly, roughly at least 10 unique data points in each bin
+#         num_bins: int = math.floor((180 / 19) + (num_unique_points / 190))
+#     else:
+#         num_bins: int = min(num_unique_points, 10)
+#     return num_bins
+#
+#
+# def continuous_empirical_fit(data: np.ndarray) -> tuple:
+#     """Fitting function for a univariate continuous empirical distribution.
+#
+#     Parameters
+#     ===========
+#     data : np.ndarray
+#         The data to fit to the continuous empirical distribution in a flattened numpy array.
+#
+#     Returns
+#     =======
+#     fitted_funcs: tuple
+#         fitted pdf, cdf, ppf, support, rvs functions
+#     """
+#     interpolate_method: str = 'linear'  # 'cubic' # cubic leads to overfitting
+#     N: int = len(data)
+#
+#     # determining the number of bins to use to calculate pdf values.
+#     num_unique_points: int = len(set(data))
+#     num_bins: int = calc_num_bins(num_unique_points)
+#
+#     xmin, xmax = data.min(), data.max()
+#     bin_width: float = (xmax - xmin) / num_bins
+#
+#     # Calculating empirical pdf and cdf values
+#     empirical_pdf, empirical_range = np.histogram(data, bins=num_bins)
+#     empirical_range = (empirical_range[1:] + empirical_range[:-1]) / 2
+#     empirical_range[0] = xmin
+#     empirical_range[-1] = xmax
+#     empirical_pdf = empirical_pdf / (N * bin_width)
+#     empirical_cdf: np.ndarray = np.cumsum(empirical_pdf)
+#     empirical_cdf = empirical_cdf / empirical_cdf[-1]
+#
+#     # Generating pdf, cdf and ppf functions via interpolation
+#     pdf_: Callable = scipy.interpolate.interp1d(empirical_range, empirical_pdf, interpolate_method, bounds_error=False)
+#     pdf: Callable = partial(numerical_pdf, pdf_=pdf_)
+#
+#     _, idx = np.unique(empirical_cdf, return_index=True)  # removing duplicates (we may have multiple 0's and 1's)
+#     empirical_range, empirical_cdf = empirical_range[idx], empirical_cdf[idx]
+#
+#     # fitting cdf, ppf and support functions
+#     cdf_: Callable = scipy.interpolate.interp1d(empirical_range, empirical_cdf, interpolate_method, bounds_error=False)
+#     cdf: Callable = partial(numerical_cdf, cdf_=cdf_, xmin=empirical_range[0], xmax=empirical_range[-1])
+#     F_xmin, F_xmax = cdf(np.array([xmin, xmax]))
+#     ppf_: Callable = scipy.interpolate.interp1d(empirical_cdf, empirical_range, interpolate_method, bounds_error=False)
+#     ppf: Callable = partial(numerical_ppf, ppf_=ppf_, xmin=xmin, xmax=xmax, F_xmin=F_xmin, F_xmax=F_xmax)
+#     support: Callable = partial(numerical_support, xmin=xmin, xmax=xmax)
+#
+#     return pdf, cdf, ppf, support, None
 
 
 def continuous_empirical_fit(data: np.ndarray) -> tuple:
@@ -368,37 +418,27 @@ def continuous_empirical_fit(data: np.ndarray) -> tuple:
         fitted pdf, cdf, ppf, support, rvs functions
     """
     interpolate_method: str = 'linear'  # 'cubic' # cubic leads to overfitting
-    N: int = len(data)
-
-    # determining the number of bins to use to calculate pdf values.
-    num_unique_points: int = len(set(data))
-    num_bins: int = calc_num_bins(num_unique_points)
-
+    num_data_points: int = data.size
     xmin, xmax = data.min(), data.max()
-    bin_width: float = (xmax - xmin) / num_bins
 
-    # Calculating empirical pdf and cdf values
-    empirical_pdf, empirical_range = np.histogram(data, bins=num_bins)
-    empirical_range = (empirical_range[1:] + empirical_range[:-1]) / 2
-    empirical_range[0] = xmin
-    empirical_range[-1] = xmax
-    empirical_pdf = empirical_pdf / (N * bin_width)
-    empirical_cdf: np.ndarray = np.cumsum(empirical_pdf)
-    empirical_cdf = empirical_cdf / empirical_cdf[-1]
+    # calculating empirical cdf
+    empirical_cdf_values = deque()
+    for x in data:
+        p: float = (data <= x).sum() / num_data_points
+        empirical_cdf_values.append(p)
+    empirical_cdf_values: np.ndarray = np.asarray(empirical_cdf_values)
+    cdf_: Callable = interp1d(data, empirical_cdf_values, interpolate_method, bounds_error=False)
+    cdf: Callable = partial(numerical_cdf, cdf_=cdf_, xmin=xmin, xmax=xmax)
 
-    # Generating pdf, cdf and ppf functions via interpolation
-    pdf_: Callable = scipy.interpolate.interp1d(empirical_range, empirical_pdf, interpolate_method, bounds_error=False)
+    # calculating empirical pdf
+    empirical_pdf_values: np.ndarray = np.vectorize(derivative)(cdf, data)
+    pdf_: Callable = interp1d(data, empirical_pdf_values, interpolate_method, bounds_error=False)
     pdf: Callable = partial(numerical_pdf, pdf_=pdf_)
 
-    _, idx = np.unique(empirical_cdf, return_index=True)  # removing duplicates (we may have multiple 0's and 1's)
-    empirical_range, empirical_cdf = empirical_range[idx], empirical_cdf[idx]
-
-    # fitting cdf, ppf and support functions
-    cdf_: Callable = scipy.interpolate.interp1d(empirical_range, empirical_cdf, interpolate_method, bounds_error=False)
-    cdf: Callable = partial(numerical_cdf, cdf_=cdf_, xmin=empirical_range[0], xmax=empirical_range[-1])
     F_xmin, F_xmax = cdf(np.array([xmin, xmax]))
-    ppf_: Callable = scipy.interpolate.interp1d(empirical_cdf, empirical_range, interpolate_method, bounds_error=False)
+    ppf_: Callable = interp1d(empirical_cdf_values, data, interpolate_method, bounds_error=False)
     ppf: Callable = partial(numerical_ppf, ppf_=ppf_, xmin=xmin, xmax=xmax, F_xmin=F_xmin, F_xmax=F_xmax)
     support: Callable = partial(numerical_support, xmin=xmin, xmax=xmax)
 
     return pdf, cdf, ppf, support, None
+
