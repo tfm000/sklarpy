@@ -104,44 +104,22 @@ def check_array_datatype(arr: np.ndarray, must_be_numeric: bool = True):
     return float
 
 
-def check_multivariate_data(data: data_iterable, num_variables: int = None) -> tuple:
-    """
-    Checks user inputted data for multivariate distribution fitting.
-
-    Parameters
-    ----------
-    data: data_iterable
-        The data to check.
-
-    Returns
-    -------
-    tuple: tuple
-        Data converted into a 2D numpy array, dictionary with columns as keys and data indexes as values
-    """
-    # getting column names if possible
-    columns_indices: dict = None
-    if isinstance(data, DataFrame):
-        columns_indices = {column: i for i, column in enumerate(data.columns)}
-    elif isinstance(data, Series):
-        columns_indices = {data.name: 0}
-
+def check_multivariate_data(data: data_iterable, num_variables: int = None) -> np.ndarray:
     # converting to numpy array
-    data: np.ndarray = np.asarray(data)
-    if columns_indices is None:
-        data_shape = data.shape
-        if len(data_shape) != 2:
-            raise ValueError("data must be 2-dimensional.")
-        columns_indices = {i: i for i in range(data_shape[1]) }
-    if len(columns_indices) < 2:
+    data_array: np.ndarray = np.asarray(data)
+
+    # checking dimensions
+    data_shape = data_array.shape
+    if len(data_shape) != 2:
         raise ValueError("data must be 2-dimensional.")
 
     # checking data contains only numbers
-    if not ((data.dtype == float) or (data.dtype == int)):
+    if not ((data_array.dtype == float) or (data_array.dtype == int)):
         raise ValueError("data must only contain integers or floats.")
 
     # checking number of variables
     if num_variables is not None:
-        if len(columns_indices) != num_variables:
+        if data_array.ndim != num_variables:
             raise ValueError("data dimensions do not match the number of variables.")
 
-    return data, columns_indices
+    return data_array
