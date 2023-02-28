@@ -5,13 +5,15 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from sklarpy._utils import num_or_array, prob_bounds, Savable
+from sklarpy._utils import num_or_array, prob_bounds
+from sklarpy._other import Savable
 
 __all__ = ['FittedDiscreteUnivariate', 'FittedContinuousUnivariate']
 
 
 class FittedUnivariateBase(Savable):
     """Base class for holding a fitted probability distribution."""
+    _OBJ_NAME = "FittedUnivariateBase"
 
     def __init__(self, obj, fit_info: dict):
         """
@@ -26,6 +28,8 @@ class FittedUnivariateBase(Savable):
         """
         self.__obj = obj
         self.__fit_info: dict = fit_info
+
+        Savable.__init__(self, self.__obj.name)
 
     def __str__(self) -> str:
         """The name of the distribution + parameters"""
@@ -355,12 +359,6 @@ class FittedUnivariateBase(Savable):
         plt.tight_layout()
         if show:
             plt.show()
-
-    @property
-    def name(self) -> str:
-        """The name of the distribution."""
-        return self.__obj.name
-
     @property
     def name_with_params(self) -> str:
         """The name of the distributions with parameters (rounded to 2 significant figures).
