@@ -49,8 +49,9 @@ class Copula(Savable, Copyable):
             if not marginals.fitted:
                 # fitting MarginalFitter object to data.
                 marginals.fit(**kwargs)
-            marginals_array: np.ndarray = marginals.marginal_cdfs(match_datatype=False)
-            type_keeper: TypeKeeper = TypeKeeper(marginals_array)
+            marginals = marginals.marginal_cdfs(match_datatype=True)
+            type_keeper: TypeKeeper = TypeKeeper(marginals)
+            marginals_array: np.ndarray = check_multivariate_data(marginals)
         else:
             marginals_array: np.ndarray = check_multivariate_data(marginals)
             type_keeper: TypeKeeper = TypeKeeper(marginals)
@@ -341,7 +342,7 @@ class Copula(Savable, Copyable):
             plt.show()
 
     def pdf_plot(self, color: str = 'royalblue', alpha: float = 1.0,
-                 figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (0, None),
+                 figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (None, None),
                  num_points: int = 100, show_progress: bool = True, show: bool = True):
         self._pdf_cdf_plot('pdf', color, alpha, figsize, grid, axes_names, zlim, num_points, show_progress, show)
 

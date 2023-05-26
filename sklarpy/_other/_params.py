@@ -4,9 +4,10 @@ __all__ = ['Params']
 
 
 class Params(Savable):
-    def __init__(self, params: dict, name: str):
+    def __init__(self, params: dict, name: str, num_variables: int = None):
         Savable.__init__(self, name)
         self._params: dict = params
+        self._num_variables: int = num_variables
 
     def __iter__(self) -> iter:
         for param_value in self.to_dict.values():
@@ -24,7 +25,7 @@ class Params(Savable):
         raise KeyError(f"{param_name} not valid")
 
     def __str__(self):
-        return self.name
+        return f"{self.name.title()}Params"
 
     def __repr__(self):
         return self.__str__()
@@ -40,3 +41,7 @@ class Params(Savable):
     @property
     def to_list(self) -> list:
         return list(self.to_dict.values())
+
+    @property
+    def num_variables(self) -> int:
+        return self._num_variables

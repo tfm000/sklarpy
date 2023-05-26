@@ -6,11 +6,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import copy
 
-from sklarpy.algorithms import inverse_transform, continuous_goodness_of_fit, discrete_goodness_of_fit
+from sklarpy.misc import inverse_transform, continuous_goodness_of_fit, discrete_goodness_of_fit
 from sklarpy._utils import num_or_array, univariate_num_to_array, check_params, check_univariate_data, FitError, \
     prob_bounds, check_array_datatype, data_iterable
 from sklarpy.univariate._fitted_dists import FittedContinuousUnivariate, FittedDiscreteUnivariate
-from sklarpy.univariate._fit import discrete_empirical_fit, continuous_empirical_fit, poisson_fit
+from sklarpy.univariate._distributions import discrete_empirical_fit, continuous_empirical_fit, poisson_fit
 
 __all__ = ['PreFitParametricContinuousUnivariate', 'PreFitParametricDiscreteUnivariate',
            'PreFitNumericalContinuousUnivariate', 'PreFitNumericalDiscreteUnivariate']

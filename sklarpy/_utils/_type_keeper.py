@@ -48,7 +48,13 @@ class TypeKeeper:
                 raise ValueError("array is not the same length as original index.")
         return df
 
-    def type_keep_from_1d_array(self, array: np.ndarray, **kwargs):
+    def type_keep_from_1d_array(self, array: np.ndarray, match_datatype: bool = True, **kwargs):
+        if not isinstance(match_datatype, bool):
+            raise TypeError("match_datatype must be a boolean.")
+
+        if not match_datatype:
+            return array
+
         if not isinstance(array, np.ndarray):
             raise TypeError("array must be a numpy array")
         elif array.ndim != 1:
@@ -78,7 +84,10 @@ class TypeKeeper:
         if (x_dims != self._original_info['ndims']) and (self._original_info['type'] != type(None)):
             raise ValueError("dimensions of x do not match original input.")
 
-    def type_keep_from_2d_array(self, array: np.ndarray, **kwargs):
+    def type_keep_from_2d_array(self, array: np.ndarray, match_datatype: bool = True, **kwargs):
+        if not match_datatype:
+            return array
+
         self.check_dimensions(array)
         if not isinstance(array, np.ndarray):
             raise TypeError("array must be a numpy array")

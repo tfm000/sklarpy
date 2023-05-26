@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from sklarpy.copulas._copula import Copula
-from sklarpy.algorithms import CorrelationMatrix
+from sklarpy.misc import CorrelationMatrix
 from sklarpy._utils import dataframe_or_array
 
 __all__ = ['Elliptical']

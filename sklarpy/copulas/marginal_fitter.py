@@ -154,7 +154,9 @@ class MarginalFitter(Savable):
 
         summary: pd.DataFrame = pd.concat(summaries, axis=1)
         if self._typekeeper.original_type == pd.DataFrame:
+            index: pd.Index = summary.index
             summary = self._typekeeper.type_keep_from_2d_array(np.asarray(summary))
+            summary.index = index
         self._summary = summary
         self._fitted = True
         return self

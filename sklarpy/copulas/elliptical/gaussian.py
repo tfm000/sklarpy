@@ -39,7 +39,7 @@ class GaussianCopula(Elliptical):
 
 
 if __name__ == '__main__':
-    from sklarpy.univariate import t, gamma
+    from sklarpy.univariate import student_t, gamma
     from sklarpy.copulas import MarginalFitter
     import matplotlib.pyplot as plt
     import pandas as pd
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     # plt.scatter(my_cop_sample[:, 0], my_cop_sample[:, 1], alpha=0.2)
     # plt.show()
     my_realistic_sample = my_cop_sample.copy()
-    my_realistic_sample[:, 0] = t.ppf(my_realistic_sample[:, 0], (6,))
+    my_realistic_sample[:, 0] = student_t.ppf(my_realistic_sample[:, 0], (6,))
     my_realistic_sample[:, 1] = gamma.ppf(my_realistic_sample[:, 1], (4,3))
     # plt.scatter(my_realistic_sample[:, 0], my_realistic_sample[:, 1])
     # plt.show()

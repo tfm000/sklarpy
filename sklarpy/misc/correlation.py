@@ -111,11 +111,30 @@ class CorrelationMatrix:
         return eval(f"self.{method}(**kwargs)")
 
     @staticmethod
+    def _is_2d(arr: np.ndarray) -> bool:
+        """checks if an array is 2 dimensional."""
+        shape: tuple = arr.shape
+        if len(shape) != 2:
+            return False
+        return True
+
+    @staticmethod
+    def _is_square(arr: np.ndarray) -> bool:
+        """checks if an array is square."""
+        if not CorrelationMatrix._is_2d(arr):
+            return False
+
+        shape: tuple = arr.shape
+        if shape[0] != shape[1]:
+            return False
+        return True
+
+    @staticmethod
     def check_correlation_matrix(corr: np.ndarray, raise_error: bool = True, **kwargs) -> bool:
         """Performs checks on a given numpy array to see if it is a valid correlation matrix.
 
         Parameters
-        ===========
+        ----------
         corr : np.ndarray
             the matrix to check
         raise_error : bool
@@ -123,25 +142,22 @@ class CorrelationMatrix:
             Default is True
 
         Returns
-        ========
+        -------
         passes_checks: bool
             True if the array is a valid correlation matrix, False otherwise.
         """
         passes_checks: bool = True
 
-        # checking correlation matrix is 2D
+        # checking numpy array passed
         if not isinstance(corr, np.ndarray):
             raise TypeError("corr must be a numpy array.")
-        corr_shape: tuple = corr.shape
-        if len(corr_shape) != 2:
-            raise ValueError("Correlation matrix is not 2D")
 
         # checking correlation matrix is square
-        if corr_shape[0] != corr_shape[1]:
+        if not CorrelationMatrix._is_square(corr):
             if raise_error:
-                raise ValueError("Correlation matrix is not square")
+                raise ValueError("Correlation matrix is not 2d and square")
             else:
-                warnings.warn("Correlation matrix is not square")
+                warnings.warn("Correlation matrix is not 2d and square")
             passes_checks = False
 
         # checking correlation matrix has all ones in diagonal
@@ -188,8 +204,52 @@ class CorrelationMatrix:
 
     @staticmethod
     def check_covariance_matrix(cov: np.ndarray, raise_error: bool = True, **kwargs):
-        # TDO
-        pass
+        """Performs checks on a given numpy array to see if it is a valid covariance matrix.
+
+        Parameters
+        ----------
+        cov : np.ndarray
+            the matrix to check
+        raise_error : bool
+            Whether to raise an error if corr is not a valid covariance matrix.
+            Default is True
+
+        Returns
+        -------
+        passes_checks: bool
+            True if the array is a valid covariance matrix, False otherwise.
+        """
+        passes_checks: bool = True
+
+        # checking numpy array passed
+        if not isinstance(cov, np.ndarray):
+            raise TypeError("cov must be a numpy array.")
+
+        # checking covariance matrix is square
+        if not CorrelationMatrix._is_square(cov):
+            if raise_error:
+                raise ValueError("Covariance matrix is not 2d and square")
+            else:
+                warnings.warn("Covariance matrix is not 2d and square")
+            passes_checks = False
+
+        # checking covariance matrix is p.d
+        if not np.all(np.linalg.eigvals(cov) > 0):
+            if raise_error:
+                raise ValueError("Covariance matrix is not positive definite")
+            else:
+                warnings.warn("Covariance matrix is not positive definite")
+            passes_checks = False
+
+        # checking covariance matrix is symmetric
+        if not np.allclose(cov, cov.T):
+            if raise_error:
+                raise ValueError("Covariance matrix is not symmetric")
+            else:
+                warnings.warn("Covariance matrix is not symmetric")
+            passes_checks = False
+
+        return passes_checks
 
 # def correlation_matrix(data: np.ndarray, corr: Union[np.ndarray, str], raise_error: bool = True) -> np.ndarray:
 #     if isinstance(corr, str):

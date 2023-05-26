@@ -3,8 +3,8 @@ import scipy.stats
 
 from sklarpy.univariate._prefitted_dists import PreFitParametricContinuousUnivariate, \
     PreFitParametricDiscreteUnivariate, PreFitNumericalContinuousUnivariate, PreFitNumericalDiscreteUnivariate
-from sklarpy.univariate._fit import dlaplace_fit, duniform_fit, geometric_fit, planck_fit, poisson_fit, kde_fit, \
-    discrete_empirical_fit, continuous_empirical_fit
+from sklarpy.univariate._distributions import discrete_empirical_fit, continuous_empirical_fit, _gig, _ig, kde_fit, \
+    dlaplace_fit, duniform_fit, geometric_fit, planck_fit, poisson_fit
 from sklarpy.univariate.distributions_map import distributions_map
 
 __all__ = [*distributions_map['all']]
@@ -50,6 +50,7 @@ geninvgauss = PreFitParametricContinuousUnivariate('geninvgauss', scipy.stats.ge
 genlogistic = PreFitParametricContinuousUnivariate('genlogistic', scipy.stats.genlogistic.pdf, scipy.stats.genlogistic.cdf, scipy.stats.genlogistic.ppf, scipy.stats.genlogistic.support, scipy.stats.genlogistic.fit, scipy.stats.genlogistic.rvs)
 gennorm = PreFitParametricContinuousUnivariate('gennorm', scipy.stats.gennorm.pdf, scipy.stats.gennorm.cdf, scipy.stats.gennorm.ppf, scipy.stats.gennorm.support, scipy.stats.gennorm.fit, scipy.stats.gennorm.rvs)
 genpareto = PreFitParametricContinuousUnivariate('genpareto', scipy.stats.genpareto.pdf, scipy.stats.genpareto.cdf, scipy.stats.genpareto.ppf, scipy.stats.genpareto.support, scipy.stats.genpareto.fit, scipy.stats.genpareto.rvs)
+gig = PreFitParametricContinuousUnivariate('gig', _gig.pdf, _gig.cdf, _gig.ppf, _gig.support, _gig.fit, _gig.rvs)
 gilbrat = PreFitParametricContinuousUnivariate('gilbrat', scipy.stats.gilbrat.pdf, scipy.stats.gilbrat.cdf, scipy.stats.gilbrat.ppf, scipy.stats.gilbrat.support, scipy.stats.gilbrat.fit, scipy.stats.gilbrat.rvs)
 gompertz = PreFitParametricContinuousUnivariate('gompertz', scipy.stats.gompertz.pdf, scipy.stats.gompertz.cdf, scipy.stats.gompertz.ppf, scipy.stats.gompertz.support, scipy.stats.gompertz.fit, scipy.stats.gompertz.rvs)
 gumbel_l = PreFitParametricContinuousUnivariate('gumbel_l', scipy.stats.gumbel_l.pdf, scipy.stats.gumbel_l.cdf, scipy.stats.gumbel_l.ppf, scipy.stats.gumbel_l.support, scipy.stats.gumbel_l.fit, scipy.stats.gumbel_l.rvs)
@@ -59,6 +60,7 @@ halfgennorm = PreFitParametricContinuousUnivariate('halfgennorm', scipy.stats.ha
 halflogistic = PreFitParametricContinuousUnivariate('halflogistic', scipy.stats.halflogistic.pdf, scipy.stats.halflogistic.cdf, scipy.stats.halflogistic.ppf, scipy.stats.halflogistic.support, scipy.stats.halflogistic.fit, scipy.stats.halflogistic.rvs)
 halfnorm = PreFitParametricContinuousUnivariate('halfnorm', scipy.stats.halfnorm.pdf, scipy.stats.halfnorm.cdf, scipy.stats.halfnorm.ppf, scipy.stats.halfnorm.support, scipy.stats.halfnorm.fit, scipy.stats.halfnorm.rvs)
 hypsecant = PreFitParametricContinuousUnivariate('hypsecant', scipy.stats.hypsecant.pdf, scipy.stats.hypsecant.cdf, scipy.stats.hypsecant.ppf, scipy.stats.hypsecant.support, scipy.stats.hypsecant.fit, scipy.stats.hypsecant.rvs)
+ig = PreFitParametricContinuousUnivariate("ig", _ig.pdf, _ig.cdf, _ig.ppf, _ig.support, _ig.fit, _ig.rvs)
 invgamma = PreFitParametricContinuousUnivariate('invgamma', scipy.stats.invgamma.pdf, scipy.stats.invgamma.cdf, scipy.stats.invgamma.ppf, scipy.stats.invgamma.support, scipy.stats.invgamma.fit, scipy.stats.invgamma.rvs)
 invgauss = PreFitParametricContinuousUnivariate('invgauss', scipy.stats.invgauss.pdf, scipy.stats.invgauss.cdf, scipy.stats.invgauss.ppf, scipy.stats.invgauss.support, scipy.stats.invgauss.fit, scipy.stats.invgauss.rvs)
 invweibull = PreFitParametricContinuousUnivariate('invweibull', scipy.stats.invweibull.pdf, scipy.stats.invweibull.cdf, scipy.stats.invweibull.ppf, scipy.stats.invweibull.support, scipy.stats.invweibull.fit, scipy.stats.invweibull.rvs)
@@ -103,7 +105,7 @@ semicircular = PreFitParametricContinuousUnivariate('semicircular', scipy.stats.
 skewcauchy = PreFitParametricContinuousUnivariate('skewcauchy', scipy.stats.skewcauchy.pdf, scipy.stats.skewcauchy.cdf, scipy.stats.skewcauchy.ppf, scipy.stats.skewcauchy.support, scipy.stats.skewcauchy.fit, scipy.stats.skewcauchy.rvs)
 skewnorm = PreFitParametricContinuousUnivariate('skewnorm', scipy.stats.skewnorm.pdf, scipy.stats.skewnorm.cdf, scipy.stats.skewnorm.ppf, scipy.stats.skewnorm.support, scipy.stats.skewnorm.fit, scipy.stats.skewnorm.rvs)
 # studentized_range = PreFitParametricContinuousUnivariate('studentized_range', scipy.stats.studentized_range.pdf, scipy.stats.studentized_range.cdf, scipy.stats.studentized_range.ppf, scipy.stats.studentized_range.support, scipy.stats.studentized_range.fit, scipy.stats.studentized_range.rvs)
-t = PreFitParametricContinuousUnivariate('t', scipy.stats.t.pdf, scipy.stats.t.cdf, scipy.stats.t.ppf, scipy.stats.t.support, scipy.stats.t.fit, scipy.stats.t.rvs)
+student_t = PreFitParametricContinuousUnivariate('student_t', scipy.stats.t.pdf, scipy.stats.t.cdf, scipy.stats.t.ppf, scipy.stats.t.support, scipy.stats.t.fit, scipy.stats.t.rvs)
 trapezoid = PreFitParametricContinuousUnivariate('trapezoid', scipy.stats.trapezoid.pdf, scipy.stats.trapezoid.cdf, scipy.stats.trapezoid.ppf, scipy.stats.trapezoid.support, scipy.stats.trapezoid.fit, scipy.stats.trapezoid.rvs)
 trapz = PreFitParametricContinuousUnivariate('trapz', scipy.stats.trapz.pdf, scipy.stats.trapz.cdf, scipy.stats.trapz.ppf, scipy.stats.trapz.support, scipy.stats.trapz.fit, scipy.stats.trapz.rvs)
 triang = PreFitParametricContinuousUnivariate('triang', scipy.stats.triang.pdf, scipy.stats.triang.cdf, scipy.stats.triang.ppf, scipy.stats.triang.support, scipy.stats.triang.fit, scipy.stats.triang.rvs)

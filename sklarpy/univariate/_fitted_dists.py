@@ -28,7 +28,6 @@ class FittedUnivariateBase(Savable):
         """
         self.__obj = obj
         self.__fit_info: dict = fit_info
-
         Savable.__init__(self, self.__obj.name)
 
     def __str__(self) -> str:
@@ -306,15 +305,16 @@ class FittedUnivariateBase(Savable):
                 xmin = max(self.__obj.X_DATA_TYPE(self.ppf(prob_bounds[0])), self.support[0])
                 xmax = min(self.__obj.X_DATA_TYPE(self.ppf(prob_bounds[1])), self.support[1])
             xrange = np.linspace(xmin, xmax, num_to_plot, dtype=self.__obj.X_DATA_TYPE)
-        elif isinstance(xrange, np.ndarray):
-            if xrange.size < 1:
-                raise ValueError("xrange cannot be empty.")
+        # elif isinstance(xrange, np.ndarray):
+        #     if xrange.size < 1:
+        #         raise ValueError("xrange cannot be empty.")
         else:
             if not (isinstance(xrange, np.ndarray) and (xrange.size >= 1)):
                 raise TypeError("invalid argument type in plot. check xrange is a np.ndarray and is non-empty.")
 
         # creating qrange
         qrange: np.ndarray = np.linspace(*prob_bounds, num_to_plot)
+        # qrange: np.ndarray = np.linspace(*(10**-2, 1-10**-2), num_to_plot)  # TODO
 
         # creating subplots
         num_subplots = 3 + include_empirical
