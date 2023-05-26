@@ -1,0 +1,2 @@
+from sklarpy.multivariate._distributions._normal import multivariate_normal
+from sklarpy.multivariate._distributions._student_t import multivariate_student_t
