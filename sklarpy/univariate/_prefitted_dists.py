@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import copy
+import scipy.interpolate
 
 from sklarpy.misc import inverse_transform, continuous_goodness_of_fit, discrete_goodness_of_fit
 from sklarpy._utils import num_or_array, univariate_num_to_array, check_params, check_univariate_data, FitError, \
@@ -120,7 +121,7 @@ class PreFitUnivariateBase:
         params: tuple = check_params(params)
         return self._cdf(x, *params)
 
-    def ppf(self, q: num_or_array, params: tuple) -> np.ndarray:
+    def ppf(self, q: num_or_array, params: tuple, **kwargs) -> np.ndarray:
         """The cumulative inverse function
 
         Parameters
@@ -155,18 +156,72 @@ class PreFitUnivariateBase:
         params: tuple = check_params(params)
         return self._support(*params)
 
-    def rvs(self, size: tuple, params: tuple) -> np.ndarray:
+    def _fit_ppf_approx(self, params: tuple, num_points: int, eps: float = 0.01) -> Callable:
+        if not isinstance(num_points, int) and num_points > 0:
+            raise TypeError("num_points must be a positive integer.")
+        if not isinstance(eps, float) and (eps >= 0.0) and (eps <= 1.0):
+            raise TypeError("eps must be a float between 0.0 and 1.0")
+
+        # fitting linear interpolator
+        q_: np.ndarray = np.linspace(eps, 1 - eps, num_points, dtype=float)
+        ppf_q_vals: np.ndarray = self.ppf(q_, params)
+        return scipy.interpolate.interp1d(q_, ppf_q_vals, 'linear', bounds_error=False)
+
+    def ppf_approx(self, q: num_or_array, params: tuple, num_points: int = 100, eps: float = 0.01, **kwargs) -> np.ndarray:
+        """The approximate cumulative inverse function.
+        We evaluate the ppf function on a (eps, 1-eps) linspace of quartiles. We then fit a linear interpolation
+        between these values. Then, using this linear interpolation function, for each point in q, we calculate
+        the approximate ppf. Note if a given qi lies outside (eps, 1-eps), we use the (non-approximate) ppf function,
+        allowing us to accurately capture tail behavior still. Also, if the number of points in q lying inside (eps, 1-eps)
+        if less than or equal to the num_points argument, we use ppf, as this will be faster.
+
+        Parameters
+        ----------
+        q: num_or_array
+            The quartile values to calculate cdf^-1(q) of.
+        params: tuple
+            The parameters specifying the distribution.
+        num_points: int
+            The number of points / quartiles in a (eps, 1-eps) linspace to evaluate the (non-approx) ppf function at.
+            Default value is 100.
+        eps: float
+            The epsilon value to use.
+
+        Returns
+        -------
+        rvs_values: np.ndarray
+            A random sample of dimension 'size'.
+        """
+        q: np.ndarray = univariate_num_to_array(q)
+
+        if ((q >= eps) & (q <= 1-eps)).sum() <= num_points:
+            # faster to use ppf directly
+            return self.ppf(q, params)
+
+        # fitting ppf approx function
+        ppf_approx: Callable = self._fit_ppf_approx(params, num_points, eps)
+
+        return np.array([ppf_approx(qi) if ((qi >= eps) and (qi <= 1-eps)) else float(self.ppf(qi, params)) for qi in q], dtype=float)
+
+    def rvs(self, size: tuple, params: tuple, ppf_approx: bool = False, **kwargs) -> np.ndarray:
         """Random sampler.
 
         Parameters
-        ==========
+        ----------
         size: tuple
             The dimensions/shape of the random variable array output.
         params: tuple
             The parameters specifying the distribution.
+        ppf_approx: bool
+            Whether to use ppf_approx and the inverse transformation method for random sampling.
+            This can be a lot faster for certain distributions (such as the GIG / Generalised Hyperbolic)
+            as sampling using the inverse transform method and the (non-approx) ppf, requires numerically
+            integrating for each rv generated, which can be slow when we are sampling a large number of variates.
+        kwargs:
+            Keyword arguments to pass to ppf_approx (if used).
 
         Returns
-        =======
+        -------
         rvs_values: np.ndarray
             A random sample of dimension 'size'.
         """
@@ -174,8 +229,11 @@ class PreFitUnivariateBase:
             raise TypeError("size must be a tuple.")
         elif len(size) < 1:
             raise ValueError("size must not be empty.")
+        if not isinstance(ppf_approx, bool):
+            raise TypeError("ppf_approx must be boolean.")
         params: tuple = check_params(params)
-        return self._rvs(*params, size=size)
+        ppf_approx_func: Callable = kwargs.pop('ppf_approx_func', self.ppf_approx)
+        return self._rvs(*params, size=size) if not ppf_approx else inverse_transform(*params, size=size, ppf=ppf_approx_func, **kwargs)
 
     def logpdf(self, x: num_or_array, params: tuple) -> np.ndarray:
         """The logarithm of the probability density/mass function.
