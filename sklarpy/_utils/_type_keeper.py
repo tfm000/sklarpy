@@ -24,7 +24,7 @@ class TypeKeeper:
             other: dict = {'cols': user_input.columns, 'index': user_input.index}
         elif user_input_type == np.ndarray:
             shape: tuple = user_input.shape
-            ndims: int = shape[1]
+            ndims: int = shape[-1]
             other: dict = {}
         elif user_input is None:
             ndims: int = 0
