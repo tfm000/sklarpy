@@ -104,13 +104,15 @@ def check_array_datatype(arr: np.ndarray, must_be_numeric: bool = True):
     return float
 
 
-def check_multivariate_data(data: data_iterable, num_variables: int = None) -> np.ndarray:
+def check_multivariate_data(data: data_iterable, num_variables: int = None, allow_1d: bool = False) -> np.ndarray:
     # converting to numpy array
     data_array: np.ndarray = np.asarray(data)
 
     # checking dimensions
     data_shape = data_array.shape
-    if len(data_shape) != 2:
+    if len(data_shape) == 1 and allow_1d:
+        data_array = data_array.reshape((1, data_shape[0]))
+    elif len(data_shape) != 2:
         raise ValueError("data must be 2-dimensional.")
 
     # checking data contains only numbers
