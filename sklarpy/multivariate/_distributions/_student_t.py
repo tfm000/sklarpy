@@ -4,124 +4,105 @@ import scipy.stats
 import scipy.integrate
 import scipy.optimize
 from collections import deque
-from typing import Tuple
+from typing import Tuple, Union
 
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
-from sklarpy._utils import get_iterator
-from sklarpy.misc import CorrelationMatrix
 from sklarpy.multivariate._distributions._params import MultivariateStudentTParams
 
 __all__ = ['multivariate_student_t']
 
 
 class multivariate_student_t_gen(PreFitContinuousMultivariate):
-    def _pdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
-        return scipy.stats.multivariate_t.pdf(x, loc=params[0].flatten(), shape=params[1], df=params[2])
+    _DATA_FIT_METHODS = (*PreFitContinuousMultivariate._DATA_FIT_METHODS, 'dof_low_dim_mle')
 
-    def __singlular_cdf(self, num_variables: int, xrow: np.ndarray, params: tuple) -> float:
-        def integrable_pdf(*xrow):
-            return scipy.stats.multivariate_t.pdf(xrow, loc=params[0].flatten(), shape=params[1], df=params[2])
+    def __cov_to_shape(self, A: np.ndarray, dof: float, reverse: bool = False) -> np.ndarray:
+        scale: float = (dof - 2) / dof
+        if reverse:
+            return A / scale if dof > 2 else A
+        return A * scale if dof > 2 else A
 
-        ranges = [[-np.inf, float(xrow[i])] for i in range(num_variables)]
-        res: tuple = scipy.integrate.nquad(integrable_pdf, ranges)
-        return res[0]
+    def _check_params(self, params: tuple, **kwargs) -> None:
+        # checking correct number of params passed
+        super()._check_params(params)
+
+        # checking valid location vector and shape matrix
+        loc, shape, dof = params
+        definiteness, ones = kwargs.get('definiteness', 'pd'), kwargs.get('ones', False)
+        self._check_loc_shape(loc, shape, definiteness, ones)
+
+        # checking valid dof parameter
+        dof_msg: str = 'dof parameter must be a positive scalar'
+        if not (isinstance(dof, float) or not isinstance(dof, int)):
+            raise TypeError(dof_msg)
+        elif dof <= 0:
+            raise ValueError(dof_msg)
+
+    def _logpdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
+        return np.array([scipy.stats.multivariate_t.logpdf(x, loc=params[0].flatten(), shape=params[1], df=params[2])], dtype=float).flatten()
 
     def _cdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
-        num_variables: int = x.shape[1]
-
-        show_progress: bool = kwargs.get('show_progress', True)
-        iterator = get_iterator(x, show_progress, "calculating cdf values")
-
-        cdf_values: deque = deque()
-        for xrow in iterator:
-            val: float = self.__singlular_cdf(num_variables, xrow, params)
-            cdf_values.append(val)
-        return np.asarray(cdf_values)
+        return np.array([scipy.stats.multivariate_t.cdf(x, loc=params[0].flatten(), shape=params[1], df=params[2])], dtype=float).flatten()
 
     def _rvs(self, size: int, params: tuple) -> np.ndarray:
         return scipy.stats.multivariate_t.rvs(size=size, loc=params[0].flatten(), shape=params[1], df=params[2])
 
-    def __cov_to_shape(self, cov: np.ndarray, dof: float) -> np.ndarray:
-        return cov * (dof - 2) / dof
+    def _get_bounds(self, data: np.ndarray, as_tuple: bool = True, **kwargs) -> Union[dict, tuple]:
+        bounds_dict: dict = super()._get_bounds(data, as_tuple, **kwargs)
+        bounds_tuples: deque = deque()
 
-    def _objective_func(self, dof: float, mu: np.ndarray, shape: np.ndarray, data: np.ndarray, shape_is_cov: bool):
-        if shape_is_cov:
-            shape: np.ndarray = self.__cov_to_shape(shape, dof)
-        return - self.loglikelihood(data, (mu, shape, dof))
+        d: int = data.shape[1]
+        data_bounds: np.ndarray = np.array([data.min(axis=0), data.max(axis=0)], dtype=float).T
+        default_bounds: dict = {'dof': (2.01, 100.0), 'loc': data_bounds}
 
-    def __fit_dof(self, mu: np.ndarray, shape: np.ndarray, shape_is_cov: bool, data: np.ndarray, **kwargs) -> Tuple[float, bool]:
-        dof_bounds: tuple = kwargs.pop('dof_bounds', (2.01, 100.0))
+        loc_bounds = bounds_dict.get('loc', default_bounds['loc'])
+        bounds_dict['loc'] = loc_bounds
+        for i in range(d):
+            bounds_tuples.append(tuple(loc_bounds[i, :]))
 
-        # checking dof bounds
-        if len(dof_bounds) != 2:
-            raise ValueError("dof_bounds must contain exactly 2 elements")
+        dof_bounds = bounds_dict.get('dof', default_bounds['dof'])
+        bounds_dict['dof'] = dof_bounds
+        bounds_tuples.append(dof_bounds)
+        return tuple(bounds_tuples) if as_tuple else bounds_dict
 
-        new_dof_bounds = deque()
-        eps = 10 ** -9
-        for val in dof_bounds:
-            if val < 0:
-                raise ValueError("dof bounds must all be strictly positive.")
-            if val == 0:
-                val = eps
-            new_dof_bounds.append(val)
-        new_dof_bounds = new_dof_bounds
-        lb, ub = min(new_dof_bounds), max(new_dof_bounds)
-        if lb == ub:
-            if lb > eps / 2:
-                lb -= eps / 2
-                ub += eps / 2
-            else:
-                ub += eps
+    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple) -> np.ndarray:
+        loc0: np.ndarray = data.mean(axis=0, dtype=float).flatten()
+        dof0: float = np.random.uniform(*bounds[-1])
+        theta0: np.ndarray = np.array([*loc0, dof0], dtype=float)
+        return theta0
 
-        # finding dof
-        res = scipy.optimize.differential_evolution(self._objective_func, [(lb, ub)], args=(mu, shape, data, shape_is_cov))
-        dof: float = float(res['x'])
-        success: bool = res['success']
-        return dof, success
+    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float, loc: np.ndarray = None) -> tuple:
+        d: int = S.shape[0]
 
-    def _fit_given_data(self, data: np.ndarray, **kwargs) -> Tuple[dict, bool]:
-        method: str = kwargs.pop('method', 'laloux_pp_kendall')
+        if loc is None:
+            loc: np.ndarray = theta[:d]
+        loc = loc.reshape((d, 1))
 
-        # finding covariance and mean arrays (shape != cov)
-        mu: np.ndarray = data.mean(axis=0, dtype=float)
-        cov: np.ndarray = CorrelationMatrix(data).cov(method=method, **kwargs)
+        dof: float = float(theta[-1])
 
-        # finding dof
-        dof, success = self.__fit_dof(mu=mu, shape=cov, shape_is_cov=True, data=data)
+        # calculating implied shape parameter
+        shape: np.ndarray = self.__cov_to_shape(S, dof)
+        return loc, shape, dof
 
-        # calculating shape parameter
-        shape: np.ndarray = self.__cov_to_shape(cov, dof)
-        return {'mu': mu, 'shape': shape, 'dof': dof}, success
+    def _low_dim_mle(self, data: np.ndarray, **kwargs) -> tuple:
+        return super()._low_dim_mle(data, 1, **kwargs)
 
-    def _fit_copula(self, data: np.ndarray, **kwargs) -> Tuple[dict, bool]:
-        method: str = kwargs.pop('method', 'laloux_pp_kendall')
+    def _dof_low_dim_mle(self, data: np.ndarray, **kwargs) -> tuple:
+        return super()._low_dim_mle(data, 1, **kwargs)
 
-        # finding covariance and mean arrays (shape != cov)
-        mu: np.ndarray = np.zeros((data.shape[1],), dtype=float)
-        corr: np.ndarray = CorrelationMatrix(data).corr(method=method, **kwargs)
+    def _get_low_dim_mle_objective_func_args(self, data: np.ndarray, cov_method: str, **kwargs) -> tuple:
+        S, S_det = super()._get_low_dim_mle_objective_func_args(data, cov_method, **kwargs)
+        loc: np.ndarray = data.mean(axis=0, dtype=float).flatten() if kwargs['method'] == 'dof_low_dim_mle' else None
+        return S, S_det, loc
 
-        # finding dof
-        dof, success = self.__fit_dof(mu=mu, shape=corr, shape_is_cov=False, data=data)
-
-        return {'mu': mu, 'shape': corr, 'dof': dof}, success
+    def _fit_given_data_kwargs(self, method: str, data: np.ndarray, **user_kwargs) -> dict:
+        kwargs: dict = super()._fit_given_data_kwargs('low_dim_mle', data, **user_kwargs)
+        kwargs['method'] = method
+        kwargs['tol'] = 0.01
+        return kwargs
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
-        # getting kwargs
-        raise_cov_error: bool = kwargs.get('raise_cov_error', True)
-        raise_corr_error: bool = kwargs.get('raise_corr_error', False)
-
-        # checking correct number of parameters
-        super()._fit_given_params_tuple(params)
-
-        # checking valid mean vector and shape matrix
-        mu, shape, dof = params
-        self._check_loc_shape(mu, shape, check_shape_valid_cov=raise_cov_error, check_shape_valid_corr=raise_corr_error)
-
-        # checking valid degrees of freedom parameter
-        if (not (isinstance(dof, float) or isinstance(dof, int))) or (dof <= 0):
-            raise TypeError("dof must be a positive float or integer.")
-
-        return {'mu': mu, 'shape': shape, 'dof': dof}, mu.size
+        self._check_params(params, **kwargs)
+        return {'loc': params[0], 'shape': params[1], 'dof': params[2]}, params[0].size
 
 
 multivariate_student_t: multivariate_student_t_gen = multivariate_student_t_gen(name="multivariate_student_t", params_obj=MultivariateStudentTParams, num_params=3, max_num_variables=np.inf)
@@ -137,8 +118,29 @@ if __name__ == "__main__":
     my_shape = my_cov * (my_dof - 2) / my_dof
 
     rvs = multivariate_student_t.rvs(1000, (my_mu, my_shape, my_dof))
-    my_mv_t = multivariate_student_t.fit(rvs)
-    my_mv_t.mc_cdf_plot()
 
-    # t2 = multivariate_student_t.fit(params=my_mv_t.params)
-    # print(t2.mc_cdf(np.array([[1, -3]])))
+    import pandas as pd
+    df = pd.DataFrame(rvs, columns=['sharks', 'lizards'])
+
+    my_mv_t = multivariate_student_t.fit(df)
+
+    # my_mv_t =multivariate_student_t.fit(rvs, method='dof-low-dim mle', show_progress=True)
+    # print('here')
+    # print( my_mv_t.pdf(rvs[0, :] ))
+    # print(my_mv_t.pdf(rvs[0, :]))
+    # print(my_mv_t.logpdf(df))
+    # print('bye')
+    # print(my_mv_t.params.to_dict)
+    #
+    my_mv_t.cdf_plot(show=False)
+    my_mv_t.mc_cdf_plot(show=False)
+    # my_mv_t.pdf_plot(show=False)
+    import matplotlib.pyplot as plt
+    plt.show()
+    # # print(my_mv_t.pdf(rvs))
+    # # print(my_mv_t.cdf(rvs[:5, :]))
+    #
+    # # t2 = multivariate_student_t.fit(params=my_mv_t.params)
+    # # print(t2.mc_cdf(np.array([[1, -3]])))
+    # breakpoint()
+
