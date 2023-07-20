@@ -4,8 +4,9 @@ import logging
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import scipy.interpolate
 
-from sklarpy._utils import num_or_array, prob_bounds
+from sklarpy._utils import num_or_array, prob_bounds, univariate_num_to_array
 from sklarpy._other import Savable
 
 __all__ = ['FittedDiscreteUnivariate', 'FittedContinuousUnivariate']
@@ -29,6 +30,8 @@ class FittedUnivariateBase(Savable):
         self.__obj = obj
         self.__fit_info: dict = fit_info
         Savable.__init__(self, self.__obj.name)
+        self._ppf_approx: Callable = None
+        self._ppf_approx_num_points: int = 100
 
     def __str__(self) -> str:
         """The name of the distribution + parameters"""
@@ -69,7 +72,7 @@ class FittedUnivariateBase(Savable):
         """
         return self.__obj.cdf(x, self.params)
 
-    def ppf(self, q: num_or_array) -> np.ndarray:
+    def ppf(self, q: num_or_array, **kwargs) -> np.ndarray:
         """The cumulative inverse function
 
         q: num_or_array
@@ -82,20 +85,66 @@ class FittedUnivariateBase(Savable):
         """
         return self.__obj.ppf(q, self.params)
 
-    def rvs(self, size: tuple) -> np.ndarray:
-        """Random sampler.
+    def ppf_approx(self, q: num_or_array, num_points: int = 100, eps: float = 0.01, **kwargs) -> np.ndarray:
+        """The approximate cumulative inverse function.
+        We evaluate the ppf function on a (eps, 1-eps) linspace of quartiles. We then fit a linear interpolation
+        between these values. Then, using this linear interpolation function, for each point in q, we calculate
+        the approximate ppf. Note if a given qi lies outside (eps, 1-eps), we use the (non-approximate) ppf function,
+        allowing us to accurately capture tail behavior still. Also, if the number of points in q lying inside (eps, 1-eps)
+        if less than or equal to the num_points argument, we use ppf, as this will be faster. The first time this method
+        is called, the linear interpolation is calculated and saved. If the user then calls this method again,
+        the same linear interpolation is reused, allowing for faster computation.
+        If the user changes the num points argument, the linear interpolation will be recalculated and saved again.
 
         Parameters
-        ==========
-        size: tuple
-            The dimensions/shape of the random variable array output.
+        ----------
+        q: num_or_array
+            The quartile values to calculate cdf^-1(q) of.
+        num_points: int
+            The number of points / quartiles in a (eps, 1-eps) linspace to evaluate the (non-approx) ppf function at.
+            Default value is 100.
+        eps: float
+            The epsilon value to use.
 
         Returns
-        =======
+        -------
         rvs_values: np.ndarray
             A random sample of dimension 'size'.
         """
-        return self.__obj.rvs(size, self.params)
+
+        q: np.ndarray = univariate_num_to_array(q)
+        # q_arr = q; breakpoint()
+        if ((q >= eps) & (q <= 1 - eps)).sum() <= num_points:
+            # faster to use ppf directly
+            return self.ppf(q)
+
+        if (self._ppf_approx is None) or (num_points != self._ppf_approx_num_points):
+            # fitting ppf approx function
+            self._ppf_approx: Callable = self.__obj._fit_ppf_approx(self.params, num_points, eps)
+
+        return np.array([self._ppf_approx(qi) if ((qi >= eps) and (qi <= 1 - eps)) else float(self.ppf(qi)) for qi in q], dtype=float)
+
+    def rvs(self, size: tuple, ppf_approx: bool = False, **kwargs) -> np.ndarray:
+        """Random sampler.
+
+        Parameters
+        ----------
+        size: tuple
+            The dimensions/shape of the random variable array output.
+        ppf_approx: bool
+            Whether to use ppf_approx and the inverse transformation method for random sampling.
+            This can be a lot faster for certain distributions (such as the GIG / Generalised Hyperbolic)
+            as sampling using the inverse transform method and the (non-approx) ppf, requires numerically
+            integrating for each rv generated, which can be slow when we are sampling a large number of variates.
+        kwargs:
+            Keyword arguments to pass to ppf_approx (if used).
+
+        Returns
+        -------
+        rvs_values: np.ndarray
+            A random sample of dimension 'size'.
+        """
+        return self.__obj.rvs(size, params=self.params, ppf_approx=ppf_approx, ppf_approx_func=self.ppf_approx)
 
     def logpdf(self, x: num_or_array) -> np.ndarray:
         """The logarithm of the probability density/mass function.
