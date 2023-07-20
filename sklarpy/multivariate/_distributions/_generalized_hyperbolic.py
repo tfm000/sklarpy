@@ -226,6 +226,9 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             adj_params.append(adj_param)
         return tuple(adj_params)
 
+    def _q2_opt(self, bounds: tuple, etas: np.ndarray, deltas: np.ndarray, zetas: np.ndarray, q2_options: dict):
+        return differential_evolution(self._neg_q2, bounds=bounds[:3], args=(etas, deltas, zetas), **q2_options)
+
     def _em_single_run(self, data: np.ndarray, copula: bool, miniter: int, maxiter: int, h: float, tol: float, q2_options: dict, randomness_var: float, convergence_window_length: int, show_progress: bool, bounds: tuple, n: int, d: int, params0: tuple, min_eig: float, shape_scale: float, x_bar: np.ndarray, run: int) -> Tuple[tuple, bool]:
         # getting optimization parameters from kwargs
 
@@ -266,7 +269,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             etas, deltas, zetas = self._etas_deltas_zetas(data, (lamb, chi, psi, loc, shape, gamma), h)
 
             # 6. maximise Q2
-            q2_res = differential_evolution(self._neg_q2, bounds=bounds[:3], args=(etas, deltas, zetas), **q2_options)
+            q2_res = self._q2_opt(bounds=bounds, etas=etas, deltas=deltas, zetas=zetas, q2_options=q2_options)
             lamb, chi, psi = q2_res['x']
             q2_success: bool = q2_res['success']
 
