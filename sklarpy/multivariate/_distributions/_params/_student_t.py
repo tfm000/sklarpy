@@ -11,7 +11,7 @@ class MultivariateStudentTParams(Params):
     @property
     def mean(self) -> np.ndarray:
         """The mean/location/mu parameter."""
-        return self.to_dict['mu']
+        return self.loc
 
     @property
     def mu(self) -> np.ndarray:
@@ -21,7 +21,7 @@ class MultivariateStudentTParams(Params):
     @property
     def loc(self) -> np.ndarray:
         """The mean/location/mu parameter."""
-        return self.mean
+        return self.to_dict['loc']
 
     @property
     def shape(self) -> np.ndarray:
