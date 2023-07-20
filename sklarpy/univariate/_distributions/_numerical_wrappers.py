@@ -24,7 +24,7 @@ class NumericalWrappers:
         """
         raw_pdf_values: np.ndarray = pdf_(x)
         pdf_values: np.ndarray = np.where(~pd.isna(raw_pdf_values), raw_pdf_values, 0.0)
-        return np.clip(pdf_values, 0.0, 1.0)
+        return np.clip(pdf_values, 0.0, np.inf)
 
     @staticmethod
     def numerical_cdf(x, cdf_: Callable, xmin, xmax) -> np.ndarray:
