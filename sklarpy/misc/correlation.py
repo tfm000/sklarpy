@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import warnings
 
+from typing import Tuple
+
 
 __all__ = ['CorrelationMatrix']
 
@@ -37,12 +39,21 @@ class CorrelationMatrix:
         self.check_correlation_matrix(corr, raise_error)
         return corr
 
+    @staticmethod
+    def _rm_pd(A: np.ndarray, delta: float) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Technique by Rousseeuw and Molenberghs to ensure a given matrix is positive definite."""
+        eigenvalues, eigenvectors = np.linalg.eig(A)
+        if np.all(eigenvalues > 0):
+            # no work to be done
+            return A, eigenvectors, eigenvalues
+        new_eigenvalues: np.ndarray = np.where(eigenvalues > 0, eigenvalues, delta)
+        new_A: np.ndarray = eigenvectors @ np.diag(new_eigenvalues) @ np.linalg.inv(eigenvectors)
+        return new_A, eigenvectors, new_eigenvalues
+
     def _rm_corr(self, delta: float, renormalise: bool, method: str) -> np.ndarray:
         """Technique by Rousseeuw and Molenberghs to ensure a given correlation matrix is positive definite."""
         corr: np.ndarray = eval(f"self.{method}(False)")
-        eigenvalues, eigenvectors = np.linalg.eig(corr)
-        new_eigenvalues: np.ndarray = np.where(eigenvalues > 0, eigenvalues, delta)
-        new_corr: np.ndarray = eigenvectors@np.diag(new_eigenvalues)@np.linalg.inv(eigenvectors)
+        new_corr, _, _ = self._rm_pd(corr, delta)
         if renormalise:
             # setting the diagonal values to be exactly 1.0
             diagonal_indices = range(new_corr.shape[0])
@@ -71,8 +82,9 @@ class CorrelationMatrix:
 
         # Performing the Rousseeuw and Molenberghs technique to get a positive definite correlation matrix
         corr: np.ndarray = eval(f"self.{method}(False)")
-        eigenvalues, eigenvectors = np.linalg.eig(corr)
-        rm_eigenvalues: np.ndarray = np.where(eigenvalues > 0, eigenvalues, delta)
+        _, eigenvectors, rm_eigenvalues = self._rm_pd(corr, delta)
+        # eigenvalues, eigenvectors = np.linalg.eig(corr)
+        # rm_eigenvalues: np.ndarray = np.where(eigenvalues > 0, eigenvalues, delta)
 
         # substituting any eigenvalues in the bulk by their mean.
         new_eigenvalues: np.ndarray = rm_eigenvalues.copy()
@@ -130,6 +142,56 @@ class CorrelationMatrix:
         return True
 
     @staticmethod
+    def _check_matrix(name: str, definiteness: str, ones: bool, A: np.ndarray, raise_error: bool) -> bool:
+        passes_checks: bool = True
+
+        # checking numpy array passed
+        if not isinstance(A, np.ndarray):
+            raise TypeError(f"{name} matrix must be a numpy array.")
+
+        # checking matrix is square
+        if not CorrelationMatrix._is_square(A):
+            square_msg: str = f"{name} matrix is not 2d and square"
+            if raise_error:
+                raise ValueError(square_msg)
+            else:
+                warnings.warn(square_msg)
+            passes_checks = False
+
+        # checking matrix is symmetric
+        if not np.allclose(A, A.T):
+            symmetric_msg: str = f"{name} matrix is not symmetric"
+            if raise_error:
+                raise ValueError(symmetric_msg)
+            else:
+                warnings.warn(symmetric_msg)
+            passes_checks = False
+
+        # checking matrix definiteness
+        if definiteness is not None:
+            psd: bool = definiteness == 'psd'
+            eigenvalues: np.ndarray = np.linalg.eigvals(A)
+            if (psd and not np.all(eigenvalues >= 0)) or (not np.all(eigenvalues > 0)):
+                definiteness_msg: str = "semi-" if psd else ""
+                definiteness_msg = f"{name} matrix is not positive {definiteness_msg}definite"
+                if raise_error:
+                    raise ValueError(definiteness_msg)
+                else:
+                    warnings.warn(definiteness_msg)
+                passes_checks = False
+
+        # checking matrix has all ones in diagonal
+        if ones and not np.all(A.diagonal() == 1.0):
+            ones_msg: str = f"{name} matrix does not have all ones in diagonal"
+            if raise_error:
+                raise ValueError(ones_msg)
+            else:
+                warnings.warn(ones_msg)
+            passes_checks = False
+
+        return passes_checks
+
+    @staticmethod
     def check_correlation_matrix(corr: np.ndarray, raise_error: bool = True, **kwargs) -> bool:
         """Performs checks on a given numpy array to see if it is a valid correlation matrix.
 
@@ -146,45 +208,7 @@ class CorrelationMatrix:
         passes_checks: bool
             True if the array is a valid correlation matrix, False otherwise.
         """
-        passes_checks: bool = True
-
-        # checking numpy array passed
-        if not isinstance(corr, np.ndarray):
-            raise TypeError("corr must be a numpy array.")
-
-        # checking correlation matrix is square
-        if not CorrelationMatrix._is_square(corr):
-            if raise_error:
-                raise ValueError("Correlation matrix is not 2d and square")
-            else:
-                warnings.warn("Correlation matrix is not 2d and square")
-            passes_checks = False
-
-        # checking correlation matrix has all ones in diagonal
-        if not np.all(corr.diagonal() == 1.0):
-            if raise_error:
-                raise ValueError("Correlation matrix does not have all ones in diagonal")
-            else:
-                warnings.warn("Correlation matrix does not have all ones in diagonal")
-            passes_checks = False
-
-        # checking correlation matrix is psd
-        if not np.all(np.linalg.eigvals(corr) >= 0):
-            if raise_error:
-                raise ValueError("Correlation matrix is not positive semi-definite")
-            else:
-                warnings.warn("Correlation matrix is not positive semi-definite")
-            passes_checks = False
-
-        # checking correlation matrix is symmetric
-        if not np.allclose(corr, corr.T):
-            if raise_error:
-                raise ValueError("Correlation matrix is not symmetric")
-            else:
-                warnings.warn("Correlation matrix is not symmetric")
-            passes_checks = False
-
-        return passes_checks
+        return CorrelationMatrix._check_matrix('Correlation', 'psd', True, corr, raise_error)
 
     @staticmethod
     def cov_from_corr(corr: np.ndarray, std: np.ndarray, raise_error: bool = True, **kwargs) -> np.ndarray:
@@ -219,37 +243,8 @@ class CorrelationMatrix:
         passes_checks: bool
             True if the array is a valid covariance matrix, False otherwise.
         """
-        passes_checks: bool = True
+        return CorrelationMatrix._check_matrix('Covariance', 'pd', False, cov, raise_error)
 
-        # checking numpy array passed
-        if not isinstance(cov, np.ndarray):
-            raise TypeError("cov must be a numpy array.")
-
-        # checking covariance matrix is square
-        if not CorrelationMatrix._is_square(cov):
-            if raise_error:
-                raise ValueError("Covariance matrix is not 2d and square")
-            else:
-                warnings.warn("Covariance matrix is not 2d and square")
-            passes_checks = False
-
-        # checking covariance matrix is p.d
-        if not np.all(np.linalg.eigvals(cov) > 0):
-            if raise_error:
-                raise ValueError("Covariance matrix is not positive definite")
-            else:
-                warnings.warn("Covariance matrix is not positive definite")
-            passes_checks = False
-
-        # checking covariance matrix is symmetric
-        if not np.allclose(cov, cov.T):
-            if raise_error:
-                raise ValueError("Covariance matrix is not symmetric")
-            else:
-                warnings.warn("Covariance matrix is not symmetric")
-            passes_checks = False
-
-        return passes_checks
 
 # def correlation_matrix(data: np.ndarray, corr: Union[np.ndarray, str], raise_error: bool = True) -> np.ndarray:
 #     if isinstance(corr, str):
