@@ -10,7 +10,7 @@ from sklarpy.univariate._distributions._numerical_wrappers import NumericalWrapp
 __all__ = ['kde_fit']
 
 
-def kde_cdf(kde, x):
+def kde_cdf(x, kde):
     """calculates the cdf of a fitted gaussian kde"""
     return np.array([kde.integrate_box_1d(-np.inf, v) for v in x])
 
@@ -52,10 +52,11 @@ def kde_fit(data: np.ndarray) -> tuple:
     xmin, xmax = data.min(), data.max()
 
     kde = scipy.stats.gaussian_kde(data)
+    cdf_: Callable = partial(kde_cdf, kde=kde)
 
     # fitting our distribution functions
     pdf: Callable = partial(NumericalWrappers.numerical_pdf, pdf_=kde.pdf)
-    cdf: Callable = partial(NumericalWrappers.numerical_cdf, cdf_=kde_cdf, xmin=xmin, xmax=xmax)
+    cdf: Callable = partial(NumericalWrappers.numerical_cdf, cdf_=cdf_, xmin=xmin, xmax=xmax)
 
     F_xmin, F_xmax = cdf(np.array([xmin, xmax]))
     empirical_range: np.ndarray = np.linspace(xmin, xmax, 100)
