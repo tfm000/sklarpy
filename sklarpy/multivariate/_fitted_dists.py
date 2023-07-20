@@ -34,7 +34,7 @@ class FittedContinuousMultivariate(Savable, Copyable):
         return self.__obj.cdf(x, self.params, match_datatype, **kwargs)
 
     def mc_cdf(self, x: dataframe_or_array, match_datatype: bool = True, num_generate: int = 10 ** 4, show_progress: bool = True, **kwargs) -> dataframe_or_array:
-        return self.__obj.mc_cdf(x, self.params, match_datatype, num_generate, show_progress)
+        return self.__obj.mc_cdf(x, params=self.params, match_datatype=match_datatype, num_generate=num_generate, show_progress=show_progress)
 
     def rvs(self, size: tuple, match_datatype: bool = True) -> dataframe_or_array:
         rvs_array: np.ndarray = self.__obj.rvs(size, self.params)
