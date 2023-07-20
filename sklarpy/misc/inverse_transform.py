@@ -5,7 +5,7 @@ from typing import Callable
 __all__ = ['inverse_transform']
 
 
-def inverse_transform(*params: tuple, size, ppf: Callable):
+def inverse_transform(*params: tuple, size, ppf: Callable, **kwargs):
     """
     Generates a random number from a probability distribution.
 
@@ -19,7 +19,8 @@ def inverse_transform(*params: tuple, size, ppf: Callable):
         The inverse function of the discrete distribution. Must take a numpy array containing quantile values and the
         distribution's parameters in a tuple as arguments.
     """
+    shape: tuple = (size, ) if isinstance(size, int) else size
     u: ndarray = random.uniform(size=size)
-    if params is None:
-        return ppf(u)
-    return ppf(u, params)
+    vals = ppf(q=u, **kwargs) if params is None else ppf(q=u, params=params, **kwargs)
+    return vals.reshape(shape)
+
