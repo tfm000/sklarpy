@@ -1,9 +1,11 @@
-from typing import Union, Callable, Tuple
+from typing import Union, Callable, Tuple, Iterable
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from abc import abstractmethod
 from collections import deque
+import scipy.integrate
+from scipy.optimize import differential_evolution
 
 from sklarpy._other import Params
 from sklarpy._utils import dataframe_or_array, TypeKeeper, check_multivariate_data, get_iterator, FitError
@@ -15,6 +17,8 @@ __all__ = ['PreFitContinuousMultivariate']
 
 
 class PreFitContinuousMultivariate:
+    _DATA_FIT_METHODS: tuple = ('low_dim_mle', )
+
     def __init__(self, name: str, params_obj: Params, num_params: int, max_num_variables: int):
         self._name: str = name
         self._params_obj: Params = params_obj
@@ -31,7 +35,7 @@ class PreFitContinuousMultivariate:
         raise NotImplementedError(f"{func_name} not implemented for {self.name}")
 
     def _get_x_array(self, x: dataframe_or_array) -> np.ndarray:
-        x_array: np.ndarray = check_multivariate_data(x)
+        x_array: np.ndarray = check_multivariate_data(x, allow_1d=True)
 
         if not np.isnan(x_array).sum() == 0:
             raise ValueError("x cannot contain nan values.")
@@ -41,44 +45,89 @@ class PreFitContinuousMultivariate:
 
         return x_array
 
-    def _get_params(self, params: Union[Params, tuple]) -> tuple:
+    def _check_loc_shape(self, loc, shape, definiteness: str, ones: bool) -> None:
+        loc_error: bool = False
+        if not isinstance(loc, np.ndarray):
+            loc_error = True
+        num_variables: int = loc.size
+        if num_variables <= 0:
+            loc_error = True
+        if loc_error:
+            raise TypeError("loc vector must be a numpy array with non-zero size.")
+
+        if not isinstance(shape, np.ndarray):
+            raise TypeError("shape matrix must be a numpy array.")
+        elif (shape.shape[0] != num_variables) or (shape.shape[1] != num_variables):
+            raise ValueError("shape matrix of incorrect dimension.")
+
+        CorrelationMatrix._check_matrix('Shape', definiteness, ones, shape, True)
+
+    @abstractmethod
+    def _check_params(self, params: tuple, **kwargs) -> None:
+        """raises an error is params are incorrect"""
+        if len(params) != self.num_params:
+            raise ValueError("Incorrect number of params given by user")
+
+    def _get_params(self, params: Union[Params, tuple], **kwargs) -> tuple:
         if isinstance(params, self._params_obj):
             params = params.to_tuple
         elif not isinstance(params, tuple):
             raise TypeError("params must be a valid params object or a tuple.")
 
-        if len(params) != self.num_params:
-            raise ValueError(f"number of params does not match that required by the model. {len(params)} != {self.num_params}")
-
+        self._check_params(params, **kwargs)
         return params
 
-    def _pdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
-        # to be overridden by child class(es)
-        self.__not_implemented('pdf')
+    def __singlular_cdf(self, num_variables: int, xrow: np.ndarray, params: tuple) -> float:
+        def integrable_pdf(*xrow) -> float:
+            xrow = np.asarray(xrow, dtype=float)
+            return float(self.pdf(xrow, params, match_datatype=False))
+
+        ranges = [[-np.inf, float(xrow[i])] for i in range(num_variables)]
+        res: tuple = scipy.integrate.nquad(integrable_pdf, ranges)
+        return res[0]
 
     def _cdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
+        num_variables: int = x.shape[1]
+
+        show_progress: bool = kwargs.get('show_progress', True)
+        iterator = get_iterator(x, show_progress, "calculating cdf values")
+
+        return np.array([self.__singlular_cdf(num_variables, xrow, params) for xrow in iterator], dtype=float)
+
+    def _logpdf(self, x: np.ndarray, params: tuple,  **kwargs) -> np.ndarray:
         # to be overridden by child class(es)
-        self.__not_implemented('cdf')
+        self.__not_implemented('log-pdf')
 
     def _rvs(self, size: int, params: tuple) -> np.ndarray:
         # to be overridden by child class(es)
         self.__not_implemented('rvs')
 
-    def _pdf_cdf(self, func_name: str, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
+    def _logpdf_cdf(self, func_name: str, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
+        if func_name not in ('logpdf', 'cdf'):
+            raise ValueError("func_name invalid")
+
         x_array: np.ndarray = self._get_x_array(x)
-        params_tuple: tuple = self._get_params(params)
+        params_tuple: tuple = self._get_params(params, **kwargs)
 
         values: np.ndarray = eval(f"self._{func_name}(x_array, params_tuple, **kwargs)")
+        return TypeKeeper(x).type_keep_from_1d_array(values, match_datatype=match_datatype, col_name=[func_name])
 
-        return TypeKeeper(x).type_keep_from_1d_array(values, match_datatype, col_name=[func_name])
+    def logpdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
+        return self._logpdf_cdf("logpdf", x, params, match_datatype, **kwargs)
 
     def pdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
-        return self._pdf_cdf("pdf", x, params, match_datatype, **kwargs)
+        try:
+            logpdf_values: np.ndarray = self.logpdf(x, params, False)
+        except NotImplementedError:
+            # raising a function specific exception
+            self.__not_implemented('pdf')
+        pdf_values: np.ndarray = np.exp(logpdf_values)
+        return TypeKeeper(x).type_keep_from_1d_array(pdf_values, match_datatype, col_name=['pdf'])
 
     def cdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
-        return self._pdf_cdf("cdf", x, params, match_datatype, **kwargs)
+        return self._logpdf_cdf("cdf", x, params, match_datatype, **kwargs)
 
-    def mc_cdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool, rvs: np.ndarray = None, num_generate: int = 10 ** 4, show_progress: bool = True) -> dataframe_or_array:
+    def mc_cdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool, num_generate: int = 10 ** 4, show_progress: bool = True, **kwargs) -> dataframe_or_array:
         # converting x to a numpy array
         x_array: np.ndarray = self._get_x_array(x)
 
@@ -90,6 +139,7 @@ class PreFitContinuousMultivariate:
         iterator = get_iterator(x_array, show_progress, "calculating monte-carlo cdf values")
 
         # generating rvs
+        rvs = kwargs.get("rvs", None)
         if rvs is None:
             rvs_array: np.ndarray = self.rvs(num_generate, params)
         else:
@@ -117,18 +167,6 @@ class PreFitContinuousMultivariate:
         # returning rvs
         return self._rvs(size, params_tuple)
 
-    def _logpdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
-        try:
-            pdf_values: np.ndarray = self.pdf(x, params, False)
-        except NotImplementedError:
-            # raising a function specific exception
-            self.__not_implemented('log-pdf')
-
-        return np.log(pdf_values)
-
-    def logpdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
-        return self._pdf_cdf("logpdf", x, params, match_datatype, **kwargs)
-
     def likelihood(self, x: dataframe_or_array, params: Union[Params, tuple]) -> float:
         try:
             pdf_values: np.ndarray = self.pdf(x, params, False)
@@ -140,9 +178,9 @@ class PreFitContinuousMultivariate:
             return np.inf
         return float(np.product(pdf_values))
 
-    def loglikelihood(self, x: dataframe_or_array, params: Union[Params, tuple]) -> float:
+    def loglikelihood(self, x: dataframe_or_array, params: Union[Params, tuple], **kwargs) -> float:
         try:
-            logpdf_values: np.ndarray = self.logpdf(x, params, False)
+            logpdf_values: np.ndarray = self.logpdf(x, params, False, **kwargs)
         except NotImplementedError:
             # raising a function specific exception
             self.__not_implemented('log-likelihood')
@@ -234,8 +272,8 @@ class PreFitContinuousMultivariate:
 
         if axes_names is None:
             pass
-        elif not (isinstance(axes_names, tuple) and len(axes_names) == 2):
-            raise TypeError(f"invalid argument type in {func_str}_plot. check axes_names is None or a tuple with "
+        elif not (isinstance(axes_names, Iterable) and len(axes_names) == 2):
+            raise TypeError(f"invalid argument type in {func_str}_plot. check axes_names is None or a Iterable with "
                             "an element for each variable.")
 
         if (mc_num_generate is None) and ('mc' in func_str):
@@ -299,47 +337,122 @@ class PreFitContinuousMultivariate:
     def num_params(self) -> int:
         return self._num_params
 
-    @abstractmethod
-    def _fit_given_data(self, data: np.ndarray, **kwargs) -> Tuple[dict, bool]:
+    @staticmethod
+    def _shape_from_array(arr: np.ndarray, d: int) -> np.ndarray:
+        # converts an array into shape matrix form.
+        # first d values in the array are the diagonal, then the rest are the row values.
+        # assumes shape matrix is symmetric
+        shape: np.ndarray = np.full((d, d), np.nan, dtype=float)
+        np.fill_diagonal(shape, arr[:d])
+        shape_non_diag: np.ndarray = arr[d:]
+        endpoint: int = 0
+        for i in range(d - 1):
+            startpoint = endpoint
+            endpoint = int(0.5 * (i + 1) * (2 * d - i - 2))
+            shape[i, i + 1:] = shape_non_diag[startpoint:endpoint]
+            shape[i + 1:, i] = shape_non_diag[startpoint:endpoint]
+        return shape
+
+    def _mle(self):
+        #TODO: once you have examples from 2 multivar dists
         pass
 
     @abstractmethod
-    def _fit_copula(self, data: np.ndarray, **kwargs) -> Tuple[dict, bool]:
+    def _get_bounds(self, data: np.ndarray, as_tuple: bool = True, **kwargs) -> Union[dict, tuple]:
+        bounds_dict: dict = kwargs.get('bounds', {})
+        param_err_msg: float = "bounds must be a tuple of length 2 for scalar params or a matrix of shape (d, 2) for vector params."
+        d: int = data.shape[1]
+        for param, param_bounds in bounds_dict:
+            is_error = (not (isinstance(param_bounds, tuple) or isinstance(param_bounds, np.ndarray))) or \
+                       (isinstance(param_bounds, tuple) and len(param_bounds) != 2) or \
+                       (isinstance(param_bounds, np.ndarray) and param_bounds.shape != (d, 2))
+            if is_error:
+                raise ValueError(param_err_msg)
+        return bounds_dict
+
+
+    # def _get_low_dim_mle_constraints(self, S: np.ndarray, shape_pos: int) -> tuple:
+    #     def _shape_pd(theta: np.ndarray, S: np.ndarray, shape_pos: int) -> float:
+    #         params: tuple = self._low_dim_theta_to_params(theta, S)
+    #         shape: np.ndarray = params[shape_pos]
+    #         shape_eigenvalues: np.ndarray = np.linalg.eig(shape)[0]
+    #         return shape_eigenvalues.min()
+    #
+    #     shape_pd: Callable = partial(_shape_pd, S=S, shape_pos=shape_pos)
+    #     shape_pd_constraint: NonlinearConstraint = NonlinearConstraint(shape_pd, 10**-9, np.inf)
+    #
+    #     return shape_pd_constraint,
+    @abstractmethod
+    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float) -> tuple:
         pass
 
-    def _check_loc_shape(self, loc, shape, check_shape_valid_cov: bool = False, check_shape_valid_corr: bool = False) -> None:
-        loc_error: bool = False
-        if not isinstance(loc, np.ndarray):
-            loc_error = True
-        num_variables: int = loc.size
-        if num_variables <= 0:
-            loc_error = True
-        if loc_error:
-            raise TypeError("loc vector must be a numpy array with non-zero size.")
+    def _low_dim_mle_objective_func(self, theta: np.ndarray, data, *args) -> float:
+        params: tuple = self._low_dim_theta_to_params(theta, *args)
+        return - self.loglikelihood(data, params, definiteness=None)
 
-        if not isinstance(shape, np.ndarray):
-            raise TypeError("shape matrix must be a numpy array.")
-        elif (shape.shape[0] != num_variables) or (shape.shape[1] != num_variables):
-            raise ValueError("shape matrix of incorrect dimension.")
+    @abstractmethod
+    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple) -> np.ndarray:
+        pass
 
-        if check_shape_valid_cov:
-            try:
-                CorrelationMatrix.check_covariance_matrix(shape)
-            except Exception as e:
-                raise ValueError("invalid shape matrix. Must be 2d, square, positive definite and symmetric")
+    def _get_low_dim_mle_objective_func_args(self, data: np.ndarray, cov_method: str, **kwargs) -> tuple:
+        S: np.ndarray = CorrelationMatrix(data).cov(method=cov_method)
+        S_det: float = np.linalg.det(S)
+        return S, S_det
 
-        if check_shape_valid_corr:
-            try:
-                CorrelationMatrix.check_correlation_matrix(shape)
-            except Exception as e:
-                raise ValueError("invalid shape matrix. Must be 2d, square, positive-semi definite, symmetric with diagonal all ones.")
+    @abstractmethod
+    def _low_dim_mle(self, data: np.ndarray, shape_pos: int, theta0: np.ndarray, bounds: tuple, maxiter: int, tol: float, cov_method: str, show_progress: bool, **kwargs) -> Tuple[tuple, bool]:
+        # getting args to pass to optimizer
+        args: tuple = self._get_low_dim_mle_objective_func_args(data, cov_method, **kwargs)
+
+        # running optimization
+        mle_res = differential_evolution(self._low_dim_mle_objective_func, bounds, args=(data, *args), maxiter=maxiter, tol=tol, x0=theta0, disp=show_progress)
+        theta: np.ndarray = mle_res['x']
+        params: tuple = self._low_dim_theta_to_params(theta, *args)
+        converged: bool = mle_res['success']
+
+        if show_progress:
+            print(f"Low-Dim MLE Optimisation Complete. Converged= {converged}, f(x)= {mle_res['fun']}")
+        return params, converged
+
+    @abstractmethod
+    def _fit_given_data_kwargs(self, method: str, data: np.ndarray, **user_kwargs) -> dict:
+        if method == 'low_dim_mle':
+            bounds: tuple = self._get_bounds(data, True, **user_kwargs)
+            default_theta0: np.ndarray = self._get_low_dim_theta0(data, bounds)
+            kwargs: dict = {'theta0': default_theta0, 'bounds': bounds, 'maxiter': 1000, 'tol': 0.5, 'cov_method': 'pp_kendall', 'show_progress': False}
+        else:
+            raise ValueError(f'{method} is not a valid method.')
+        return kwargs
+
+    def _fit_given_data(self, data: np.ndarray, method: str, **kwargs) -> Tuple[tuple, bool]:
+        # getting fit method
+        cleaned_method: str = method.lower().strip().replace('-', '_').replace(' ', '_')
+        if cleaned_method not in self._DATA_FIT_METHODS:
+            raise ValueError(f'{method} is not a valid data fitting method for {self.name}')
+
+        # getting fit method
+        data_fit_func: Callable = eval(f"self._{cleaned_method}")
+
+        # getting additional fit args
+        default_kwargs: dict = self._fit_given_data_kwargs(cleaned_method, data)
+        kwargs_to_skip: tuple = ('q2_options', 'bounds')
+        for kwarg, value in default_kwargs.items():
+            if (kwarg not in kwargs) and (kwarg not in kwargs_to_skip):
+                kwargs[kwarg] = value
+
+        for kwarg in kwargs_to_skip:
+            if kwarg in default_kwargs:
+                kwargs[kwarg] = default_kwargs[kwarg]
+
+        # fitting to data
+        return data_fit_func(data=data, **kwargs)
 
     @abstractmethod
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
         if len(params) != self.num_params:
             raise ValueError("Incorrect number of params given by user")
 
-    def fit(self, data: dataframe_or_array = None, params: Union[Params, tuple] = None, copula: bool = False, **kwargs) -> FittedContinuousMultivariate:
+    def fit(self, data: dataframe_or_array = None, params: Union[Params, tuple] = None, method: str = 'low-dim mle', **kwargs) -> FittedContinuousMultivariate:
         """Call to fit parameters to a given dataset or to fit the distribution object to a set of existing parameters.
 
         Parameters
@@ -350,40 +463,61 @@ class PreFitContinuousMultivariate:
         params : Union[Params, tuple]
             Optional. The parameters of the distribution to fit the object to. Can be either a SklarPy parameter object
             (must be the correct type) or a tuple.
-        copula: bool
-            Optional. True to fit multivariate distribution as a copula, False otherwise.
-            Note that the pdf and cdf functions etc will not necessarily be that of the copula distribution
-            (see SklarPy's dedicated copula distributions for those), but this method does allow for parameter
-            estimation.
-            Default is False.
+        method : str
+            When fitting to data only.
+            The method to use when fitting the distribution to the observed data.
+            Default is 'low-dim mle'
         kwargs:
             See below
 
         Keyword arguments
         ------------------
-        method: str
-            multivariate_normal and multivariate_student_t only. The method to use when fitting the
-            covariance / correlation matrix to data. See SklarPy's CorrelationMatrix documentation for more information.
+        corr_method: str
+            When fitting to data only.
+            multivariate_normal and multivariate_student_t only.
+            The method to use when fitting th correlation matrix to data.
+            See SklarPy's CorrelationMatrix documentation for more information.
             Default is `laloux_pp_kendall`.
-        dof_bounds: tuple
-            multivariate_student_t only. The bounds of the degrees of freedom parameter to use when fitting parameters.
-            Default is `(2.01, 100.0)`.
+        bounds: dict
+            When fitting to data only.
+            The bounds of the parameters you are fitting.
+            Must be a dictionary with parameter names as keys and values as tuples of the form
+            (lower bound, upper bound) for scalar parameters or values as a (d, 2) matrix for vector parameters,
+            where the left hand side is the matrix contains lower bounds and the right hand side the upper bounds.
         raise_cov_error: bool
             When fitting to user provided parameters only.
             True to raise an error if the shape matrix is an invalid covariance matrix.
             I.e. we check if the shape matrix is 2d, square, positive definite and symmetric.
-            Default is True if copula is False. False otherwise.
-        raise_corr_error: bool
-            When fitting to user provided parameters only.
-            True to raise an error if the shape matrix is an invalid correlation matrix.
-            I.e. we check if the shape matrix is 2d, square, positive-semi definite, symmetric with diagonal all ones.
-            Default is True if copula is True. False otherwise.
+            Default is True.
+        print_progress: bool
+            When fitting to data only.
+            Available for 'low-dim mle' and 'em' algorithms.
+            Prints the progress of these algorithms.
+            Default is False.
+        maxiter: int
+            When fitting to data only.
+            The maximum number of iterations an optimisation algorithm is allowed to perform.
+            Default value differs depending on the optimisation algorithm / method selected.
+        h: float
+            When fitting to data only.
+            The h parameter to use in numerical differentiation in the 'em' algorithm.
+            Default value is 10 ** -5
+        tol: float
+            When fitting to data only.
+            The tolerance to use when determing convergence.
+            Default value differs depending on the optimisation algorithm / method selected.
+        q2_options: dict
+            When fitting to data only using the 'em' algorithm.
+            Used when optimising the q2 function using scipy's differential_evolution as a part of the 'em' algorithm.
+            keys must be arg / kwarg names of differerntial_evolution algorithm and values their values.
+            bounds of the 'lamb', 'chi' and 'psi' parameters must not be parsed here - see the 'bounds' kwarg for this.
+
         Returns
         --------
         fitted_multivariate: FittedContinuousMultivariate
             A fitted distribution.
         """
-        default_kwargs: dict = {'raise_cov_error': not copula, 'raise_corr_error': copula}
+        default_kwargs: dict = {'raise_cov_error': True}
         for arg in default_kwargs:
             if arg not in kwargs:
                 kwargs[arg] = default_kwargs[arg]
@@ -408,22 +542,12 @@ class PreFitContinuousMultivariate:
                 raise TypeError(f"if params provided, must be a {self._params_obj} type or tuple of length {self.num_params}")
             params: Params = self._params_obj(params_dict, self.name, num_variables)
 
-            # for calculating fit bounds and fitting a typekeeper object
-            data_array: np.ndarray = self.rvs(10**3, params)
-            type_keeper: TypeKeeper = TypeKeeper(data_array)
-
-            # calculating other fit info
-            fit_info['likelihood'] = np.nan
-            fit_info['loglikelihood'] = np.nan
-            fit_info['aic'] = np.nan
-            fit_info['bic'] = np.nan
-
+            # generating random data for fit evaluation stats
+            data: np.ndarray = self.rvs(10**3, params)
+            data_array: np.ndarray = data
             success: bool = True
         else:
             # user has provided data to fit
-
-            # fitting TypeKeeper object
-            type_keeper: TypeKeeper = TypeKeeper(data)
 
             # getting info from data
             data_array: np.ndarray = check_multivariate_data(data)
@@ -432,17 +556,18 @@ class PreFitContinuousMultivariate:
                 raise FitError(f"Too many columns in data to interpret as variables for {self.name} distribution.")
 
             # fitting parameters to data
-            if copula:
-                params_dict, success = self._fit_copula(data_array, **kwargs)
-            else:
-                params_dict, success = self._fit_given_data(data_array, **kwargs)
+            params_tuple, success = self._fit_given_data(data_array, method, **kwargs)
+            params_dict, _ = self._fit_given_params_tuple(params_tuple)
             params: Params = self._params_obj(params_dict, self.name, num_variables)
 
-            # calculating other fit info
-            fit_info['likelihood'] = self.likelihood(data, params)
-            fit_info['loglikelihood'] = self.loglikelihood(data, params)
-            fit_info['aic'] = self.aic(data, params)
-            fit_info['bic'] = self.bic(data, params)
+        # fitting TypeKeeper object
+        type_keeper: TypeKeeper = TypeKeeper(data)
+
+        # calculating other fit info
+        fit_info['likelihood'] = self.likelihood(data, params)
+        fit_info['loglikelihood'] = self.loglikelihood(data, params)
+        fit_info['aic'] = self.aic(data, params)
+        fit_info['bic'] = self.bic(data, params)
 
         # calculating fit bounds
         fitted_bounds: np.ndarray = np.full((num_variables, 2), np.nan, dtype=float)
@@ -450,8 +575,12 @@ class PreFitContinuousMultivariate:
         fitted_bounds[:, 1] = data_array.max(axis=0)
         fit_info['fitted_bounds'] = fitted_bounds
 
+        # other fit value
         fit_info['type_keeper'] = type_keeper
         fit_info['params'] = params
         fit_info['num_variables'] = num_variables
         fit_info['success'] = success
         return FittedContinuousMultivariate(self, fit_info)
+
+    # TODO: have the copula classes be a separate class which inherits from each multivariate gen class -> makes param checks easier etc
+
