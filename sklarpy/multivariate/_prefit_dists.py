@@ -74,7 +74,8 @@ class PreFitContinuousMultivariate:
         elif not isinstance(params, tuple):
             raise TypeError("params must be a valid params object or a tuple.")
 
-        self._check_params(params, **kwargs)
+        if kwargs.get('check_params', True):
+            self._check_params(params, **kwargs)
         return params
 
     def __singlular_cdf(self, num_variables: int, xrow: np.ndarray, params: tuple) -> float:

@@ -131,6 +131,9 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         q2: float = a + ((lamb - 1) * zetas.sum()) + (-0.5 * chi * deltas.sum()) + (-0.5 * psi * etas.sum())
         return -q2
 
+    def _gh_to_params(self, params: tuple) -> tuple:
+        return params
+
     def _em(self, data: np.ndarray, min_retries: int, max_retries: int, copula: bool, bounds: tuple, theta0: Union[np.ndarray, None], cov_method: str, miniter: int, maxiter: int, h: float, tol: float, q2_options: dict, randomness_var: float, convergence_window_length: int, show_progress: bool, **kwargs) -> Tuple[tuple, bool]:
         min_retries = max(0, min_retries)
         max_retries = max(min_retries, 1, max_retries)
@@ -200,10 +203,9 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
 
         if show_progress:
             print(f"EM Optimisation Complete. Converged= {converged}, f(x)= {-runs_loglikelihoods[best_run]}")
-        return runs_params[best_run], converged
+        return self._gh_to_params(runs_params[best_run]), converged
 
-    @staticmethod
-    def _add_randomness(params: tuple, bounds: tuple, d: int, randomness_var: float) -> tuple:
+    def _add_randomness(self, params: tuple, bounds: tuple, d: int, randomness_var: float) -> tuple:
         adj_params: deque = deque()
         for i, param in enumerate(params):
             if i != 4:
