@@ -1,25 +1,26 @@
 import numpy as np
 from typing import Tuple, Union
 
-from sklarpy.multivariate._distributions._marginal_hyperbolic import multivariate_marginal_hyperbolic_gen
+from sklarpy.multivariate._distributions._hyperbolics import multivariate_hyperbolic_base_gen
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy._other import Params
-from sklarpy.multivariate._distributions._params import MultivariateSymMarginalHyperbolicParams
+from sklarpy.multivariate._distributions._params import MultivariateSymMarginalHyperbolicParams, MultivariateSymHyperbolicParams, MultivariateSymNIGParams
 
 
 __all__ = ['multivariate_sym_marginal_hyperbolic']
 
 
-class multivariate_sym_marginal_hyperbolic_gen(multivariate_marginal_hyperbolic_gen):
+class multivariate_sym_hyperbolic_base_gen(multivariate_hyperbolic_base_gen):
     _ASYMMETRIC = False
 
     def _check_params(self, params: tuple, **kwargs) -> None:
         # adjusting params to fit multivariate generalized hyperbolic params
-        if len(params) == 4:
+        num_params: int = len(params)
+        if num_params == 4:
             params = self._get_params(params, check_params=False)
-        elif len(params) != 6:
+        elif num_params != 6:
             raise ValueError("Incorrect number of params given by user")
-        self._num_params = 6
+        self._num_params = num_params
 
         # checking params
         super()._check_params(params)
@@ -27,13 +28,14 @@ class multivariate_sym_marginal_hyperbolic_gen(multivariate_marginal_hyperbolic_
 
     def _get_params(self, params: Union[Params, tuple], **kwargs) -> tuple:
         params_tuple: tuple = PreFitContinuousMultivariate._get_params(self, params, **kwargs)
+        self._init_lamb(params_tuple)
         if len(params_tuple) == 6:
             return params_tuple
 
         # 4 params
         loc: np.ndarray = params_tuple[2]
         gamma: np.ndarray = np.zeros(loc.shape, dtype=float)
-        return 1.0, *params_tuple, gamma
+        return self._lamb, *params_tuple, gamma
 
     def _get_bounds(self, data: np.ndarray, as_tuple: bool = True, **kwargs) -> Union[dict, tuple]:
         bounds = super()._get_bounds(data, as_tuple, **kwargs)
@@ -61,7 +63,7 @@ class multivariate_sym_marginal_hyperbolic_gen(multivariate_marginal_hyperbolic_
         loc: np.ndarray = theta[2:].copy()
         loc = loc.reshape((d, 1))
 
-        exp_w: float = self._exp_w_a((1, chi, psi), 1)
+        exp_w: float = self._exp_w_a((self._lamb, chi, psi), 1)
         shape: np.ndarray = S / exp_w
         return chi, psi, loc, shape
 
@@ -70,7 +72,25 @@ class multivariate_sym_marginal_hyperbolic_gen(multivariate_marginal_hyperbolic_
         return {'chi': params[0], 'psi': params[1], 'loc': params[2], 'shape': params[3]}, params[2].size
 
 
+class multivariate_sym_marginal_hyperbolic_gen(multivariate_sym_hyperbolic_base_gen):
+    def _init_lamb(self, params: tuple):
+        self._lamb: float = 1.0
+
+
+class multivariate_sym_hyperbolic_gen(multivariate_sym_hyperbolic_base_gen):
+    def _init_lamb(self, params: tuple):
+        d: int = params[-1].shape[0]
+        self._lamb: float = 0.5 * (d + 1)
+
+
+class multivariate_sym_nig_gen(multivariate_sym_hyperbolic_base_gen):
+    def _init_lamb(self, params: tuple):
+        self._lamb: float = -0.5
+
+
 multivariate_sym_marginal_hyperbolic: multivariate_sym_marginal_hyperbolic_gen = multivariate_sym_marginal_hyperbolic_gen(name='multivariate_sym_marginal_hyperbolic', params_obj=MultivariateSymMarginalHyperbolicParams, num_params=4, max_num_variables=np.inf)
+multivariate_sym_hyperbolic: multivariate_sym_hyperbolic_gen = multivariate_sym_hyperbolic_gen(name='multivariate_sym_hyperbolic', params_obj=MultivariateSymHyperbolicParams, num_params=4, max_num_variables=np.inf)
+multivariate_sym_nig: multivariate_sym_nig_gen = multivariate_sym_nig_gen(name='multivariate_sym_nig', params_obj=MultivariateSymNIGParams, num_params=4, max_num_variables=np.inf)
 
 
 if __name__ == '__main__':
@@ -85,19 +105,26 @@ if __name__ == '__main__':
     my_chi = 1.7
     my_psi = 4.5
 
+    # dist = multivariate_sym_marginal_hyperbolic
+    dist = multivariate_sym_hyperbolic
+    # dist = multivariate_sym_nig
+
     my_params = (my_chi, my_psi, my_loc, my_shape)
 
-    rvs = multivariate_sym_marginal_hyperbolic.rvs(1000, my_params)
+    rvs = dist.rvs(1000, my_params)
     # print(rvs)
+    # multivariate_marginal_hyperbolic.pdf_plot(params=my_params)
+    # print(multivariate_marginal_hyperbolic.pdf(rvs, my_params))
 
-    my_sym_marg_hyperbolic = multivariate_sym_marginal_hyperbolic.fit(rvs, method='em', show_progress=True, min_retries=1, max_retries=1)
-    print('theoretical max: ', multivariate_sym_marginal_hyperbolic.loglikelihood(rvs, my_params))
-    print(my_sym_marg_hyperbolic.params.to_dict)
+    my_dist = dist.fit(rvs, show_progress=True, min_retries=1, max_retries=1, tol=0.1)
+    # my_marg_hyperbolic = multivariate_marginal_hyperbolic.fit(rvs, method='low-dim mle', show_progress=True)
+    print('theoretical max: ', dist.loglikelihood(rvs, my_params))
+    print(my_dist.params.to_dict)
 
     import matplotlib.pyplot as plt
 
-    p1 = multivariate_sym_marginal_hyperbolic.pdf(rvs, my_params)
-    p2 = my_sym_marg_hyperbolic.pdf(rvs)
+    p1 = dist.pdf(rvs, my_params)
+    p2 = my_dist.pdf(rvs)
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
     num = rvs.shape[0]
