@@ -165,7 +165,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
 
         # initializing run
         rerun: bool = True
-        run: int = 1
+        run: int = 0
         runs_loglikelihoods, runs_params, successful_runs = deque(), deque(), deque()
         while rerun:
             # getting initial starting parameters
@@ -245,7 +245,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
 
         while (k<miniter) or (k <= maxiter and continue_em):
             if show_progress:
-                print(f"EM run {run}, step {k-1}: q2 converged= {q2_success}, f(x)= {-loglikelihood}")
+                print(f"EM run {run+1}, step {k-1}: q2 converged= {q2_success}, f(x)= {-loglikelihood}")
 
             if np.isinf(loglikelihood) or np.isnan(loglikelihood):
                 # reuse start using best params
