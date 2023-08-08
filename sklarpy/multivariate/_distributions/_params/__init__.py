@@ -4,4 +4,4 @@ from sklarpy.multivariate._distributions._params._generalized_hyperbolic import 
 from sklarpy.multivariate._distributions._params._symmetric_generalized_hyperbolic import MultivariateSymGenHyperbolicParams
 from sklarpy.multivariate._distributions._params._hyperbolics import MultivariateMarginalHyperbolicParams, MultivariateHyperbolicParams, MultivariateNIGParams
 from sklarpy.multivariate._distributions._params._symmetric_hyperbolics import MultivariateSymMarginalHyperbolicParams, MultivariateSymHyperbolicParams, MultivariateSymNIGParams
-
+from sklarpy.multivariate._distributions._params._skewed_t import MultivariateSkewedTParams
