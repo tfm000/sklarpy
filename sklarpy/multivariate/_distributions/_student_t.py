@@ -3,10 +3,12 @@ import numpy as np
 import scipy.stats
 import scipy.integrate
 import scipy.optimize
-from collections import deque
 from typing import Tuple, Union
 
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
+from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
+from sklarpy._other import Params
+from sklarpy._utils import dataframe_or_array
 from sklarpy.multivariate._distributions._params import MultivariateStudentTParams
 
 __all__ = ['multivariate_student_t']
@@ -46,56 +48,48 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
     def _rvs(self, size: int, params: tuple) -> np.ndarray:
         return scipy.stats.multivariate_t.rvs(size=size, loc=params[0].flatten(), shape=params[1], df=params[2])
 
-    def _get_bounds(self, data: np.ndarray, as_tuple: bool = True, **kwargs) -> Union[dict, tuple]:
-        bounds_dict: dict = super()._get_bounds(data, as_tuple, **kwargs)
-        bounds_tuples: deque = deque()
-
+    def _get_bounds(self, data: np.ndarray, as_tuple: bool, **kwargs) -> Union[dict, tuple]:
         d: int = data.shape[1]
         data_bounds: np.ndarray = np.array([data.min(axis=0), data.max(axis=0)], dtype=float).T
-        default_bounds: dict = {'dof': (2.01, 100.0), 'loc': data_bounds}
+        default_bounds: dict = {'loc': data_bounds, 'dof': (2.01, 100.0)}
+        return super()._get_bounds(default_bounds, d, as_tuple, **kwargs)
 
-        loc_bounds = bounds_dict.get('loc', default_bounds['loc'])
-        bounds_dict['loc'] = loc_bounds
-        for i in range(d):
-            bounds_tuples.append(tuple(loc_bounds[i, :]))
-
-        dof_bounds = bounds_dict.get('dof', default_bounds['dof'])
-        bounds_dict['dof'] = dof_bounds
-        bounds_tuples.append(dof_bounds)
-        return tuple(bounds_tuples) if as_tuple else bounds_dict
-
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple) -> np.ndarray:
-        loc0: np.ndarray = data.mean(axis=0, dtype=float).flatten()
+    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple, copula: bool) -> np.ndarray:
         dof0: float = np.random.uniform(*bounds[-1])
-        theta0: np.ndarray = np.array([*loc0, dof0], dtype=float)
-        return theta0
+        if not copula:
+            loc0: np.ndarray = data.mean(axis=0, dtype=float).flatten()
+            return np.array([*loc0, dof0], dtype=float)
+        return np.array([dof0], dtype=float)
 
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float, loc: np.ndarray = None) -> tuple:
+    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, loc: np.ndarray, copula: bool) -> tuple:
         d: int = S.shape[0]
 
-        if loc is None:
-            loc: np.ndarray = theta[:d]
-        loc = loc.reshape((d, 1))
-
         dof: float = float(theta[-1])
+        if not copula:
+            if loc is None:
+                loc: np.ndarray = theta[:d]
+            loc = loc.reshape((d, 1))
 
-        # calculating implied shape parameter
-        shape: np.ndarray = self.__cov_to_shape(S, dof)
+            # calculating implied shape parameter
+            shape: np.ndarray = self.__cov_to_shape(S, dof)
+        else:
+            loc: np.ndarray = np.zeros((d, 1), dtype=float)
+            shape: np.ndarray = S
         return loc, shape, dof
 
-    def _low_dim_mle(self, data: np.ndarray, **kwargs) -> tuple:
-        return super()._low_dim_mle(data, 1, **kwargs)
-
     def _dof_low_dim_mle(self, data: np.ndarray, **kwargs) -> tuple:
-        return super()._low_dim_mle(data, 1, **kwargs)
+        return super()._low_dim_mle(data, **kwargs)
 
-    def _get_low_dim_mle_objective_func_args(self, data: np.ndarray, cov_method: str, **kwargs) -> tuple:
-        S, S_det = super()._get_low_dim_mle_objective_func_args(data, cov_method, **kwargs)
+    def _get_low_dim_mle_objective_func_args(self, data: np.ndarray, copula: bool, cov_method: str, **kwargs) -> tuple:
+        S, _, _, _ = super()._get_low_dim_mle_objective_func_args(data=data, copula=copula, cov_method=cov_method, **kwargs)
         loc: np.ndarray = data.mean(axis=0, dtype=float).flatten() if kwargs['method'] == 'dof_low_dim_mle' else None
-        return S, S_det, loc
+        return S, loc, copula
 
     def _fit_given_data_kwargs(self, method: str, data: np.ndarray, **user_kwargs) -> dict:
         kwargs: dict = super()._fit_given_data_kwargs('low_dim_mle', data, **user_kwargs)
+        if method == 'dof_low_dim_mle':
+            kwargs['theta0'] = kwargs['theta0'][-1]
+            kwargs['bounds'] = kwargs['bounds'][-1],
         kwargs['method'] = method
         kwargs['tol'] = 0.01
         return kwargs
@@ -103,6 +97,9 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
         self._check_params(params, **kwargs)
         return {'loc': params[0], 'shape': params[1], 'dof': params[2]}, params[0].size
+
+    def fit(self, data: dataframe_or_array = None, params: Union[Params, tuple] = None, method: str = 'dof-low-dim mle', **kwargs) -> FittedContinuousMultivariate:
+        pass
 
 
 multivariate_student_t: multivariate_student_t_gen = multivariate_student_t_gen(name="multivariate_student_t", params_obj=MultivariateStudentTParams, num_params=3, max_num_variables=np.inf)
@@ -122,7 +119,9 @@ if __name__ == "__main__":
     import pandas as pd
     df = pd.DataFrame(rvs, columns=['sharks', 'lizards'])
 
-    my_mv_t = multivariate_student_t.fit(df)
+    # my_mv_t = multivariate_student_t.fit(df, copula=True, show_progress=True)
+    my_mv_t =multivariate_student_t.fit(rvs, method='dof-low-dim mle')#, show_progress=True)
+    print(my_mv_t.params.to_dict)
 
     # my_mv_t =multivariate_student_t.fit(rvs, method='dof-low-dim mle', show_progress=True)
     # print('here')
@@ -132,11 +131,11 @@ if __name__ == "__main__":
     # print('bye')
     # print(my_mv_t.params.to_dict)
     #
-    my_mv_t.cdf_plot(show=False)
-    my_mv_t.mc_cdf_plot(show=False)
+    # my_mv_t.cdf_plot(show=False)
+    # my_mv_t.mc_cdf_plot(show=False)
     # my_mv_t.pdf_plot(show=False)
-    import matplotlib.pyplot as plt
-    plt.show()
+    # import matplotlib.pyplot as plt
+    # plt.show()
     # # print(my_mv_t.pdf(rvs))
     # # print(my_mv_t.cdf(rvs[:5, :]))
     #

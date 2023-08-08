@@ -38,33 +38,35 @@ class multivariate_sym_hyperbolic_base_gen(multivariate_hyperbolic_base_gen):
         return self._lamb, *params_tuple, gamma
 
     def _get_bounds(self, data: np.ndarray, as_tuple: bool = True, **kwargs) -> Union[dict, tuple]:
-        bounds = super()._get_bounds(data, as_tuple, **kwargs)
-
+        bounds_dict: dict = super()._get_bounds(data, False, **kwargs)
         # removing gamma from bounds
-        if as_tuple:
-            d: int = data.shape[1]
-            bounds = bounds[:-d]
-        else:
-            bounds.pop('gamma')
-        return bounds
+        return self._remove_bounds(bounds_dict, ['gamma'], data.shape[1], as_tuple)
 
     def _gh_to_params(self, params: tuple) -> tuple:
         return params[1:5]
 
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple) -> np.ndarray:
-        theta0: np.ndarray = super()._get_low_dim_theta0(data, bounds)
+    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple, copula: bool) -> np.ndarray:
+        theta0: np.ndarray = super()._get_low_dim_theta0(data, bounds, copula)
         d: int = data.shape[1]
         return theta0[:-d]
 
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float) -> tuple:
+    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float, min_eig: float, copula: bool) -> tuple:
         d: int = S.shape[0]
 
         chi, psi = theta[:2]
-        loc: np.ndarray = theta[2:].copy()
-        loc = loc.reshape((d, 1))
 
-        exp_w: float = self._exp_w_a((self._lamb, chi, psi), 1)
-        shape: np.ndarray = S / exp_w
+        if not copula:
+            # getting location vector from theta
+            loc: np.ndarray = theta[2:].copy()
+            loc = loc.reshape((d, 1))
+
+            # calculating implied shape parameter
+            exp_w: float = self._exp_w_a((self._lamb, chi, psi), 1)
+            shape: np.ndarray = S / exp_w
+        else:
+            loc: np.ndarray = np.zeros((d, 1), dtype=float)
+            shape: np.ndarray = S
+
         return chi, psi, loc, shape
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
@@ -116,8 +118,8 @@ if __name__ == '__main__':
     # multivariate_marginal_hyperbolic.pdf_plot(params=my_params)
     # print(multivariate_marginal_hyperbolic.pdf(rvs, my_params))
 
-    my_dist = dist.fit(rvs, show_progress=True, min_retries=1, max_retries=1, tol=0.1)
-    # my_marg_hyperbolic = multivariate_marginal_hyperbolic.fit(rvs, method='low-dim mle', show_progress=True)
+    # my_dist = dist.fit(rvs, show_progress=True, min_retries=1, max_retries=1, tol=0.1, copula=True)
+    my_dist = dist.fit(rvs, show_progress=True, min_retries=1, max_retries=1, tol=0.1, method='em', copula=True)
     print('theoretical max: ', dist.loglikelihood(rvs, my_params))
     print(my_dist.params.to_dict)
 

@@ -4,8 +4,12 @@ import scipy.stats
 from typing import Tuple, Union
 
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
-from sklarpy.multivariate._distributions._params import MultivariateNormalParams
 from sklarpy.misc import CorrelationMatrix
+from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
+from sklarpy._other import Params
+from sklarpy._utils import dataframe_or_array
+from sklarpy.multivariate._distributions._params import MultivariateNormalParams
+
 
 __all__ = ['multivariate_normal']
 
@@ -32,28 +36,35 @@ class multivariate_normal_gen(PreFitContinuousMultivariate):
         return scipy.stats.multivariate_normal.rvs(size=size, mean=params[0].flatten(), cov=params[1])
 
     def _fit_given_data_kwargs(self, method: str, data: np.ndarray, **user_kwargs) -> dict:
-        return {'cov_method': 'laloux_pp_kendall'}
+        return {'cov_method': 'laloux_pp_kendall', 'copula': False}
 
     def _get_bounds(self, data: np.ndarray, as_tuple: bool = True, **kwargs) -> Union[dict, tuple]:
         return tuple() if as_tuple else {}
 
-    def _mle(self, data: np.ndarray, cov_method: str, **kwargs) -> Tuple[tuple, bool]:
-        loc: np.ndarray = data.mean(axis=0, dtype=float)
-        shape: np.ndarray = CorrelationMatrix(data).cov(method=cov_method, **kwargs)
+    def _mle(self, data: np.ndarray, cov_method: str, copula: bool, **kwargs) -> Tuple[tuple, bool]:
+        if copula:
+            loc: np.ndarray = np.zeros((data.shape[1], 1), dtype=float)
+            shape: np.ndarray = CorrelationMatrix(data).corr(method=cov_method, **kwargs)
+        else:
+            loc: np.ndarray = data.mean(axis=0, dtype=float)
+            shape: np.ndarray = CorrelationMatrix(data).cov(method=cov_method, **kwargs)
         return (loc, shape), True
 
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float) -> tuple:
+    def _low_dim_theta_to_params(self, **kwargs) -> tuple:
         pass
 
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple) -> np.ndarray:
+    def _get_low_dim_theta0(self, **kwargs) -> np.ndarray:
         pass
 
-    def _low_dim_mle(self, data: np.ndarray, cov_method: str, **kwargs) -> Tuple[tuple, bool]:
-        return self._mle(data=data, cov_method=cov_method, **kwargs)
+    def _low_dim_mle(self, data: np.ndarray, cov_method: str, copula: bool, **kwargs) -> Tuple[tuple, bool]:
+        return self._mle(data=data, cov_method=cov_method, copula=copula, **kwargs)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
         self._check_params(params, **kwargs)
         return {'loc': params[0], 'shape': params[1]}, params[0].size
+
+    def fit(self, data: dataframe_or_array = None, params: Union[Params, tuple] = None, method: str = 'mle', **kwargs) -> FittedContinuousMultivariate:
+        pass
 
 
 multivariate_normal: multivariate_normal_gen = multivariate_normal_gen(name="multivariate_normal", params_obj=MultivariateNormalParams, num_params=2, max_num_variables=np.inf)
@@ -71,11 +82,11 @@ if __name__ == "__main__":
     my_cov = np.diag(my_sig) @ my_corr @ np.diag(my_sig)
     rvs = multivariate_normal.rvs(1000, (my_mu, my_cov))
 
-    my_mv_norm = multivariate_normal.fit(rvs)
+    my_mv_norm = multivariate_normal.fit(rvs, copula=True)
     my_mv_norm.pdf_plot(show=False)
     my_mv_norm.cdf_plot(show=False)
     print(my_mv_norm)
-    print(my_mv_norm.params)  # need to fix name printing!
+    print(my_mv_norm.params.to_dict)  # need to fix name printing!
     import matplotlib.pyplot as plt
     plt.show()
     # multivariate_normal.mc_cdf_plot(params=my_mv_norm.params)

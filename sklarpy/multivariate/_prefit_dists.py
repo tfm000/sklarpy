@@ -354,37 +354,47 @@ class PreFitContinuousMultivariate:
             shape[i + 1:, i] = shape_non_diag[startpoint:endpoint]
         return shape
 
-    def _mle(self):
-        #TODO: once you have examples from 2 multivar dists
-        pass
+    # @abstractmethod
+    # def _get_bounds(self, data: np.ndarray, as_tuple: bool = True, **kwargs) -> Union[dict, tuple]:
+    #     bounds_dict: dict = kwargs.get('bounds', {})
+    #     param_err_msg: float = "bounds must be a tuple of length 2 for scalar params or a matrix of shape (d, 2) for vector params."
+    #     d: int = data.shape[1]
+    #     for param, param_bounds in bounds_dict:
+    #         is_error = (not (isinstance(param_bounds, tuple) or isinstance(param_bounds, np.ndarray))) or \
+    #                    (isinstance(param_bounds, tuple) and len(param_bounds) != 2) or \
+    #                    (isinstance(param_bounds, np.ndarray) and param_bounds.shape != (d, 2))
+    #         if is_error:
+    #             raise ValueError(param_err_msg)
+    #     return bounds_dict
 
-    @abstractmethod
-    def _get_bounds(self, data: np.ndarray, as_tuple: bool = True, **kwargs) -> Union[dict, tuple]:
-        bounds_dict: dict = kwargs.get('bounds', {})
+    @staticmethod
+    def _bounds_dict_to_tuple(bounds_dict: dict, d: int, as_tuple: bool) -> Union[dict, tuple]:
         param_err_msg: float = "bounds must be a tuple of length 2 for scalar params or a matrix of shape (d, 2) for vector params."
-        d: int = data.shape[1]
-        for param, param_bounds in bounds_dict:
-            is_error = (not (isinstance(param_bounds, tuple) or isinstance(param_bounds, np.ndarray))) or \
-                       (isinstance(param_bounds, tuple) and len(param_bounds) != 2) or \
-                       (isinstance(param_bounds, np.ndarray) and param_bounds.shape != (d, 2))
-            if is_error:
+        bounds_tuples: deque = deque()
+        for param, param_bounds in bounds_dict.items():
+            if isinstance(param_bounds, np.ndarray) and param_bounds.shape == (d, 2):
+                param_bounds_tuples: tuple = tuple(map(tuple, param_bounds))
+                bounds_tuples.extend(param_bounds_tuples)
+            elif isinstance(param_bounds, tuple) and len(param_bounds) == 2:
+                bounds_tuples.append(param_bounds)
+            else:
                 raise ValueError(param_err_msg)
-        return bounds_dict
+        return tuple(bounds_tuples) if as_tuple else bounds_dict
 
-
-    # def _get_low_dim_mle_constraints(self, S: np.ndarray, shape_pos: int) -> tuple:
-    #     def _shape_pd(theta: np.ndarray, S: np.ndarray, shape_pos: int) -> float:
-    #         params: tuple = self._low_dim_theta_to_params(theta, S)
-    #         shape: np.ndarray = params[shape_pos]
-    #         shape_eigenvalues: np.ndarray = np.linalg.eig(shape)[0]
-    #         return shape_eigenvalues.min()
-    #
-    #     shape_pd: Callable = partial(_shape_pd, S=S, shape_pos=shape_pos)
-    #     shape_pd_constraint: NonlinearConstraint = NonlinearConstraint(shape_pd, 10**-9, np.inf)
-    #
-    #     return shape_pd_constraint,
     @abstractmethod
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float) -> tuple:
+    def _get_bounds(self, default_bounds: dict, d: int, as_tuple: bool, **kwargs) -> Union[dict, tuple]:
+        bounds_dict: dict = kwargs.get('bounds', {})
+        bounds_dict = {param: bounds_dict.get(param, default_bounds[param]) for param in default_bounds}
+        to_remove = ['loc'] if kwargs.get('copula', False) else []
+        return self._remove_bounds(bounds_dict, to_remove, d, as_tuple)
+
+    def _remove_bounds(self, bounds_dict: dict, to_remove: list, d: int, as_tuple: bool) -> Union[dict, tuple]:
+        for bound in to_remove:
+            bounds_dict.pop(bound)
+        return self._bounds_dict_to_tuple(bounds_dict, d, as_tuple)
+
+    @abstractmethod
+    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float, min_eig: float, copula: bool) -> tuple:
         pass
 
     def _low_dim_mle_objective_func(self, theta: np.ndarray, data, *args) -> float:
@@ -392,18 +402,20 @@ class PreFitContinuousMultivariate:
         return - self.loglikelihood(data, params, definiteness=None)
 
     @abstractmethod
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple) -> np.ndarray:
+    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple, copula: bool) -> np.ndarray:
         pass
 
-    def _get_low_dim_mle_objective_func_args(self, data: np.ndarray, cov_method: str, **kwargs) -> tuple:
-        S: np.ndarray = CorrelationMatrix(data).cov(method=cov_method)
+    def _get_low_dim_mle_objective_func_args(self, data: np.ndarray, copula: bool, cov_method: str, min_eig: float, **kwargs) -> tuple:
+        S: np.ndarray = CorrelationMatrix(data).corr(method=cov_method) if copula else CorrelationMatrix(data).cov(method=cov_method)
         S_det: float = np.linalg.det(S)
-        return S, S_det
+        if min_eig is None:
+            eigenvalues: np.ndarray = np.linalg.eigvals(S)
+            min_eig: float = eigenvalues.min()
+        return S, S_det, min_eig, copula
 
-    @abstractmethod
-    def _low_dim_mle(self, data: np.ndarray, shape_pos: int, theta0: np.ndarray, bounds: tuple, maxiter: int, tol: float, cov_method: str, show_progress: bool, **kwargs) -> Tuple[tuple, bool]:
+    def _low_dim_mle(self, data: np.ndarray, theta0: np.ndarray, copula: bool, bounds: tuple, maxiter: int, tol: float, cov_method: str, min_eig: Union[float, None], show_progress: bool, **kwargs) -> Tuple[tuple, bool]:
         # getting args to pass to optimizer
-        args: tuple = self._get_low_dim_mle_objective_func_args(data, cov_method, **kwargs)
+        args: tuple = self._get_low_dim_mle_objective_func_args(data, copula=copula, cov_method=cov_method, min_eig=min_eig, **kwargs)
 
         # running optimization
         mle_res = differential_evolution(self._low_dim_mle_objective_func, bounds, args=(data, *args), maxiter=maxiter, tol=tol, x0=theta0, disp=show_progress)
@@ -419,8 +431,8 @@ class PreFitContinuousMultivariate:
     def _fit_given_data_kwargs(self, method: str, data: np.ndarray, **user_kwargs) -> dict:
         if method == 'low_dim_mle':
             bounds: tuple = self._get_bounds(data, True, **user_kwargs)
-            default_theta0: np.ndarray = self._get_low_dim_theta0(data, bounds)
-            kwargs: dict = {'theta0': default_theta0, 'bounds': bounds, 'maxiter': 1000, 'tol': 0.5, 'cov_method': 'pp_kendall', 'show_progress': False}
+            default_theta0: np.ndarray = self._get_low_dim_theta0(data, bounds, user_kwargs.get('copula', False))
+            kwargs: dict = {'theta0': default_theta0, 'copula': False,'bounds': bounds, 'maxiter': 1000, 'tol': 0.5, 'cov_method': 'pp_kendall', 'min_eig': None, 'show_progress': False}
         else:
             raise ValueError(f'{method} is not a valid method.')
         return kwargs
@@ -435,7 +447,7 @@ class PreFitContinuousMultivariate:
         data_fit_func: Callable = eval(f"self._{cleaned_method}")
 
         # getting additional fit args
-        default_kwargs: dict = self._fit_given_data_kwargs(cleaned_method, data)
+        default_kwargs: dict = self._fit_given_data_kwargs(cleaned_method, data, **kwargs)
         kwargs_to_skip: tuple = ('q2_options', 'bounds')
         for kwarg, value in default_kwargs.items():
             if (kwarg not in kwargs) and (kwarg not in kwargs_to_skip):
@@ -584,4 +596,6 @@ class PreFitContinuousMultivariate:
         return FittedContinuousMultivariate(self, fit_info)
 
     # TODO: have the copula classes be a separate class which inherits from each multivariate gen class -> makes param checks easier etc
+
+    # TODO: low dim mle should not optimise for loc when copula is true!!! ugh... have 2 low dim mle funcs. one for copulas, one not
 

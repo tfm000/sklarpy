@@ -24,7 +24,7 @@ class multivariate_hyperbolic_base_gen(multivariate_gen_hyperbolic_gen):
             params = self._get_params(params, check_params=False)
         elif num_params != 6:
             raise ValueError("Incorrect number of params given by user")
-        self._num_params = num_params
+        self._num_params = 6
 
         # checking params
         super()._check_params(params)
@@ -37,17 +37,12 @@ class multivariate_hyperbolic_base_gen(multivariate_gen_hyperbolic_gen):
         return params_tuple[-6:]
 
     def _get_bounds(self, data: np.ndarray, as_tuple: bool = True, **kwargs) -> Union[dict, tuple]:
-        bounds = super()._get_bounds(data, as_tuple, **kwargs)
-
+        bounds_dict: dict = super()._get_bounds(data, False, **kwargs)
         # removing lambda from bounds
-        if as_tuple:
-            bounds = bounds[1:]
-        else:
-            bounds.pop('lamb')
-        return bounds
+        return self._remove_bounds(bounds_dict, ['lamb'], data.shape[1], as_tuple)
 
-    def _add_randomness(self, params: tuple, bounds: tuple, d: int, randomness_var: float) -> tuple:
-        adj_params: tuple = super()._add_randomness(params, bounds, d, randomness_var)
+    def _add_randomness(self, params: tuple, bounds: tuple, d: int, randomness_var: float, copula) -> tuple:
+        adj_params: tuple = super()._add_randomness(params, bounds, d, randomness_var, copula)
         return self._get_params(adj_params, check_params=False)
 
     def _neg_q2(self, w_params: np.ndarray, etas: np.ndarray, deltas: np.ndarray, zetas: np.ndarray) -> float:
@@ -61,14 +56,14 @@ class multivariate_hyperbolic_base_gen(multivariate_gen_hyperbolic_gen):
     def _gh_to_params(self, params: tuple) -> tuple:
         return params[1:]
 
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple) -> np.ndarray:
+    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple, copula: bool) -> np.ndarray:
         bounds = ((self._lamb, self._lamb), *bounds)
-        theta0: np.ndarray = super()._get_low_dim_theta0(data, bounds)
+        theta0: np.ndarray = super()._get_low_dim_theta0(data=data, bounds=bounds, copula=copula)
         return theta0[1:]
 
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float) -> tuple:
+    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float, min_eig: float, copula: bool) -> tuple:
         theta = np.array([self._lamb, *theta], dtype=float)
-        params: tuple = super()._low_dim_theta_to_params(theta=theta, S=S, S_det=S_det)
+        params: tuple = super()._low_dim_theta_to_params(theta=theta, S=S, S_det=S_det, min_eig=min_eig, copula=copula)
         return params[1:]
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
@@ -110,19 +105,23 @@ if __name__ == '__main__':
     my_psi = 4.5
     my_gamma = np.array([2.3, -4.3], dtype=float)
 
-    # dist = multivariate_marginal_hyperbolic
+    dist = multivariate_marginal_hyperbolic
     # dist = multivariate_hyperbolic
-    dist = multivariate_nig
+    # dist = multivariate_nig
 
     my_params = (my_chi, my_psi, my_loc, my_shape, my_gamma)
 
     rvs = dist.rvs(1000, my_params)
+
+    # import pandas as pd
+    #
+    # pd.DataFrame(rvs).to_excel('h_rvs.xlsx')
     # print(rvs)
     # multivariate_marginal_hyperbolic.pdf_plot(params=my_params)
     # print(multivariate_marginal_hyperbolic.pdf(rvs, my_params))
 
-    my_dist = dist.fit(rvs, show_progress=True, min_retries=1, max_retries=1, tol=0.1)
-    # my_marg_hyperbolic = multivariate_marginal_hyperbolic.fit(rvs, method='low-dim mle', show_progress=True)
+    my_dist = dist.fit(rvs, show_progress=True, min_retries=1, max_retries=1, tol=0.1, copula=True)
+    # my_dist = dist.fit(rvs, show_progress=True, method='em', min_retries=1, max_retries=1, tol=0.1)
     print('theoretical max: ', dist.loglikelihood(rvs, my_params))
     print(my_dist.params.to_dict)
 

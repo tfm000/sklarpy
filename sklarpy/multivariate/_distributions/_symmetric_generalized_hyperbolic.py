@@ -30,31 +30,32 @@ class multivariate_sym_gen_hyperbolic_gen(multivariate_gen_hyperbolic_gen):
         return *params_tuple[:5], gamma
 
     def _get_bounds(self, data: np.ndarray, as_tuple: bool = True, **kwargs) -> Union[dict, tuple]:
-        bounds = super()._get_bounds(data, as_tuple, **kwargs)
-
+        bounds_dict: dict = super()._get_bounds(data, False, **kwargs)
         # removing gamma from bounds
-        if as_tuple:
-            d: int = data.shape[1]
-            bounds = bounds[:-d]
-        else:
-            bounds.pop('gamma')
+        return self._remove_bounds(bounds_dict, ['gamma'], data.shape[1], as_tuple)
 
-        return bounds
-
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple) -> np.ndarray:
-        theta0: np.ndarray = super()._get_low_dim_theta0(data, bounds)
+    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple, copula: bool) -> np.ndarray:
+        theta0: np.ndarray = super()._get_low_dim_theta0(data, bounds, copula)
         d: int = data.shape[1]
         return theta0[:-d]
 
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float) -> tuple:
+    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float, min_eig: float, copula: bool) -> tuple:
         d: int = S.shape[0]
 
         lamb, chi, psi = theta[:3]
-        loc: np.ndarray = theta[3:].copy()
-        loc = loc.reshape((d, 1))
 
-        exp_w: float = self._exp_w_a(theta[: 3], 1)
-        shape: np.ndarray = S / exp_w
+        if not copula:
+            # getting location vector from theta
+            loc: np.ndarray = theta[3:].copy()
+            loc = loc.reshape((d, 1))
+
+            # calculating implied shape parameter
+            exp_w: float = self._exp_w_a(theta[: 3], 1)
+            shape: np.ndarray = S / exp_w
+        else:
+            loc: np.ndarray = np.zeros((d, 1), dtype=float)
+            shape: np.ndarray = S
+
         return lamb, chi, psi, loc, shape
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
@@ -81,14 +82,15 @@ if __name__ == '__main__':
     my_params = (my_lambda, my_chi, my_psi, my_loc, my_shape)
 
     rvs = multivariate_sym_gen_hyperbolic.rvs(10000, my_params)
-    my_sym = multivariate_sym_gen_hyperbolic.fit(rvs, show_progress=True)
+    my_sym = multivariate_sym_gen_hyperbolic.fit(rvs, show_progress=True, copula=True)
+    print(my_sym.params.to_dict)
+    print('theoretical max: ', multivariate_sym_gen_hyperbolic.loglikelihood(rvs, my_params))
     # rvs2 = my_sym.rvs(10000)
     p1 = multivariate_sym_gen_hyperbolic.pdf(rvs, my_params)
     p2 = my_sym.pdf(rvs)
 
     multivariate_sym_gen_hyperbolic.pdf_plot(params=my_params, show=False)
     import matplotlib.pyplot as plt
-
 
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')

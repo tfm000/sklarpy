@@ -1,5 +1,5 @@
 import numpy as np
-import scipy.special
+# import scipy.special
 from collections import deque
 from typing import Tuple, Union
 from scipy.optimize import differential_evolution
@@ -7,7 +7,7 @@ from scipy.optimize import differential_evolution
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.univariate import gig
 from sklarpy.multivariate._distributions._params import MultivariateGenHyperbolicParams
-from sklarpy.misc import CorrelationMatrix
+from sklarpy.misc import CorrelationMatrix, kv
 
 
 __all__ = ['multivariate_gen_hyperbolic']
@@ -59,8 +59,11 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         p: float = psi + (gamma.T @ shape_inv @ gamma)
         r: float = np.sqrt(chi * psi)
 
-        log_c: float = (lamb * (np.log(psi) - np.log(r))) + ((0.5*d - lamb) * np.log(p)) - 0.5 * ((d*np.log(2*np.pi)) + np.log(np.linalg.det(shape)) + 2*np.log(scipy.special.kv(lamb, r)))
-        log_h: float = np.log(scipy.special.kv(lamb - (d / 2), np.sqrt(q * p))) + ((x - loc).T @ shape_inv @ gamma) - (0.25 * (d - 2 * lamb) * (np.log(q) + np.log(p)))
+        # log_c: float = (lamb * (np.log(psi) - np.log(r))) + ((0.5 * d - lamb) * np.log(p)) - 0.5 * ((d * np.log(2 * np.pi)) + np.log(np.linalg.det(shape)) + 2 * np.log(scipy.special.kv(lamb, r)))
+        # log_h: float = np.log(scipy.special.kv(lamb - (d / 2), np.sqrt(q * p))) + ((x - loc).T @ shape_inv @ gamma) - (0.25 * (d - 2 * lamb) * (np.log(q) + np.log(p)))
+
+        log_c: float = (lamb * (np.log(psi) - np.log(r))) + ((0.5*d - lamb) * np.log(p)) - 0.5 * ((d*np.log(2*np.pi)) + np.log(np.linalg.det(shape)) + 2*kv.logkv(lamb, r))
+        log_h: float = kv.logkv(lamb - (d / 2), np.sqrt(q * p)) + ((x - loc).T @ shape_inv @ gamma) - (0.25 * (d - 2 * lamb) * (np.log(q) + np.log(p)))
         return float(log_c + log_h)
 
     def _logpdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
@@ -72,7 +75,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
 
         return np.array([self._singular_logpdf(xrow, params, **kwargs) for xrow in x], dtype=float)
 
-    def __w_rvs(self, size: int, params: tuple) -> np.ndarray:
+    def _w_rvs(self, size: int, params: tuple) -> np.ndarray:
         return gig.rvs((size,), params[:3], ppf_approx=True)
 
     def _rvs(self, size: int, params: tuple) -> np.ndarray:
@@ -91,7 +94,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
 
         # generating rvs
         z: np.ndarray = np.random.normal(0, 1, (num_variables, size))
-        w: np.ndarray = self.__w_rvs(size, params)
+        w: np.ndarray = self._w_rvs(size, params)
 
         # generating rvs
         m: np.ndarray = loc + (w * gamma)
@@ -113,8 +116,8 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             qi: float = chi + ((xi - loc).T @ shape_inv @ (xi - loc))
 
             cond_params: tuple = (v, qi, p)
-            eta_i: float = self._exp_w_a(cond_params, 1)
-            delta_i: float = self._exp_w_a((-v, p, qi), 1)
+            eta_i: float = self._exp_w(cond_params)
+            delta_i: float = self._exp_w((-v, p, qi))
             zeta_i: float = self._exp_log_w(cond_params, h)
 
             deltas.append(delta_i)
@@ -127,14 +130,15 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
     def _neg_q2(self, w_params: np.ndarray, etas: np.ndarray, deltas: np.ndarray, zetas: np.ndarray) -> float:
         lamb, chi, psi = w_params
         n: int = zetas.size
-        a: float = n * (0.5 * lamb * np.log(psi / chi) - np.log(2 * scipy.special.kv(lamb, (chi * psi) ** 0.5)))
+        a: float = n * (0.5 * lamb * np.log(psi / chi) - np.log(2) - kv.logkv(lamb, (chi * psi) ** 0.5))
+        # a: float = n * (0.5 * lamb * np.log(psi / chi) - np.log(2 * scipy.special.kv(lamb, (chi * psi) ** 0.5)))
         q2: float = a + ((lamb - 1) * zetas.sum()) + (-0.5 * chi * deltas.sum()) + (-0.5 * psi * etas.sum())
         return -q2
 
     def _gh_to_params(self, params: tuple) -> tuple:
         return params
 
-    def _em(self, data: np.ndarray, min_retries: int, max_retries: int, copula: bool, bounds: tuple, theta0: Union[np.ndarray, None], cov_method: str, miniter: int, maxiter: int, h: float, tol: float, q2_options: dict, randomness_var: float, convergence_window_length: int, show_progress: bool, **kwargs) -> Tuple[tuple, bool]:
+    def _em(self, data: np.ndarray, min_retries: int, max_retries: int, copula: bool, bounds: tuple, params0: Union[np.ndarray, None], cov_method: str, miniter: int, maxiter: int, h: float, tol: float, q2_options: dict, randomness_var: float, convergence_window_length: int, show_progress: bool, **kwargs) -> Tuple[tuple, bool]:
         min_retries = max(0, min_retries)
         max_retries = max(min_retries, 1, max_retries)
         convergence_window_length = max(1, convergence_window_length)
@@ -145,21 +149,15 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         n, d = data.shape
 
         # initializing parameters
-        if copula:
-            loc0: np.ndarray = np.zeros((d, 1), dtype=float)
-            shape0: np.ndarray = CorrelationMatrix(data).corr(method=cov_method, **kwargs)
-        else:
-            loc0: np.ndarray = data.mean(axis=0, dtype=float).reshape((d, 1))
-            shape0: np.ndarray = CorrelationMatrix(data).cov(method=cov_method)
+        shape0: np.ndarray = CorrelationMatrix(data).corr(method=cov_method, **kwargs) if copula else CorrelationMatrix(data).cov(method=cov_method)
         shape0_eigenvalues: np.ndarray = np.linalg.eigvals(shape0)
-        gamma0: np.ndarray = np.zeros((d, 1), dtype=float)
+        S_det: float = shape0_eigenvalues.prod()
 
         # other constants
         min_eig: float = shape0_eigenvalues.min()  # used to keep shape matrix positive definite
-        shape_scale: float = np.linalg.det(shape0)
         x_bar: np.ndarray = data.mean(axis=0, dtype=float)
 
-        if theta0 is not None:
+        if params0 is not None:
             # if theta0 is fixed, function outcome is ~ deterministic between runs
             max_retries = 1
 
@@ -169,15 +167,15 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         runs_loglikelihoods, runs_params, successful_runs = deque(), deque(), deque()
         while rerun:
             # getting initial starting parameters
-            if theta0 is None:
+            if params0 is None:
                 # generating new theta 0
-                t0: np.ndarray = self._get_low_dim_theta0(data, bounds)
+                theta0: np.ndarray = self._get_low_dim_theta0(data=data, bounds=bounds, copula=copula)
+                p0: tuple = self._get_params(params=self._low_dim_theta_to_params(theta=theta0, S=shape0, S_det=S_det, min_eig=min_eig, copula=copula))
             else:
-                t0: np.ndarray = theta0.copy()
-            params0: tuple = (*t0[:3], loc0, shape0, gamma0)
+                p0: np.ndarray = params0.copy()
 
             # doing a single expectation-maximisation run
-            params, success, k, loglikelihood = self._em_single_run(data=data, copula=copula, miniter=miniter, maxiter=maxiter, h=h, tol=tol, q2_options=q2_options, randomness_var=randomness_var, convergence_window_length=convergence_window_length, show_progress=show_progress, bounds=bounds, n=n, d=d, params0=params0, min_eig=min_eig, shape_scale=shape_scale, x_bar=x_bar, run=run)
+            params, success, k, loglikelihood = self._em_single_run(data=data, copula=copula, miniter=miniter, maxiter=maxiter, h=h, tol=tol, q2_options=q2_options, randomness_var=randomness_var, convergence_window_length=convergence_window_length, show_progress=show_progress, bounds=bounds, n=n, d=d, params0=p0, min_eig=min_eig, shape_scale=S_det, x_bar=x_bar, run=run)
 
             # storing results
             runs_params.append(params)
@@ -186,8 +184,10 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
                 successful_runs.append(run)
 
             # checking whether to do another run
-            if run >= min_retries:
-                rerun = (run < max_retries) and ((not success) or np.isinf(loglikelihood) or np.isnan(loglikelihood))
+            if run + 1 >= max_retries:
+                rerun = False
+            elif run >= min_retries:
+                rerun = ((not success) or np.isinf(loglikelihood) or np.isnan(loglikelihood))
             run += 1
 
         # determining best run and whether convergence was achieved
@@ -205,10 +205,10 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             print(f"EM Optimisation Complete. Converged= {converged}, f(x)= {-runs_loglikelihoods[best_run]}")
         return self._gh_to_params(runs_params[best_run]), converged
 
-    def _add_randomness(self, params: tuple, bounds: tuple, d: int, randomness_var: float) -> tuple:
+    def _add_randomness(self, params: tuple, bounds: tuple, d: int, randomness_var: float, copula: bool) -> tuple:
         adj_params: deque = deque()
         for i, param in enumerate(params):
-            if i != 4:
+            if not (i == 4 or (i==3 and copula)):
                 eps: float = np.random.normal(0, randomness_var)
                 adj_param = param + eps * param
 
@@ -223,7 +223,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
                     adj_param = np.concatenate([adj_param, param_bounds[:, 1].reshape(d, 1)], axis=1).min(axis=1).reshape(d, 1)
 
             else:
-                # shape matrix
+                # shape matrix or location vector when copula
                 adj_param = param
             adj_params.append(adj_param)
         return tuple(adj_params)
@@ -249,7 +249,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
 
             if np.isinf(loglikelihood) or np.isnan(loglikelihood):
                 # reuse start using best params
-                adj_params: tuple = self._add_randomness(best_params, bounds, d, randomness_var)
+                adj_params: tuple = self._add_randomness(best_params, bounds, d, randomness_var, copula)
                 params = (lamb, chi, psi, loc, shape, gamma) = adj_params
 
             # 2. Calculate Weights
@@ -265,7 +265,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
                 loc = ((deltas * data).mean(axis=0, dtype=float).reshape((d, 1)) - gamma) / delta_mean
                 omega: np.ndarray = np.array([deltas[i] * (data[i, :] - loc) @ (data[i, :] - loc).T for i in range(n)]).mean(axis=0, dtype=float) - (eta_mean * gamma @ gamma.T)
                 omega, _, eigenvalues = CorrelationMatrix._rm_pd(omega, min_eig)
-                shape = (abs(shape_scale / eigenvalues.prod()) ** (1 / d)) * omega
+                shape = ((shape_scale / eigenvalues.prod()) ** (1 / d)) * omega
 
             # 5. recalculate weights
             etas, deltas, zetas = self._etas_deltas_zetas(data, (lamb, chi, psi, loc, shape, gamma), h)
@@ -316,91 +316,75 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             # tends to 1 as r -> inf
             bessel_val: float = 1.0
         else:
-            bessel_val: float = scipy.special.kv(lamb+a, r) / scipy.special.kv(lamb, r)
+            bessel_val: float = kv.kv(lamb+a, r) / kv.kv(lamb, r)
+            # bessel_val: float = scipy.special.kv(lamb+a, r) / scipy.special.kv(lamb, r)
         return ((chi/psi) ** (a/2)) * bessel_val
+
+    @staticmethod
+    def _exp_w(params: tuple) -> float:
+        return multivariate_gen_hyperbolic_gen._exp_w_a(params, 1)
+
+    @staticmethod
+    def _var_w(params: tuple) -> float:
+        return multivariate_gen_hyperbolic_gen._exp_w_a(params, 2) - (multivariate_gen_hyperbolic_gen._exp_w_a(params, 1) ** 2)
 
     @staticmethod
     def _exp_log_w(params: tuple, h: float) -> float:
         return (multivariate_gen_hyperbolic_gen._exp_w_a(params, h) - multivariate_gen_hyperbolic_gen._exp_w_a(params, -h)) / 2*h
 
-    def _get_bounds(self, data: np.ndarray, as_tuple: bool = True, **kwargs) -> Union[dict, tuple]:
-        bounds_dict: dict = super()._get_bounds(data, as_tuple, **kwargs)
-        bounds_tuples: deque = deque()
-
+    def _get_bounds(self, data: np.ndarray, as_tuple: bool, **kwargs) -> Union[dict, tuple]:
+        # calculating default bounds
         d: int = data.shape[1]
         data_bounds: np.ndarray = np.array([data.min(axis=0), data.max(axis=0)], dtype=float).T
         data_abs_max: np.ndarray = abs(data).max(axis=0)
         data_extremes: np.ndarray = np.array([-data_abs_max, data_abs_max], dtype=float).T
         default_bounds: dict = {'lamb': (-10.0, 10.0), 'chi': (0.01, 10.0), 'psi': (0.01, 10.0), 'loc': data_bounds, 'gamma': data_extremes}
-        for w_param in ('lamb', 'chi', 'psi'):
-            w_param_bounds = bounds_dict.get(w_param, default_bounds[w_param])
-            bounds_dict[w_param] = w_param_bounds
-            bounds_tuples.append(w_param_bounds)
+        return super()._get_bounds(default_bounds, d, as_tuple, **kwargs)
 
-        for vec_param in ('loc', 'gamma'):
-            vec_param_bounds = bounds_dict.get(vec_param, default_bounds[vec_param])
-            bounds_dict[vec_param] = vec_param_bounds
-            for i in range(d):
-                bounds_tuples.append(tuple(vec_param_bounds[i, :]))
-
-        # if 'shape' not in bounds:
-        #     # finding range of possible exp[w] and var[w] values
-        #     rng_lens: int = 100
-        #     lamb_rng, chi_rng, psi_rng = np.linspace(*bounds['lamb'], rng_lens), np.linspace(*bounds['chi'], rng_lens), np.linspace(*bounds['psi'], rng_lens)
-        #     exp_w_vals, exp_w_sq_vals = deque(), deque()
-        #
-        #     for lamb in lamb_rng:
-        #         for chi in chi_rng:
-        #             for psi in psi_rng:
-        #                 exp_w_vals.append(self._exp_w_a((lamb, chi, psi), 1))
-        #                 exp_w_sq_vals.append(self._exp_w_a((lamb, chi, psi), 2))
-        #     min_exp_w, max_exp_w = min(exp_w_vals), max(exp_w_vals)
-        #     min_exp_w_sq, max_exp_w_sq = min(exp_w_sq_vals), max(exp_w_sq_vals)
-        #
-        #     S: np.ndarray = np.cov(data, rowvar=False, dtype=float)
-
-        return tuple(bounds_tuples) if as_tuple else bounds_dict
-
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple) -> np.ndarray:
+    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple, copula: bool) -> np.ndarray:
+        d: int = data.shape[1]
         lamb0: float = np.random.uniform(*bounds[0])
         chi0: float = np.random.uniform(*bounds[1])
         psi0: float = np.random.uniform(*bounds[2])
-        loc0: np.ndarray = data.mean(axis=0, dtype=float).flatten()
-        gamma0: np.ndarray = np.zeros((loc0.size, ), dtype=float)
-        theta0: np.ndarray = np.array([lamb0, chi0, psi0, *loc0, *gamma0], dtype=float)
-        return theta0
+        gamma0: np.ndarray = np.zeros((d,), dtype=float)
+        if not copula:
+            loc0: np.ndarray = data.mean(axis=0, dtype=float).flatten()
+            return np.array([lamb0, chi0, psi0, *loc0, *gamma0], dtype=float)
+        return np.array([lamb0, chi0, psi0, *gamma0], dtype=float)
 
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float) -> tuple:
+    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float, min_eig: float, copula: bool) -> tuple:
         d: int = S.shape[0]
 
         lamb, chi, psi = theta[:3]
-        loc: np.ndarray = theta[3: d + 3].copy()
         gamma: np.ndarray = theta[-d:].copy()
-        loc = loc.reshape((d, 1))
         gamma = gamma.reshape((d, 1))
 
-        # calculating implied shape parameter
-        exp_w: float = self._exp_w_a(theta[: 3], 1)
-        exp_w_sq: float = self._exp_w_a(theta[: 3], 2)
-        var_w: float = exp_w_sq - (exp_w**2)
-        omega: np.ndarray = (S - var_w * gamma @ gamma.T) / exp_w
-        omega, _, eigenvalues = CorrelationMatrix._rm_pd(omega, 10 ** -9)  # ensuring pd
-        shape: np.ndarray = omega * (S_det / eigenvalues.prod())  # solving identifiability problem
-        return lamb, chi, psi, loc, shape, gamma
+        if not copula:
+            # getting location vector from theta
+            loc: np.ndarray = theta[3: d + 3].copy()
+            loc = loc.reshape((d, 1))
 
-    def _low_dim_mle(self, data: np.ndarray, **kwargs) -> tuple:
-        return super()._low_dim_mle(data, 4, **kwargs)
+            # calculating implied shape parameter
+            exp_w: float = self._exp_w(theta[: 3])
+            var_w: float = self._var_w(theta[: 3])
+            omega: np.ndarray = (S - var_w * gamma @ gamma.T) / exp_w
+            omega, _, eigenvalues = CorrelationMatrix._rm_pd(omega, min_eig)  # ensuring pd
+            shape: np.ndarray = omega * ((S_det / eigenvalues.prod()) ** (1/d))  # solving identifiability problem
+        else:
+            loc: np.ndarray = np.zeros((d, 1), dtype=float)
+            shape: np.ndarray = S
+        return lamb, chi, psi, loc, shape, gamma
 
     def _fit_given_data_kwargs(self, method: str, data: np.ndarray, **user_kwargs) -> dict:
         if method == 'em':
             bounds: tuple = self._get_bounds(data, True, **user_kwargs)
-            default_theta0 = None
+            default_param0 = None
             default_q2_options: dict = {'maxiter': 1000, 'tol': 0.01}
             q2_options: dict = user_kwargs.get('q2_options', {})
             for arg in default_q2_options:
                 if arg not in q2_options:
                     q2_options[arg] = default_q2_options[arg]
-            kwargs: dict = {'min_retries': 0, 'max_retries': 3, 'copula': False, 'bounds': bounds, 'theta0': default_theta0, 'cov_method': 'laloux_pp_kendall', 'miniter': 10, 'maxiter': 100, 'h': 10**-5, 'tol': 0.1, 'q2_options': q2_options, 'randomness_var': 0.1, 'convergence_window_length': 5, 'show_progress': False}
+            kwargs: dict = {'min_retries': 0, 'max_retries': 3, 'copula': False, 'bounds': bounds, 'params0': default_param0, 'cov_method': 'laloux_pp_kendall', 'miniter': 10, 'maxiter': 100, 'h': 10**-5, 'tol': 0.1, 'q2_options': q2_options, 'randomness_var': 0.1, 'convergence_window_length': 5, 'show_progress': False}
         else:
             kwargs: dict = super()._fit_given_data_kwargs(method, data, **user_kwargs)
         return kwargs
@@ -427,18 +411,20 @@ if __name__ == '__main__':
     # testparams = multivariate_gen_hyperbolic.theta_to_params(theta, 3)
     # breakpoint()
     # breakpoint()
-    # gigrvs = gig.rvs((100, 1), (my_chi, my_psi, my_lambda))
-    # gigrvs = gig.rvs((1000, 1), (my_chi, my_psi, my_lambda), ppf_approx=True)
+    # gigrvs = gig.rvs((1000, 1), (my_lambda, my_chi, my_psi), ppf_approx=True)
+    # # gigrvs = gig.rvs((1000, 1), (my_chi, my_psi, my_lambda), ppf_approx=True)
     # fgig = gig.fit(gigrvs)
+    # fgig.plot()
     # fgig.rvs((100000, 1), ppf_approx=True)
     # breakpoint()
 
     #
     rvs = multivariate_gen_hyperbolic.rvs(10000, my_params)
+
     # multivariate_gen_hyperbolic.mc_cdf_plot(params=my_params)
     # print(rvs)
-    import pandas as pd
-
+    # import pandas as pd
+    # pd.DataFrame(rvs).to_excel('gh_rvs.xlsx')
     # test_run = multivariate_gen_hyperbolic._low_dim_mle(rvs)
     #
     pdf = multivariate_gen_hyperbolic.pdf(rvs, my_params)
@@ -456,11 +442,11 @@ if __name__ == '__main__':
     # print(multivariate_gen_hyperbolic.cdf(rvs[0, :], my_params))
     # print(multivariate_gen_hyperbolic.cdf(rvs[:6, :], my_params))
 
-    my_genhyp = multivariate_gen_hyperbolic.fit(rvs, show_progress=True)
-    print(my_genhyp.params.to_dict)
-    print(my_genhyp.loglikelihood())
+    # my_genhyp = multivariate_gen_hyperbolic.fit(rvs, show_progress=True, copula=True)
+    # print(my_genhyp.params.to_dict)
+    # print(my_genhyp.loglikelihood())
 
-    my_genhyp = multivariate_gen_hyperbolic.fit(rvs, method='em', show_progress=True, min_retries=5, maxiter=50)
+    my_genhyp = multivariate_gen_hyperbolic.fit(rvs, method='em', show_progress=True, min_retries=1, max_retries=1, maxiter=50)
     print(my_genhyp.params.to_dict)
     print(my_genhyp.loglikelihood())
 
