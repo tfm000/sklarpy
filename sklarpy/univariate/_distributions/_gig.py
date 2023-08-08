@@ -6,6 +6,8 @@ from scipy.stats import rv_continuous
 from scipy.stats._distn_infrastructure import _ShapeInfo
 import scipy.special
 
+from sklarpy.misc import kv
+
 
 __all__ = ['_gig']
 
@@ -128,7 +130,8 @@ class gig_gen(rv_continuous):
         return [ilamb, ichi, ipsi]
 
     def __pdf_single(self, xi: float, lamb: float, chi: float, psi: float) -> float:
-        k: float = scipy.special.kv(lamb, (chi * psi) ** 0.5)
+        # k: float = scipy.special.kv(lamb, (chi * psi) ** 0.5)
+        k: float = kv.kv(lamb, (chi * psi) ** 0.5)
         return ((psi / chi) ** (lamb / 2)) * (xi ** (lamb - 1)) * np.exp(-0.5 * ((chi / xi) + (psi * xi))) / (2 * k)
 
     def _pdf(self, x: np.ndarray, lamb: float, chi: float, psi: float) -> np.ndarray:
