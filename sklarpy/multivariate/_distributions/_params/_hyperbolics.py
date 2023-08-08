@@ -9,7 +9,7 @@ class MultivariateMarginalHyperbolicParams(MultivariateGenHyperbolicParams):
     def lamb(self) -> float:
         """The lambda parameter of the Multivariate Generalized Hyperbolic distribution
         and the underlying GIG distribution for W."""
-        return 1.
+        return 1.0
 
 
 class MultivariateHyperbolicParams(MultivariateGenHyperbolicParams):
