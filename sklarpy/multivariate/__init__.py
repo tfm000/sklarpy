@@ -1,2 +1,7 @@
+from sklarpy.multivariate._distributions._gaussian_kde import multivariate_gaussian_kde
+from sklarpy.multivariate._distributions._generalized_hyperbolic import multivariate_gen_hyperbolic
+from sklarpy.multivariate._distributions._hyperbolics import multivariate_marginal_hyperbolic, multivariate_nig, multivariate_hyperbolic
 from sklarpy.multivariate._distributions._normal import multivariate_normal
+from sklarpy.multivariate._distributions._skewed_t import multivariate_skewed_t
 from sklarpy.multivariate._distributions._student_t import multivariate_student_t
+from sklarpy.multivariate._distributions._symmetric_hyperbolics import multivariate_sym_marginal_hyperbolic, multivariate_sym_nig, multivariate_sym_hyperbolic
