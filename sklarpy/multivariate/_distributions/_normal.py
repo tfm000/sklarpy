@@ -64,7 +64,7 @@ class multivariate_normal_gen(PreFitContinuousMultivariate):
         return {'loc': params[0], 'shape': params[1]}, params[0].size
 
     def fit(self, data: dataframe_or_array = None, params: Union[Params, tuple] = None, method: str = 'mle', **kwargs) -> FittedContinuousMultivariate:
-        pass
+        return super().fit(data=data, params=params, method=method, **kwargs)
 
 
 multivariate_normal: multivariate_normal_gen = multivariate_normal_gen(name="multivariate_normal", params_obj=MultivariateNormalParams, num_params=2, max_num_variables=np.inf)
@@ -88,10 +88,11 @@ if __name__ == "__main__":
     print(my_mv_norm)
     print(my_mv_norm.params.to_dict)  # need to fix name printing!
     import matplotlib.pyplot as plt
+    my_mv_norm.marginal_pairplot(show=False)
     plt.show()
     # multivariate_normal.mc_cdf_plot(params=my_mv_norm.params)
     # my_mv_norm.mc_cdf_plot()
 
-    norm2 = multivariate_normal.fit(params=my_mv_norm.params)
-    norm2.pdf_plot()
+    # norm2 = multivariate_normal.fit(params=my_mv_norm.params)
+    # norm2.pdf_plot()
 

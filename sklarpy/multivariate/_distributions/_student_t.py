@@ -99,7 +99,7 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
         return {'loc': params[0], 'shape': params[1], 'dof': params[2]}, params[0].size
 
     def fit(self, data: dataframe_or_array = None, params: Union[Params, tuple] = None, method: str = 'dof-low-dim mle', **kwargs) -> FittedContinuousMultivariate:
-        pass
+        return super().fit(data=data, params=params, method=method, **kwargs)
 
 
 multivariate_student_t: multivariate_student_t_gen = multivariate_student_t_gen(name="multivariate_student_t", params_obj=MultivariateStudentTParams, num_params=3, max_num_variables=np.inf)
