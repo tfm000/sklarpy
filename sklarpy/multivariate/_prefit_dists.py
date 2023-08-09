@@ -9,7 +9,7 @@ from scipy.optimize import differential_evolution
 
 from sklarpy._other import Params
 from sklarpy._utils import dataframe_or_array, TypeKeeper, check_multivariate_data, get_iterator, FitError
-from sklarpy._plotting import pair_plot
+from sklarpy._plotting import pair_plot, threeD_plot
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
 from sklarpy.misc import CorrelationMatrix
 
@@ -231,18 +231,16 @@ class PreFitContinuousMultivariate:
             plot_df.columns = axes_names
 
         # plotting
-        title: str = f'{self.name} Marginal Pair-Plot'
+        title: str = f"{self.name.replace('_', ' ').title()} Marginal Pair-Plot"
         pair_plot(plot_df, title, color, alpha, figsize, grid, plot_kde, show)
 
     def _pdf_cdf_mccdf_plot(self, func_str: str, var1_range: np.ndarray, var2_range: np.ndarray, params: Union[Params, tuple], color: str, alpha: float, figsize: tuple,
-                            grid: bool, axes_names: tuple, zlim: tuple, num_generate: int, num_points: int, show_progress, show: bool, mc_num_generate: int = None):
-        # points to plot
+                            grid: bool, axes_names: Iterable, zlim: tuple, num_generate: int, num_points: int, show_progress: bool, show: bool, mc_num_generate: int = None):
+        # # checking arguments
         if (var1_range is not None) and (var2_range is not None):
             for var_range in (var1_range, var2_range):
                 if not isinstance(var_range, np.ndarray):
                     raise TypeError("var1_range and var2_range must be None or numpy arrays.")
-                if var_range.ndim != 1:
-                    raise ValueError("var1_range and var2_range must be 1-dimensional.")
 
         elif params is not None:
             rvs_array: np.ndarray = self.rvs(num_generate, params)
@@ -251,70 +249,32 @@ class PreFitContinuousMultivariate:
             xmin, xmax = rvs_array.min(axis=0), rvs_array.max(axis=0)
             var1_range: np.ndarray = np.linspace(xmin[0], xmax[0], num_points)
             var2_range: np.ndarray = np.linspace(xmin[1], xmax[1], num_points)
-
         else:
             raise ValueError("At least one of var1_range and var2_range or params must be non-none.")
 
-        # checking arguments
-        for str_arg in (color,):
-            if not isinstance(str_arg, str):
-                raise TypeError(f"invalid argument in {func_str}_plot. check color is a string.")
-
-        if not (isinstance(alpha, float) or isinstance(alpha, int)):
-            raise TypeError(f"invalid argument type in {func_str}_plot. check alpha is a float or integer.")
-        alpha = float(alpha)
-
-        for tuple_arg in (figsize, zlim):
-            if not (isinstance(tuple_arg, tuple) and len(tuple_arg) == 2):
-                raise TypeError(f"invalid argument type in {func_str}_plot. check figsize, zlim are tuples of length 2.")
-
-        for bool_arg in (grid, show_progress, show):
-            if not isinstance(bool_arg, bool):
-                raise TypeError(f"invalid argument type in {func_str}_plot. check grid, show_progress, show are boolean.")
-
         if axes_names is None:
-            pass
-        elif not (isinstance(axes_names, Iterable) and len(axes_names) == 2):
-            raise TypeError(f"invalid argument type in {func_str}_plot. check axes_names is None or a Iterable with "
-                            "an element for each variable.")
+            axes_names = ('variable 1', 'variable 2')
 
         if (mc_num_generate is None) and ('mc' in func_str):
             raise ValueError("mc_num_generate cannot be none for a monte-carlo function.")
 
-        # name of plot to show user
-        plot_name: str = func_str.replace('_', '').upper()
+        # title and name of plot to show user
+        plot_name: str = func_str.replace('_', ' ').upper()
+        title: str = f"{self.name.replace('_', ' ').title()} {plot_name} Plot"
 
-        # whether to show progress
-        iterator = get_iterator(var2_range, show_progress, f"calculating {plot_name} values")
-
-        # data for plot
+        # func kwargs
         if 'mc' in func_str:
             rvs = self.rvs(mc_num_generate, params)
         else:
             rvs = None
-
+        func_kwargs: dict = {'params': params, 'match_datatype': False, 'show_progress': False, 'rvs': rvs}
         func: Callable = eval(f"self.{func_str}")
-        Z: np.ndarray = np.array([[float(func(np.array([[x, y]]), params=params, match_datatype=False, show_progress=False, rvs=rvs)) for x in var1_range] for y in iterator])
-        X, Y = np.meshgrid(var1_range, var2_range)
 
         # plotting
-        fig = plt.figure(f"{self.name} {plot_name} Plot", figsize=figsize)
-        ax = plt.axes(projection='3d')
-        ax.plot_surface(X, Y, Z, color=color, alpha=alpha)
-        if axes_names is not None:
-            var_names = axes_names
-        else:
-            var_names = ['variable 1', 'variable 2']
-
-        ax.set_xlabel(var_names[0])
-        ax.set_ylabel(var_names[1])
-        ax.set_zlabel(f"{plot_name.lower()} values")
-        ax.set_zlim(*zlim)
-        plt.title(f"{self.name} {plot_name}")
-        plt.grid(grid)
-
-        if show:
-            plt.show()
+        threeD_plot(func=func, var1_range=var1_range, var2_range=var2_range,
+                    func_kwargs=func_kwargs, func_name=plot_name, title=title,
+                    color=color, alpha=alpha, figsize=figsize, grid=grid,
+                    axis_names=axes_names, zlim=zlim, show_progress=show_progress, show=show)
 
     def pdf_plot(self, var1_range: np.ndarray = None, var2_range: np.ndarray = None, params: Union[Params, tuple] = None, color: str = 'royalblue', alpha: float = 1.0,
                  figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (None, None),
