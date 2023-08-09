@@ -69,7 +69,8 @@ class FittedContinuousMultivariate(Savable, Copyable):
             if type_keeper.original_type == pd.DataFrame:
                 axes_names = type_keeper.original_info['other']['cols']
 
-        self.__obj.marginal_pairplot(self.params, color, alpha, figsize, grid, axes_names, plot_kde, num_generate, show)
+        self.__obj.marginal_pairplot(params=self.params, color=color, alpha=alpha, figsize=figsize,
+                                     grid=grid, axes_names=axes_names, plot_kde=plot_kde, num_generate=num_generate, show=show)
 
     def __pdf_cdf_mccdf_plot(self, func_name: str, var1_range: np.ndarray, var2_range: np.ndarray, color: str,
                              alpha: float, figsize: tuple, grid: bool, axes_names: tuple, zlim: tuple, num_points: int,
@@ -96,7 +97,7 @@ class FittedContinuousMultivariate(Savable, Copyable):
         # plotting
         self.__obj._pdf_cdf_mccdf_plot(func_name, var1_range=var1_range, var2_range=var2_range, params=self.params,
                                        color=color, alpha=alpha, figsize=figsize, grid=grid, axes_names=axes_names,
-                                       zlim=zlim, num_generate=num_points,
+                                       zlim=zlim, num_generate=0, num_points=num_points,
                                        show_progress=show_progress, show=show, mc_num_generate=mc_num_generate)
 
     def pdf_plot(self, var1_range: np.ndarray = None, var2_range: np.ndarray = None, color: str = 'royalblue', alpha: float = 1.0, figsize: tuple = (8, 8), grid: bool = True,

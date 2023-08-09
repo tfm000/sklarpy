@@ -17,7 +17,7 @@ __all__ = ['PreFitContinuousMultivariate']
 
 
 class PreFitContinuousMultivariate:
-    _DATA_FIT_METHODS: tuple = ('low_dim_mle', )
+    _DATA_FIT_METHODS: Tuple[str] = ('low_dim_mle', )
 
     def __init__(self, name: str, params_obj: Params, num_params: int, max_num_variables: int):
         self._name: str = name
@@ -78,7 +78,7 @@ class PreFitContinuousMultivariate:
             self._check_params(params, **kwargs)
         return params
 
-    def __singlular_cdf(self, num_variables: int, xrow: np.ndarray, params: tuple) -> float:
+    def _singlular_cdf(self, num_variables: int, xrow: np.ndarray, params: tuple) -> float:
         def integrable_pdf(*xrow) -> float:
             xrow = np.asarray(xrow, dtype=float)
             return float(self.pdf(xrow, params, match_datatype=False))
@@ -93,7 +93,7 @@ class PreFitContinuousMultivariate:
         show_progress: bool = kwargs.get('show_progress', True)
         iterator = get_iterator(x, show_progress, "calculating cdf values")
 
-        return np.array([self.__singlular_cdf(num_variables, xrow, params) for xrow in iterator], dtype=float)
+        return np.array([self._singlular_cdf(num_variables, xrow, params) for xrow in iterator], dtype=float)
 
     def _logpdf(self, x: np.ndarray, params: tuple,  **kwargs) -> np.ndarray:
         # to be overridden by child class(es)
@@ -215,18 +215,18 @@ class PreFitContinuousMultivariate:
                           num_generate: int = 10 ** 3, show: bool = True):
 
         # checking arguments
-        if axes_names is None:
-            pass
-        elif not (isinstance(axes_names, tuple) and len(axes_names) == self._num_variables):
-            raise TypeError("invalid argument type in pairplot. check axes_names is None or a tuple with "
-                            "an element for each variable.")
-
         if (not isinstance(num_generate, int)) or num_generate <= 0:
             raise TypeError("num_generate must be a posivie integer")
 
-        # data for plot
-        rvs: np.ndarray = self.rvs(num_generate, params)
+        rvs: np.ndarray = self.rvs(num_generate, params)  # data for plot
         plot_df: pd.DataFrame = pd.DataFrame(rvs)
+
+        if axes_names is None:
+            pass
+        elif not (isinstance(axes_names, Iterable) and len(axes_names) == rvs.shape[1]):
+            raise TypeError("invalid argument type in pairplot. check axes_names is None or a iterable with "
+                            "an element for each variable.")
+
         if axes_names is not None:
             plot_df.columns = axes_names
 
