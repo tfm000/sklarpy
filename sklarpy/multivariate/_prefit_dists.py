@@ -235,7 +235,7 @@ class PreFitContinuousMultivariate:
         pair_plot(plot_df, title, color, alpha, figsize, grid, plot_kde, show)
 
     def _pdf_cdf_mccdf_plot(self, func_str: str, var1_range: np.ndarray, var2_range: np.ndarray, params: Union[Params, tuple], color: str, alpha: float, figsize: tuple,
-                            grid: bool, axes_names: tuple, zlim: tuple, num_generate: int, show_progress, show: bool, mc_num_generate: int = None):
+                            grid: bool, axes_names: tuple, zlim: tuple, num_generate: int, num_points: int, show_progress, show: bool, mc_num_generate: int = None):
         # points to plot
         if (var1_range is not None) and (var2_range is not None):
             for var_range in (var1_range, var2_range):
@@ -248,8 +248,9 @@ class PreFitContinuousMultivariate:
             rvs_array: np.ndarray = self.rvs(num_generate, params)
             if rvs_array.shape[1] != 2:
                 raise NotImplementedError(f"{func_str}_plot is not implemented when the number of variables is not 2.")
-            var1_range: np.ndarray = rvs_array[:, 0]
-            var2_range: np.ndarray = rvs_array[:, 1]
+            xmin, xmax = rvs_array.min(axis=0), rvs_array.max(axis=0)
+            var1_range: np.ndarray = np.linspace(xmin[0], xmax[0], num_points)
+            var2_range: np.ndarray = np.linspace(xmin[1], xmax[1], num_points)
 
         else:
             raise ValueError("At least one of var1_range and var2_range or params must be non-none.")
@@ -317,18 +318,21 @@ class PreFitContinuousMultivariate:
 
     def pdf_plot(self, var1_range: np.ndarray = None, var2_range: np.ndarray = None, params: Union[Params, tuple] = None, color: str = 'royalblue', alpha: float = 1.0,
                  figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (None, None),
-                 num_generate: int = 100, show_progress: bool = True, show: bool = True) -> None:
-        self._pdf_cdf_mccdf_plot('pdf', var1_range, var2_range, params, color, alpha, figsize, grid, axes_names, zlim, num_generate, show_progress, show)
+                 num_generate: int = 1000, num_points: int = 100, show_progress: bool = True, show: bool = True) -> None:
+        self._pdf_cdf_mccdf_plot(func_str='pdf', var1_range=var1_range, var2_range=var2_range, params=params, color=color, alpha=alpha, figsize=figsize, grid=grid,
+                                 axes_names=axes_names, zlim=zlim, num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show)
 
     def cdf_plot(self, var1_range: np.ndarray = None, var2_range: np.ndarray = None, params: Union[Params, tuple] = None, color: str = 'royalblue', alpha: float = 1.0,
                  figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (0, 1),
-                 num_generate: int = 100, show_progress: bool = True, show: bool = True) -> None:
-        self._pdf_cdf_mccdf_plot('cdf', var1_range, var2_range, params, color, alpha, figsize, grid, axes_names, zlim, num_generate, show_progress, show)
+                 num_generate: int = 1000, num_points: int = 100, show_progress: bool = True, show: bool = True) -> None:
+        self._pdf_cdf_mccdf_plot(func_str='cdf', var1_range=var1_range, var2_range=var2_range, params=params, color=color, alpha=alpha, figsize=figsize, grid=grid,
+                                 axes_names=axes_names, zlim=zlim, num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show)
 
     def mc_cdf_plot(self, var1_range: np.ndarray = None, var2_range: np.ndarray = None, params: Union[Params, tuple] = None, mc_num_generate: int = 10 ** 4, color: str = 'royalblue', alpha: float = 1.0,
                  figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (0, 1),
-                 num_generate: int = 100, show_progress: bool = True, show: bool = True) -> None:
-        self._pdf_cdf_mccdf_plot('mc_cdf', var1_range, var2_range, params, color, alpha, figsize, grid, axes_names, zlim, num_generate, show_progress, show, mc_num_generate)
+                 num_generate: int = 1000, num_points: int = 100, show_progress: bool = True, show: bool = True) -> None:
+        self._pdf_cdf_mccdf_plot(func_str='mc_cdf', var1_range=var1_range, var2_range=var2_range, params=params, color=color, alpha=alpha, figsize=figsize, grid=grid,
+                                 axes_names=axes_names, zlim=zlim, num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show)
 
     @property
     def name(self) -> str:
