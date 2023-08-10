@@ -1,12 +1,14 @@
 import numpy as np
 
-from sklarpy.multivariate._distributions._params._symmetric_generalized_hyperbolic import MultivariateSymGenHyperbolicParams
+from sklarpy.multivariate._params._symmetric_generalized_hyperbolic import MultivariateSymGenHyperbolicParams
+from sklarpy.multivariate._distributions._generalized_hyperbolic import multivariate_gen_hyperbolic_gen
 
 __all__ = ['MultivariateGenHyperbolicParams']
 
 
 class MultivariateGenHyperbolicParams(MultivariateSymGenHyperbolicParams):
     """Contains the fitted parameters of a Multivariate Generalized Hyperbolic distribution."""
+    _DIST_GENERATOR = multivariate_gen_hyperbolic_gen
 
     @property
     def lamb(self) -> float:

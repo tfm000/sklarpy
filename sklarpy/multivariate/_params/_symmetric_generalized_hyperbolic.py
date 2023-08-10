@@ -1,13 +1,14 @@
 import numpy as np
-import scipy.special
 
 from sklarpy._other import Params
+from sklarpy.multivariate._distributions._symmetric_generalized_hyperbolic import multivariate_sym_gen_hyperbolic_gen
 
 __all__ = ['MultivariateSymGenHyperbolicParams']
 
 
 class MultivariateSymGenHyperbolicParams(Params):
     """Contains the fitted parameters of a Multivariate Symmetric Generalized Hyperbolic distribution."""
+    _DIST_GENERATOR = multivariate_sym_gen_hyperbolic_gen
 
     @property
     def lamb(self) -> float:
@@ -43,15 +44,12 @@ class MultivariateSymGenHyperbolicParams(Params):
     @property
     def w_mean(self) -> float:
         """The mean of the rv W ~ GIG(chi, psi, lambda)"""
-        r: float = np.sqrt(self.chi * self.psi)
-        return np.sqrt(self.chi / self.psi) * (scipy.special.kv(self.lamb + 1, r) / scipy.special.kv(self.lamb, r))
+        return self._DIST_GENERATOR._exp_w(self.to_tuple)
 
     @property
     def w_variance(self) -> float:
         """The variance of the rv W ~ GIG(chi, psi, lambda)"""
-        r: float = np.sqrt(self.chi * self.psi)
-        e2: float = (self.chi / self.psi) * (scipy.special.kv(self.lamb + 2, r) / scipy.special.kv(self.lamb, r))
-        return e2 - (self.w_mean ** 2)
+        return self._DIST_GENERATOR._var_w(self.to_tuple)
 
     @property
     def mean(self) -> np.ndarray:
