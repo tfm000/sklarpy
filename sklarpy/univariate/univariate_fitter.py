@@ -14,13 +14,16 @@ from sklarpy.univariate.distributions import *
 from sklarpy.univariate.distributions_map import distributions_map
 from sklarpy._utils import data_iterable, str_or_iterable, check_univariate_data, check_array_datatype, FitError, \
     SignificanceError
+from sklarpy._other import Savable
 
 __all__ = ['UnivariateFitter']
 
 
-class UnivariateFitter:
+class UnivariateFitter(Savable):
     """Class used for determining the best univariate/marginal distribution for a random sample."""
-    def __init__(self, data: data_iterable):
+    _OBJ_NAME = 'UnivariateFitter'
+
+    def __init__(self, data: data_iterable, name: str = None):
         """Used for determining the best univariate/marginal distribution for a random sample.
 
         Parameters
@@ -28,6 +31,10 @@ class UnivariateFitter:
         data : data_iterable
             The data to fit univariate distributions too. Can be a pd.DataFrame, pd.Series, np.ndarray or any other
             iterable containing data. Data may be continuous or discrete.
+        name: str
+            The name of your UnivariateFitter object. Used when saving.
+            If none, 'UnivariateFitter' is used as a name.
+            Default is None.
         """
         self._data: np.ndarray = check_univariate_data(data)
         self._datatype = check_array_datatype(self._data)
@@ -35,6 +42,7 @@ class UnivariateFitter:
         self._fitted: bool = False
         self._fitted_dists: dict = {}
         self._fitted_summaries: dict = {}
+        super().__init__(name)
 
     def __str__(self):
         return f"UnivariateFitter(fitted={self._fitted})"
