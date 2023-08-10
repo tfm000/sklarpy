@@ -45,8 +45,7 @@ class MultivariateStudentTParams(Params):
         """The covariance matrix of the multivariate Student T distribution.
         Note this is not the same as the shape matrix.
         """
-        shape: np.ndarray = self.shape
-        return shape * self.dof / (self.dof - 2)
+        return self.shape * self.dof / (self.dof - 2)if self.dof > 2 else np.full(self.shape.shape, np.nan, dtype=float)
 
     @property
     def covariance_matrix(self) -> np.ndarray:
