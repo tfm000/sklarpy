@@ -5,6 +5,7 @@ from sklarpy.multivariate._distributions._hyperbolics import multivariate_nig_ge
 __all__ = ['MultivariateMarginalHyperbolicParams', 'MultivariateHyperbolicParams', 'MultivariateNIGParams']
 
 
+
 class MultivariateMarginalHyperbolicParams(MultivariateGenHyperbolicParams):
     _DIST_GENERATOR = multivariate_marginal_hyperbolic_gen
 
