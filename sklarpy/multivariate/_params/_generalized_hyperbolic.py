@@ -14,22 +14,25 @@ class MultivariateGenHyperbolicParams(MultivariateSymGenHyperbolicParams):
     def lamb(self) -> float:
         """The lambda parameter of the Multivariate Generalized Hyperbolic distribution
         and the underlying GIG distribution for W."""
+        return super().lamb
 
     @property
     def chi(self) -> float:
         """The chi parameter of the Multivariate Generalized Hyperbolic distribution
         and the underlying GIG distribution for W."""
+        return super().chi
 
     @property
     def psi(self) -> float:
         """The psi parameter of the Multivariate Generalized Hyperbolic distribution
         and the underlying GIG distribution for W."""
-
+        return super().psi
     @property
     def loc(self) -> np.ndarray:
         """The location / mu parameter.
         Note this is not the same as the mean vector in general.
         """
+        return super().loc
 
     @property
     def gamma(self) -> np.ndarray:
