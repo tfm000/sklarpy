@@ -12,7 +12,7 @@ __all__ = ['multivariate_marginal_hyperbolic_gen', 'multivariate_hyperbolic_gen'
 
 class multivariate_hyperbolic_base_gen(multivariate_gen_hyperbolic_gen):
     @abstractmethod
-    def _init_lamb(self, params: tuple):
+    def _init_lamb(self, *args):
         pass
 
     def _check_params(self, params: tuple, **kwargs) -> None:
@@ -30,7 +30,7 @@ class multivariate_hyperbolic_base_gen(multivariate_gen_hyperbolic_gen):
 
     def _get_params(self, params: Union[Params, tuple], **kwargs) -> tuple:
         params_tuple: tuple = PreFitContinuousMultivariate._get_params(self, params, **kwargs)
-        self._init_lamb(params_tuple)
+        self._init_lamb(params_tuple[-1].shape[0])
         params_tuple = self._lamb, *params_tuple
         return params_tuple[-6:]
 
@@ -55,6 +55,9 @@ class multivariate_hyperbolic_base_gen(multivariate_gen_hyperbolic_gen):
         return params[1:]
 
     def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple, copula: bool) -> np.ndarray:
+        d: int = (len(bounds) - 2) / 2 if self._ASYMMETRIC else len(bounds) - 2
+        d = int(d)
+        self._init_lamb(d)
         bounds = ((self._lamb, self._lamb), *bounds)
         theta0: np.ndarray = super()._get_low_dim_theta0(data=data, bounds=bounds, copula=copula)
         return theta0[1:]
@@ -70,20 +73,18 @@ class multivariate_hyperbolic_base_gen(multivariate_gen_hyperbolic_gen):
 
 
 class multivariate_marginal_hyperbolic_gen(multivariate_hyperbolic_base_gen):
-    def _init_lamb(self, params: tuple):
+    def _init_lamb(self, *args):
         self._lamb: float = 1.0
 
 
 class multivariate_hyperbolic_gen(multivariate_hyperbolic_base_gen):
-    def _init_lamb(self, params: tuple):
-        d: int = params[-1].shape[0]
+    def _init_lamb(self, d: int):
         self._lamb: float = 0.5 * (d + 1)
 
 
 class multivariate_nig_gen(multivariate_hyperbolic_base_gen):
-    def _init_lamb(self, params: tuple):
+    def _init_lamb(self, *args):
         self._lamb: float = -0.5
-
 
 
 

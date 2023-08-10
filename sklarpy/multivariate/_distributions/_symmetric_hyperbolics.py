@@ -26,7 +26,7 @@ class multivariate_sym_hyperbolic_base_gen(multivariate_hyperbolic_base_gen):
 
     def _get_params(self, params: Union[Params, tuple], **kwargs) -> tuple:
         params_tuple: tuple = PreFitContinuousMultivariate._get_params(self, params, **kwargs)
-        self._init_lamb(params_tuple)
+        self._init_lamb(params_tuple[-1].shape[0])
         if len(params_tuple) == 6:
             return params_tuple
 
@@ -73,18 +73,17 @@ class multivariate_sym_hyperbolic_base_gen(multivariate_hyperbolic_base_gen):
 
 
 class multivariate_sym_marginal_hyperbolic_gen(multivariate_sym_hyperbolic_base_gen):
-    def _init_lamb(self, params: tuple):
+    def _init_lamb(self, *args):
         self._lamb: float = 1.0
 
 
 class multivariate_sym_hyperbolic_gen(multivariate_sym_hyperbolic_base_gen):
-    def _init_lamb(self, params: tuple):
-        d: int = params[-1].shape[0]
+    def _init_lamb(self, d: int):
         self._lamb: float = 0.5 * (d + 1)
 
 
 class multivariate_sym_nig_gen(multivariate_sym_hyperbolic_base_gen):
-    def _init_lamb(self, params: tuple):
+    def _init_lamb(self, *args):
         self._lamb: float = -0.5
 
 
