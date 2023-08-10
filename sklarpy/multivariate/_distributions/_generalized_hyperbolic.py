@@ -6,11 +6,9 @@ from scipy.optimize import differential_evolution
 
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.univariate import gig
-from sklarpy.multivariate._distributions._params import MultivariateGenHyperbolicParams
 from sklarpy.misc import CorrelationMatrix, kv
 
-
-__all__ = ['multivariate_gen_hyperbolic']
+__all__ = ['multivariate_gen_hyperbolic_gen']
 
 
 class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
@@ -58,9 +56,6 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         q: float = chi + ((x - loc).T @ shape_inv @ (x - loc))
         p: float = psi + (gamma.T @ shape_inv @ gamma)
         r: float = np.sqrt(chi * psi)
-
-        # log_c: float = (lamb * (np.log(psi) - np.log(r))) + ((0.5 * d - lamb) * np.log(p)) - 0.5 * ((d * np.log(2 * np.pi)) + np.log(np.linalg.det(shape)) + 2 * np.log(scipy.special.kv(lamb, r)))
-        # log_h: float = np.log(scipy.special.kv(lamb - (d / 2), np.sqrt(q * p))) + ((x - loc).T @ shape_inv @ gamma) - (0.25 * (d - 2 * lamb) * (np.log(q) + np.log(p)))
 
         log_c: float = (lamb * (np.log(psi) - np.log(r))) + ((0.5*d - lamb) * np.log(p)) - 0.5 * ((d*np.log(2*np.pi)) + np.log(np.linalg.det(shape)) + 2*kv.logkv(lamb, r))
         log_h: float = kv.logkv(lamb - (d / 2), np.sqrt(q * p)) + ((x - loc).T @ shape_inv @ gamma) - (0.25 * (d - 2 * lamb) * (np.log(q) + np.log(p)))
@@ -131,7 +126,6 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         lamb, chi, psi = w_params
         n: int = zetas.size
         a: float = n * (0.5 * lamb * np.log(psi / chi) - np.log(2) - kv.logkv(lamb, (chi * psi) ** 0.5))
-        # a: float = n * (0.5 * lamb * np.log(psi / chi) - np.log(2 * scipy.special.kv(lamb, (chi * psi) ** 0.5)))
         q2: float = a + ((lamb - 1) * zetas.sum()) + (-0.5 * chi * deltas.sum()) + (-0.5 * psi * etas.sum())
         return -q2
 
@@ -394,72 +388,70 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         return {'lamb': params[0], 'chi': params[1], 'psi': params[2], 'loc': params[3], 'shape': params[4], 'gamma': params[5]}, params[3].size
 
 
-multivariate_gen_hyperbolic: multivariate_gen_hyperbolic_gen = multivariate_gen_hyperbolic_gen(name="multivariate_gen_hyperbolic", params_obj=MultivariateGenHyperbolicParams, num_params=6, max_num_variables=np.inf)
 
-
-if __name__ == '__main__':
-    my_loc = np.array([1, -3, 5.2], dtype=float)
-    my_shape = np.array([[1, 0.284, 0.520], [0.284, 1, 0.435], [0.520, 0.435, 1]], dtype=float)
-    my_gamma = np.array([2.3, 1.4, -4.3], dtype=float)
-    my_lambda = - 0.5
-    my_chi = 1.7
-    my_psi = 4.5
-    my_params = (my_lambda, my_chi, my_psi, my_loc, my_shape, my_gamma)
-
-    # theta = np.array([my_lambda, my_chi, my_psi, *my_loc.tolist(), *my_shape.diagonal().tolist(), *my_shape[0,1:].tolist(), my_shape[1, 2], *my_gamma.tolist()], dtype=float)
-    # breakpoint()
-    # testparams = multivariate_gen_hyperbolic.theta_to_params(theta, 3)
-    # breakpoint()
-    # breakpoint()
-    # gigrvs = gig.rvs((1000, 1), (my_lambda, my_chi, my_psi), ppf_approx=True)
-    # # gigrvs = gig.rvs((1000, 1), (my_chi, my_psi, my_lambda), ppf_approx=True)
-    # fgig = gig.fit(gigrvs)
-    # fgig.plot()
-    # fgig.rvs((100000, 1), ppf_approx=True)
-    # breakpoint()
-
-    #
-    rvs = multivariate_gen_hyperbolic.rvs(10000, my_params)
-
-    # multivariate_gen_hyperbolic.mc_cdf_plot(params=my_params)
-    # print(rvs)
-    # import pandas as pd
-    # pd.DataFrame(rvs).to_excel('gh_rvs.xlsx')
-    # test_run = multivariate_gen_hyperbolic._low_dim_mle(rvs)
-    #
-    pdf = multivariate_gen_hyperbolic.pdf(rvs, my_params)
-    # print(pdf)
-    # pdf = multivariate_gen_hyperbolic._singular_pdf(rvs[k, :], my_params)
-    # print(np.exp(log_pdf) - pdf)
-
-    # df = pd.DataFrame(rvs)
-    # df.to_excel('test_data2.xlsx')
-    # df = pd.read_excel('test_data2.xlsx', index_col=0)
-    # rvs = df.to_numpy()
-
-    # max_loglikelihood = multivariate_gen_hyperbolic.loglikelihood(rvs, my_params)
-    # print(f"target: {max_loglikelihood}")
-    # print(multivariate_gen_hyperbolic.cdf(rvs[0, :], my_params))
-    # print(multivariate_gen_hyperbolic.cdf(rvs[:6, :], my_params))
-
-    # my_genhyp = multivariate_gen_hyperbolic.fit(rvs, show_progress=True, copula=True)
-    # print(my_genhyp.params.to_dict)
-    # print(my_genhyp.loglikelihood())
-
-    my_genhyp = multivariate_gen_hyperbolic.fit(rvs, method='em', show_progress=True, min_retries=1, max_retries=1, maxiter=50)
-    print(my_genhyp.params.to_dict)
-    print(my_genhyp.loglikelihood())
-
-    print('theoretical max: ', multivariate_gen_hyperbolic.loglikelihood(rvs, my_params))
-    # my_genhyp.pdf_plot()
-
-    # multivariate_gen_hyperbolic.pdf_plot(params=my_params)
-
-    # import matplotlib.pyplot as plt
-    # fig = plt.figure()
-    # ax = fig.add_subplot(projection='3d')
-    # pdf_vals = multivariate_gen_hyperbolic.pdf(rvs, my_params)
-    # ax.scatter(rvs[:, 0], rvs[:, 1], pdf_vals)
-    # multivariate_gen_hyperbolic.pdf_plot(params=my_params, show=False)
-    # plt.show()
-
+# if __name__ == '__main__':
+#     my_loc = np.array([1, -3, 5.2], dtype=float)
+#     my_shape = np.array([[1, 0.284, 0.520], [0.284, 1, 0.435], [0.520, 0.435, 1]], dtype=float)
+#     my_gamma = np.array([2.3, 1.4, -4.3], dtype=float)
+#     my_lambda = - 0.5
+#     my_chi = 1.7
+#     my_psi = 4.5
+#     my_params = (my_lambda, my_chi, my_psi, my_loc, my_shape, my_gamma)
+#
+#     # theta = np.array([my_lambda, my_chi, my_psi, *my_loc.tolist(), *my_shape.diagonal().tolist(), *my_shape[0,1:].tolist(), my_shape[1, 2], *my_gamma.tolist()], dtype=float)
+#     # breakpoint()
+#     # testparams = multivariate_gen_hyperbolic.theta_to_params(theta, 3)
+#     # breakpoint()
+#     # breakpoint()
+#     # gigrvs = gig.rvs((1000, 1), (my_lambda, my_chi, my_psi), ppf_approx=True)
+#     # # gigrvs = gig.rvs((1000, 1), (my_chi, my_psi, my_lambda), ppf_approx=True)
+#     # fgig = gig.fit(gigrvs)
+#     # fgig.plot()
+#     # fgig.rvs((100000, 1), ppf_approx=True)
+#     # breakpoint()
+#
+#     #
+#     rvs = multivariate_gen_hyperbolic.rvs(10000, my_params)
+#
+#     # multivariate_gen_hyperbolic.mc_cdf_plot(params=my_params)
+#     # print(rvs)
+#     # import pandas as pd
+#     # pd.DataFrame(rvs).to_excel('gh_rvs.xlsx')
+#     # test_run = multivariate_gen_hyperbolic._low_dim_mle(rvs)
+#     #
+#     pdf = multivariate_gen_hyperbolic.pdf(rvs, my_params)
+#     # print(pdf)
+#     # pdf = multivariate_gen_hyperbolic._singular_pdf(rvs[k, :], my_params)
+#     # print(np.exp(log_pdf) - pdf)
+#
+#     # df = pd.DataFrame(rvs)
+#     # df.to_excel('test_data2.xlsx')
+#     # df = pd.read_excel('test_data2.xlsx', index_col=0)
+#     # rvs = df.to_numpy()
+#
+#     # max_loglikelihood = multivariate_gen_hyperbolic.loglikelihood(rvs, my_params)
+#     # print(f"target: {max_loglikelihood}")
+#     # print(multivariate_gen_hyperbolic.cdf(rvs[0, :], my_params))
+#     # print(multivariate_gen_hyperbolic.cdf(rvs[:6, :], my_params))
+#
+#     # my_genhyp = multivariate_gen_hyperbolic.fit(rvs, show_progress=True, copula=True)
+#     # print(my_genhyp.params.to_dict)
+#     # print(my_genhyp.loglikelihood())
+#
+#     my_genhyp = multivariate_gen_hyperbolic.fit(rvs, method='em', show_progress=True, min_retries=1, max_retries=1, maxiter=50)
+#     print(my_genhyp.params.to_dict)
+#     print(my_genhyp.loglikelihood())
+#
+#     print('theoretical max: ', multivariate_gen_hyperbolic.loglikelihood(rvs, my_params))
+#     # my_genhyp.pdf_plot()
+#
+#     # multivariate_gen_hyperbolic.pdf_plot(params=my_params)
+#
+#     # import matplotlib.pyplot as plt
+#     # fig = plt.figure()
+#     # ax = fig.add_subplot(projection='3d')
+#     # pdf_vals = multivariate_gen_hyperbolic.pdf(rvs, my_params)
+#     # ax.scatter(rvs[:, 0], rvs[:, 1], pdf_vals)
+#     # multivariate_gen_hyperbolic.pdf_plot(params=my_params, show=False)
+#     # plt.show()
+#

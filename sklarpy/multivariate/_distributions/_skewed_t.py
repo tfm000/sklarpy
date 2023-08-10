@@ -9,7 +9,8 @@ from sklarpy._other import Params
 from sklarpy.misc import kv
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.univariate import ig
-from sklarpy.multivariate._distributions._params import MultivariateSkewedTParams
+
+__all__ = ['multivariate_skewed_t_gen']
 
 
 class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
@@ -153,44 +154,44 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
         return {'dof': params[0], 'loc': params[1], 'shape': params[2], 'gamma': params[3]}, params[1].size
 
 
-multivariate_skewed_t: multivariate_skewed_t_gen = multivariate_skewed_t_gen(name='multivariate_skewed_t', params_obj=MultivariateSkewedTParams, num_params=4, max_num_variables=np.inf)
 
 
-if __name__ == '__main__':
-    my_dof = 10.0
-    my_loc = np.array([2.19459261, -5.03119294], dtype=float)
-    my_shape = np.array([[ 2.53039133, -1.50221816], [-1.50221816,  5.49204651]], dtype=float)
-    # my_gamma = np.array([2.3, -4.3], dtype=float)
-    my_gamma = np.array([0.81390385, -1.7244502], dtype=float)
-    my_params = (my_dof, my_loc, my_shape, my_gamma)
-    my_params2 = (4.5, *my_params[1:])
 
-    dist = multivariate_skewed_t
-    dist.pdf_plot(params=my_params)
-    # breakpoint()
-
-    # rvs = dist.rvs(1000, my_params)
-    import pandas as pd
-    rvs = pd.read_excel('h_rvs.xlsx', index_col=0)
-    # # rvs = rvs.to_numpy()
-    # # print(rvs)
-    # # my_dist = dist.fit(rvs, show_progress=True, min_retries=1, max_retries=1, tol=0.1)
-    my_dist = dist.fit(rvs, show_progress=True, method='em', min_retries=0, max_retries=3, tol=0.1)
-    print('theoretical max: ', dist.loglikelihood(rvs, my_params))
-    print(my_dist.params.to_dict)
-    #
-    my_dist.pdf_plot()
-    #
-    # import matplotlib.pyplot as plt
-    # #
-    # # my_dist.pdf_plot(show=False)
-    # # my_dist.mc_cdf_plot(show=False)
-    # #
-    # p1 = dist.pdf(rvs, my_params)
-    # p2 = my_dist.pdf(rvs)
-    # fig = plt.figure()
-    # ax = fig.add_subplot(projection='3d')
-    # num = rvs.shape[0]
-    # ax.scatter(rvs[:num, 0], rvs[:num, 1], p1[:num], marker='o', c='r')
-    # ax.scatter(rvs[:num, 0], rvs[:num, 1], p2[:num], marker='^', c='b')
-    # plt.show()
+# if __name__ == '__main__':
+#     my_dof = 10.0
+#     my_loc = np.array([2.19459261, -5.03119294], dtype=float)
+#     my_shape = np.array([[ 2.53039133, -1.50221816], [-1.50221816,  5.49204651]], dtype=float)
+#     # my_gamma = np.array([2.3, -4.3], dtype=float)
+#     my_gamma = np.array([0.81390385, -1.7244502], dtype=float)
+#     my_params = (my_dof, my_loc, my_shape, my_gamma)
+#     my_params2 = (4.5, *my_params[1:])
+#
+#     dist = multivariate_skewed_t
+#     dist.pdf_plot(params=my_params)
+#     # breakpoint()
+#
+#     # rvs = dist.rvs(1000, my_params)
+#     import pandas as pd
+#     rvs = pd.read_excel('h_rvs.xlsx', index_col=0)
+#     # # rvs = rvs.to_numpy()
+#     # # print(rvs)
+#     # # my_dist = dist.fit(rvs, show_progress=True, min_retries=1, max_retries=1, tol=0.1)
+#     my_dist = dist.fit(rvs, show_progress=True, method='em', min_retries=0, max_retries=3, tol=0.1)
+#     print('theoretical max: ', dist.loglikelihood(rvs, my_params))
+#     print(my_dist.params.to_dict)
+#     #
+#     my_dist.pdf_plot()
+#     #
+#     # import matplotlib.pyplot as plt
+#     # #
+#     # # my_dist.pdf_plot(show=False)
+#     # # my_dist.mc_cdf_plot(show=False)
+#     # #
+#     # p1 = dist.pdf(rvs, my_params)
+#     # p2 = my_dist.pdf(rvs)
+#     # fig = plt.figure()
+#     # ax = fig.add_subplot(projection='3d')
+#     # num = rvs.shape[0]
+#     # ax.scatter(rvs[:num, 0], rvs[:num, 1], p1[:num], marker='o', c='r')
+#     # ax.scatter(rvs[:num, 0], rvs[:num, 1], p2[:num], marker='^', c='b')
+#     # plt.show()

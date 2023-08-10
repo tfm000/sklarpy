@@ -9,9 +9,8 @@ from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
 from sklarpy._other import Params
 from sklarpy._utils import dataframe_or_array
-from sklarpy.multivariate._distributions._params import MultivariateStudentTParams
 
-__all__ = ['multivariate_student_t']
+__all__ = ['multivariate_student_t_gen']
 
 
 class multivariate_student_t_gen(PreFitContinuousMultivariate):
@@ -102,44 +101,44 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
         return super().fit(data=data, params=params, method=method, **kwargs)
 
 
-multivariate_student_t: multivariate_student_t_gen = multivariate_student_t_gen(name="multivariate_student_t", params_obj=MultivariateStudentTParams, num_params=3, max_num_variables=np.inf)
 
 
-if __name__ == "__main__":
-    my_mu = np.array([1, -3], dtype=float)
-    my_corr = np.array([[1, 0.7], [0.7, 1]], dtype=float)
-    my_sig = np.array([1.3, 2.5])
-    my_dof = 3.4
-
-    my_cov = np.diag(my_sig) @ my_corr @ np.diag(my_sig)
-    my_shape = my_cov * (my_dof - 2) / my_dof
-
-    rvs = multivariate_student_t.rvs(1000, (my_mu, my_shape, my_dof))
-
-    import pandas as pd
-    df = pd.DataFrame(rvs, columns=['sharks', 'lizards'])
-
-    # my_mv_t = multivariate_student_t.fit(df, copula=True, show_progress=True)
-    my_mv_t =multivariate_student_t.fit(rvs, method='dof-low-dim mle')#, show_progress=True)
-    print(my_mv_t.params.to_dict)
-
-    # my_mv_t =multivariate_student_t.fit(rvs, method='dof-low-dim mle', show_progress=True)
-    # print('here')
-    # print( my_mv_t.pdf(rvs[0, :] ))
-    # print(my_mv_t.pdf(rvs[0, :]))
-    # print(my_mv_t.logpdf(df))
-    # print('bye')
-    # print(my_mv_t.params.to_dict)
-    #
-    # my_mv_t.cdf_plot(show=False)
-    # my_mv_t.mc_cdf_plot(show=False)
-    # my_mv_t.pdf_plot(show=False)
-    # import matplotlib.pyplot as plt
-    # plt.show()
-    # # print(my_mv_t.pdf(rvs))
-    # # print(my_mv_t.cdf(rvs[:5, :]))
-    #
-    # # t2 = multivariate_student_t.fit(params=my_mv_t.params)
-    # # print(t2.mc_cdf(np.array([[1, -3]])))
-    # breakpoint()
+#
+# if __name__ == "__main__":
+#     my_mu = np.array([1, -3], dtype=float)
+#     my_corr = np.array([[1, 0.7], [0.7, 1]], dtype=float)
+#     my_sig = np.array([1.3, 2.5])
+#     my_dof = 3.4
+#
+#     my_cov = np.diag(my_sig) @ my_corr @ np.diag(my_sig)
+#     my_shape = my_cov * (my_dof - 2) / my_dof
+#
+#     rvs = multivariate_student_t.rvs(1000, (my_mu, my_shape, my_dof))
+#
+#     import pandas as pd
+#     df = pd.DataFrame(rvs, columns=['sharks', 'lizards'])
+#
+#     # my_mv_t = multivariate_student_t.fit(df, copula=True, show_progress=True)
+#     my_mv_t =multivariate_student_t.fit(rvs, method='dof-low-dim mle')#, show_progress=True)
+#     print(my_mv_t.params.to_dict)
+#
+#     # my_mv_t =multivariate_student_t.fit(rvs, method='dof-low-dim mle', show_progress=True)
+#     # print('here')
+#     # print( my_mv_t.pdf(rvs[0, :] ))
+#     # print(my_mv_t.pdf(rvs[0, :]))
+#     # print(my_mv_t.logpdf(df))
+#     # print('bye')
+#     # print(my_mv_t.params.to_dict)
+#     #
+#     # my_mv_t.cdf_plot(show=False)
+#     # my_mv_t.mc_cdf_plot(show=False)
+#     # my_mv_t.pdf_plot(show=False)
+#     # import matplotlib.pyplot as plt
+#     # plt.show()
+#     # # print(my_mv_t.pdf(rvs))
+#     # # print(my_mv_t.cdf(rvs[:5, :]))
+#     #
+#     # # t2 = multivariate_student_t.fit(params=my_mv_t.params)
+#     # # print(t2.mc_cdf(np.array([[1, -3]])))
+#     # breakpoint()
 

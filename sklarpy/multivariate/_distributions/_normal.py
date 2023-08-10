@@ -8,10 +8,8 @@ from sklarpy.misc import CorrelationMatrix
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
 from sklarpy._other import Params
 from sklarpy._utils import dataframe_or_array
-from sklarpy.multivariate._distributions._params import MultivariateNormalParams
 
-
-__all__ = ['multivariate_normal']
+__all__ = ['multivariate_normal_gen']
 
 
 class multivariate_normal_gen(PreFitContinuousMultivariate):
@@ -67,32 +65,31 @@ class multivariate_normal_gen(PreFitContinuousMultivariate):
         return super().fit(data=data, params=params, method=method, **kwargs)
 
 
-multivariate_normal: multivariate_normal_gen = multivariate_normal_gen(name="multivariate_normal", params_obj=MultivariateNormalParams, num_params=2, max_num_variables=np.inf)
 
 
-if __name__ == "__main__":
-    # my_mu = np.array([1, -3, 5], dtype=float)
-    # my_corr = np.array([[1, 0.7, -0.2], [0.7, 1, -0.4], [-0.2, -0.4, 1]], dtype=float)
-    # my_sig = np.array([1.3, 2.5, 1.8])
-
-    my_mu = np.array([1, -3], dtype=float)
-    my_corr = np.array([[1, 0.7], [0.7, 1]], dtype=float)
-    my_sig = np.array([1.3, 2.5])
-
-    my_cov = np.diag(my_sig) @ my_corr @ np.diag(my_sig)
-    rvs = multivariate_normal.rvs(1000, (my_mu, my_cov))
-
-    my_mv_norm = multivariate_normal.fit(rvs, copula=True)
-    my_mv_norm.pdf_plot(show=False)
-    my_mv_norm.cdf_plot(show=False)
-    print(my_mv_norm)
-    print(my_mv_norm.params.to_dict)  # need to fix name printing!
-    import matplotlib.pyplot as plt
-    my_mv_norm.marginal_pairplot(show=False)
-    plt.show()
-    # multivariate_normal.mc_cdf_plot(params=my_mv_norm.params)
-    # my_mv_norm.mc_cdf_plot()
-
-    # norm2 = multivariate_normal.fit(params=my_mv_norm.params)
-    # norm2.pdf_plot()
-
+# if __name__ == "__main__":
+#     # my_mu = np.array([1, -3, 5], dtype=float)
+#     # my_corr = np.array([[1, 0.7, -0.2], [0.7, 1, -0.4], [-0.2, -0.4, 1]], dtype=float)
+#     # my_sig = np.array([1.3, 2.5, 1.8])
+#
+#     my_mu = np.array([1, -3], dtype=float)
+#     my_corr = np.array([[1, 0.7], [0.7, 1]], dtype=float)
+#     my_sig = np.array([1.3, 2.5])
+#
+#     my_cov = np.diag(my_sig) @ my_corr @ np.diag(my_sig)
+#     rvs = multivariate_normal.rvs(1000, (my_mu, my_cov))
+#
+#     my_mv_norm = multivariate_normal.fit(rvs, copula=True)
+#     my_mv_norm.pdf_plot(show=False)
+#     my_mv_norm.cdf_plot(show=False)
+#     print(my_mv_norm)
+#     print(my_mv_norm.params.to_dict)  # need to fix name printing!
+#     import matplotlib.pyplot as plt
+#     my_mv_norm.marginal_pairplot(show=False)
+#     plt.show()
+#     # multivariate_normal.mc_cdf_plot(params=my_mv_norm.params)
+#     # my_mv_norm.mc_cdf_plot()
+#
+#     # norm2 = multivariate_normal.fit(params=my_mv_norm.params)
+#     # norm2.pdf_plot()
+#

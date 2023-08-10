@@ -6,9 +6,8 @@ from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
 from sklarpy._other import Params
 from sklarpy._utils import dataframe_or_array
-from sklarpy.multivariate._distributions._params import MultivariateGaussianKDEParams
 
-__all__ = ['multivariate_gaussian_kde']
+__all__ = ['multivariate_gaussian_kde_gen']
 
 
 class multivariate_gaussian_kde_gen(PreFitContinuousMultivariate):
@@ -57,20 +56,17 @@ class multivariate_gaussian_kde_gen(PreFitContinuousMultivariate):
         return super().fit(data=data, params=params, method='gaussian_kde_fit', **kwargs)
 
 
-multivariate_gaussian_kde: multivariate_gaussian_kde_gen = multivariate_gaussian_kde_gen(name='multivariate_gaussian_kde', params_obj=MultivariateGaussianKDEParams, num_params=1, max_num_variables=np.inf)
-
-
-if __name__ == '__main__':
-    import pandas as pd
-    rvs = pd.read_excel('gh_rvs.xlsx', index_col=0)
-    dist = multivariate_gaussian_kde
-    my_dist = dist.fit(rvs)
-
-    print(my_dist.rvs(1000))
-
-    import matplotlib.pyplot as plt
-    # my_dist.pdf_plot(show=False)
-    # my_dist.cdf_plot(show=False)
-    # my_dist.mc_cdf_plot(show=False)
-    my_dist.marginal_pairplot(show=False)
-    plt.show()
+# if __name__ == '__main__':
+#     import pandas as pd
+#     rvs = pd.read_excel('h_rvs.xlsx', index_col=0)
+#     dist = multivariate_gaussian_kde
+#     my_dist = dist.fit(rvs)
+#
+#     print(my_dist.rvs(1000))
+#
+#     import matplotlib.pyplot as plt
+#     my_dist.pdf_plot(show=False)
+#     # my_dist.cdf_plot(show=False)
+#     # my_dist.mc_cdf_plot(show=False)
+#     my_dist.marginal_pairplot(show=False)
+#     plt.show()

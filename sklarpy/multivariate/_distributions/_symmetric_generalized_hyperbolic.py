@@ -3,8 +3,9 @@ from typing import Tuple, Union
 
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.multivariate._distributions._generalized_hyperbolic import multivariate_gen_hyperbolic_gen
-from sklarpy.multivariate._distributions._params import MultivariateSymGenHyperbolicParams
 from sklarpy._other import Params
+
+__all__ = ['multivariate_sym_gen_hyperbolic_gen']
 
 
 class multivariate_sym_gen_hyperbolic_gen(multivariate_gen_hyperbolic_gen):
@@ -63,45 +64,45 @@ class multivariate_sym_gen_hyperbolic_gen(multivariate_gen_hyperbolic_gen):
         return {'lamb': params[0], 'chi': params[1], 'psi': params[2], 'loc': params[3], 'shape': params[4]}, params[3].size
 
 
-multivariate_sym_gen_hyperbolic: multivariate_sym_gen_hyperbolic_gen = multivariate_sym_gen_hyperbolic_gen(name="multivariate_sym_gen_hyperbolic", params_obj=MultivariateSymGenHyperbolicParams, num_params=5, max_num_variables=np.inf)
-
-
-if __name__ == '__main__':
-    # my_loc = np.array([1, -3, 5.2], dtype=float)
-    # my_shape = np.array([[1, 0.284, 0.520], [0.284, 1, 0.435], [0.520, 0.435, 1]], dtype=float)
-    # my_lambda = - 0.5
-    # my_chi = 1.7
-    # my_psi = 4.5
-    # my_params = (my_lambda, my_chi, my_psi, my_loc, my_shape)
-
-    my_loc = np.array([1, -3], dtype=float)
-    my_shape = np.array([[1, 0.7], [0.7, 1]], dtype=float)
-    my_lambda = - 0.5
-    my_chi = 1.7
-    my_psi = 4.5
-    my_params = (my_lambda, my_chi, my_psi, my_loc, my_shape)
-
-    rvs = multivariate_sym_gen_hyperbolic.rvs(10000, my_params)
-    my_sym = multivariate_sym_gen_hyperbolic.fit(rvs, show_progress=True, copula=True)
-    print(my_sym.params.to_dict)
-    print('theoretical max: ', multivariate_sym_gen_hyperbolic.loglikelihood(rvs, my_params))
-    # rvs2 = my_sym.rvs(10000)
-    p1 = multivariate_sym_gen_hyperbolic.pdf(rvs, my_params)
-    p2 = my_sym.pdf(rvs)
-
-    multivariate_sym_gen_hyperbolic.pdf_plot(params=my_params, show=False)
-    import matplotlib.pyplot as plt
-
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    num=rvs.shape[0]
-    ax.scatter(rvs[:num, 0], rvs[:num, 1], p1[:num], marker='o', c='r')
-    ax.scatter(rvs[:num, 0], rvs[:num, 1], p2[:num], marker='^', c='b')
-    plt.show()
-    breakpoint()
-    # breakpoint()
-    # my_sym.pdf_plot()
-    # my_sym.mc_cdf_plot()
-    # my_sym.marginal_pairplot()
-    # my_sym.rvs()
+# multivariate_sym_gen_hyperbolic: multivariate_sym_gen_hyperbolic_gen = multivariate_sym_gen_hyperbolic_gen(name="multivariate_sym_gen_hyperbolic", params_obj=MultivariateSymGenHyperbolicParams, num_params=5, max_num_variables=np.inf)
+#
+#
+# if __name__ == '__main__':
+#     # my_loc = np.array([1, -3, 5.2], dtype=float)
+#     # my_shape = np.array([[1, 0.284, 0.520], [0.284, 1, 0.435], [0.520, 0.435, 1]], dtype=float)
+#     # my_lambda = - 0.5
+#     # my_chi = 1.7
+#     # my_psi = 4.5
+#     # my_params = (my_lambda, my_chi, my_psi, my_loc, my_shape)
+#
+#     my_loc = np.array([1, -3], dtype=float)
+#     my_shape = np.array([[1, 0.7], [0.7, 1]], dtype=float)
+#     my_lambda = - 0.5
+#     my_chi = 1.7
+#     my_psi = 4.5
+#     my_params = (my_lambda, my_chi, my_psi, my_loc, my_shape)
+#
+#     rvs = multivariate_sym_gen_hyperbolic.rvs(10000, my_params)
+#     my_sym = multivariate_sym_gen_hyperbolic.fit(rvs, show_progress=True, copula=True)
+#     print(my_sym.params.to_dict)
+#     print('theoretical max: ', multivariate_sym_gen_hyperbolic.loglikelihood(rvs, my_params))
+#     # rvs2 = my_sym.rvs(10000)
+#     p1 = multivariate_sym_gen_hyperbolic.pdf(rvs, my_params)
+#     p2 = my_sym.pdf(rvs)
+#
+#     multivariate_sym_gen_hyperbolic.pdf_plot(params=my_params, show=False)
+#     import matplotlib.pyplot as plt
+#
+#     fig = plt.figure()
+#     ax = fig.add_subplot(projection='3d')
+#     num=rvs.shape[0]
+#     ax.scatter(rvs[:num, 0], rvs[:num, 1], p1[:num], marker='o', c='r')
+#     ax.scatter(rvs[:num, 0], rvs[:num, 1], p2[:num], marker='^', c='b')
+#     plt.show()
+#     breakpoint()
+#     # breakpoint()
+#     # my_sym.pdf_plot()
+#     # my_sym.mc_cdf_plot()
+#     # my_sym.marginal_pairplot()
+#     # my_sym.rvs()
 

@@ -4,10 +4,8 @@ from typing import Tuple, Union
 from sklarpy.multivariate._distributions._hyperbolics import multivariate_hyperbolic_base_gen
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy._other import Params
-from sklarpy.multivariate._distributions._params import MultivariateSymMarginalHyperbolicParams, MultivariateSymHyperbolicParams, MultivariateSymNIGParams
 
-
-__all__ = ['multivariate_sym_marginal_hyperbolic']
+__all__ = ['multivariate_sym_marginal_hyperbolic_gen']
 
 
 class multivariate_sym_hyperbolic_base_gen(multivariate_hyperbolic_base_gen):
@@ -90,46 +88,43 @@ class multivariate_sym_nig_gen(multivariate_sym_hyperbolic_base_gen):
         self._lamb: float = -0.5
 
 
-multivariate_sym_marginal_hyperbolic: multivariate_sym_marginal_hyperbolic_gen = multivariate_sym_marginal_hyperbolic_gen(name='multivariate_sym_marginal_hyperbolic', params_obj=MultivariateSymMarginalHyperbolicParams, num_params=4, max_num_variables=np.inf)
-multivariate_sym_hyperbolic: multivariate_sym_hyperbolic_gen = multivariate_sym_hyperbolic_gen(name='multivariate_sym_hyperbolic', params_obj=MultivariateSymHyperbolicParams, num_params=4, max_num_variables=np.inf)
-multivariate_sym_nig: multivariate_sym_nig_gen = multivariate_sym_nig_gen(name='multivariate_sym_nig', params_obj=MultivariateSymNIGParams, num_params=4, max_num_variables=np.inf)
 
 
-if __name__ == '__main__':
-    # my_loc = np.array([1, -3, 5.2], dtype=float)
-    # my_shape = np.array([[1, 0.284, 0.520], [0.284, 1, 0.435], [0.520, 0.435, 1]], dtype=float)
-    # my_gamma = np.array([2.3, 1.4, -4.3], dtype=float)
-    # my_chi = 1.7
-    # my_psi = 4.5
-
-    my_loc = np.array([1, -3], dtype=float)
-    my_shape = np.array([[1, 0.7], [0.7, 1]], dtype=float)
-    my_chi = 1.7
-    my_psi = 4.5
-
-    # dist = multivariate_sym_marginal_hyperbolic
-    dist = multivariate_sym_hyperbolic
-    # dist = multivariate_sym_nig
-
-    my_params = (my_chi, my_psi, my_loc, my_shape)
-
-    rvs = dist.rvs(1000, my_params)
-    # print(rvs)
-    # multivariate_marginal_hyperbolic.pdf_plot(params=my_params)
-    # print(multivariate_marginal_hyperbolic.pdf(rvs, my_params))
-
-    # my_dist = dist.fit(rvs, show_progress=True, min_retries=1, max_retries=1, tol=0.1, copula=True)
-    my_dist = dist.fit(rvs, show_progress=True, min_retries=1, max_retries=1, tol=0.1, method='em', copula=True)
-    print('theoretical max: ', dist.loglikelihood(rvs, my_params))
-    print(my_dist.params.to_dict)
-
-    import matplotlib.pyplot as plt
-
-    p1 = dist.pdf(rvs, my_params)
-    p2 = my_dist.pdf(rvs)
-    fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    num = rvs.shape[0]
-    ax.scatter(rvs[:num, 0], rvs[:num, 1], p1[:num], marker='o', c='r')
-    ax.scatter(rvs[:num, 0], rvs[:num, 1], p2[:num], marker='^', c='b')
-    plt.show()
+# if __name__ == '__main__':
+#     # my_loc = np.array([1, -3, 5.2], dtype=float)
+#     # my_shape = np.array([[1, 0.284, 0.520], [0.284, 1, 0.435], [0.520, 0.435, 1]], dtype=float)
+#     # my_gamma = np.array([2.3, 1.4, -4.3], dtype=float)
+#     # my_chi = 1.7
+#     # my_psi = 4.5
+#
+#     my_loc = np.array([1, -3], dtype=float)
+#     my_shape = np.array([[1, 0.7], [0.7, 1]], dtype=float)
+#     my_chi = 1.7
+#     my_psi = 4.5
+#
+#     # dist = multivariate_sym_marginal_hyperbolic
+#     dist = multivariate_sym_hyperbolic
+#     # dist = multivariate_sym_nig
+#
+#     my_params = (my_chi, my_psi, my_loc, my_shape)
+#
+#     rvs = dist.rvs(1000, my_params)
+#     # print(rvs)
+#     # multivariate_marginal_hyperbolic.pdf_plot(params=my_params)
+#     # print(multivariate_marginal_hyperbolic.pdf(rvs, my_params))
+#
+#     # my_dist = dist.fit(rvs, show_progress=True, min_retries=1, max_retries=1, tol=0.1, copula=True)
+#     my_dist = dist.fit(rvs, show_progress=True, min_retries=1, max_retries=1, tol=0.1, method='em', copula=True)
+#     print('theoretical max: ', dist.loglikelihood(rvs, my_params))
+#     print(my_dist.params.to_dict)
+#
+#     import matplotlib.pyplot as plt
+#
+#     p1 = dist.pdf(rvs, my_params)
+#     p2 = my_dist.pdf(rvs)
+#     fig = plt.figure()
+#     ax = fig.add_subplot(projection='3d')
+#     num = rvs.shape[0]
+#     ax.scatter(rvs[:num, 0], rvs[:num, 1], p1[:num], marker='o', c='r')
+#     ax.scatter(rvs[:num, 0], rvs[:num, 1], p2[:num], marker='^', c='b')
+#     plt.show()
