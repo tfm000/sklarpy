@@ -27,7 +27,7 @@ continuous_parametric_names: tuple = ('alpha', 'anglit', 'arcsine', 'argus', 'be
                                       'truncnorm', 'tukeylambda', 'uniform', 'vonmises', 'vonmises_line', 'wald',
                                       'weibull_max', 'weibull_min', 'wrapcauchy')
 common_continuous_parametric_names: tuple = ('cauchy', 'chi2', 'expon', 'gamma', 'lognorm', 'normal', 'powerlaw',
-                                             'rayleigh', 't', 'uniform')
+                                             'rayleigh', 'student_t', 'uniform')
 continuous_multimodal_parametric_names: tuple = ('arcsine', 'beta')
 
 ########################################################################################################################
