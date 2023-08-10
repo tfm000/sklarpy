@@ -42,14 +42,18 @@ class MultivariateSymGenHyperbolicParams(Params):
         return self.to_dict['shape']
 
     @property
+    def _gig_params_tuple(self) -> tuple:
+        return self.lamb, self.chi, self.psi
+
+    @property
     def w_mean(self) -> float:
         """The mean of the rv W ~ GIG(chi, psi, lambda)"""
-        return self._DIST_GENERATOR._exp_w(self.to_tuple)
+        return self._DIST_GENERATOR._exp_w(self._gig_params_tuple)
 
     @property
     def w_variance(self) -> float:
         """The variance of the rv W ~ GIG(chi, psi, lambda)"""
-        return self._DIST_GENERATOR._var_w(self.to_tuple)
+        return self._DIST_GENERATOR._var_w(self._gig_params_tuple)
 
     @property
     def mean(self) -> np.ndarray:

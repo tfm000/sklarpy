@@ -14,13 +14,13 @@ class MultivariateSymHyperbolicParamsBase:
         return np.zeros(self.loc.shape, dtype=float)
 
 
-class MultivariateSymMarginalHyperbolicParams(MultivariateMarginalHyperbolicParams, MultivariateSymHyperbolicParamsBase):
+class MultivariateSymMarginalHyperbolicParams(MultivariateSymHyperbolicParamsBase, MultivariateMarginalHyperbolicParams):
     _DIST_GENERATOR = multivariate_sym_marginal_hyperbolic_gen
 
 
-class MultivariateSymHyperbolicParams(MultivariateHyperbolicParams, MultivariateSymHyperbolicParamsBase):
+class MultivariateSymHyperbolicParams(MultivariateSymHyperbolicParamsBase,MultivariateHyperbolicParams):
     _DIST_GENERATOR = multivariate_sym_hyperbolic_gen
 
 
-class MultivariateSymNIGParams(MultivariateNIGParams, MultivariateSymHyperbolicParamsBase):
+class MultivariateSymNIGParams(MultivariateSymHyperbolicParamsBase,MultivariateHyperbolicParams):
     _DIST_GENERATOR = multivariate_sym_nig_gen
