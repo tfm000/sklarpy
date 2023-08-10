@@ -117,7 +117,7 @@ class UnivariateFitter:
 
     def fit(self, distributions: str_or_iterable = None, data_type=None, multimodal: bool = False,
             numerical: bool = False, timeout: int = 10, raise_error: bool = False,
-            use_processpoolexecutor: bool = True):
+            use_processpoolexecutor: bool = False):
         """Fits the specified probability distributions to the data.
 
         Parameters
@@ -152,7 +152,10 @@ class UnivariateFitter:
         raise_error: bool
             Whether to raise an error if no distributions are fitted. Default is False.
         use_processpoolexecutor: bool
-            Whether to use ProcessPoolExecutor to fit distributions concurrently. Default is True.
+            Whether to use ProcessPoolExecutor to fit distributions concurrently.
+            Note that, if code is not run inside `if __name__ == '__main__': ... ` in
+            the main module, you may receive a runtime error.
+            Default is False.
 
         Returns
         =======
