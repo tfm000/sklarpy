@@ -65,7 +65,7 @@ class Copula(Savable, Copyable):
         ==========
         marginals: Union[data_iterable, MarginalFitter]
             The marginals of random variables. Can be either the cdf values of each random variable as a pandas
-            dataframe, numpy array or other data iterable, or a fitted, MarginalFitter object.
+            dataframe, numpy array or other data iterable or a MarginalFitter object.
             If not specified, all parameters must be specified when fitting.
         name: str
             The name of your copula object.
