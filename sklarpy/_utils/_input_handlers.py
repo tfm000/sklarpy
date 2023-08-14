@@ -104,7 +104,7 @@ def check_array_datatype(arr: np.ndarray, must_be_numeric: bool = True):
     return float
 
 
-def check_multivariate_data(data: data_iterable, num_variables: int = None, allow_1d: bool = False) -> np.ndarray:
+def check_multivariate_data(data: data_iterable, num_variables: int = None, allow_1d: bool = False, allow_nans: bool = True) -> np.ndarray:
     # converting to numpy array
     data_array: np.ndarray = np.asarray(data)
 
@@ -124,4 +124,7 @@ def check_multivariate_data(data: data_iterable, num_variables: int = None, allo
         if data_array.ndim != num_variables:
             raise ValueError("data dimensions do not match the number of variables.")
 
+    # checking for nan values
+    if not (allow_nans and np.isnan(data_array).sum() == 0):
+        raise ValueError("data must not contain NaN values")
     return data_array

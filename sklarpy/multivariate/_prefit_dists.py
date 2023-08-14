@@ -35,10 +35,7 @@ class PreFitContinuousMultivariate:
         raise NotImplementedError(f"{func_name} not implemented for {self.name}")
 
     def _get_x_array(self, x: dataframe_or_array) -> np.ndarray:
-        x_array: np.ndarray = check_multivariate_data(x, allow_1d=True)
-
-        if not np.isnan(x_array).sum() == 0:
-            raise ValueError("x cannot contain nan values.")
+        x_array: np.ndarray = check_multivariate_data(x, allow_1d=True, allow_nans=False)
 
         if x_array.shape[1] > self._max_num_variables:
             raise ValueError(f"too many variables for {self.name}")
