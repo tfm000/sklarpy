@@ -8,7 +8,7 @@ import scipy.integrate
 from scipy.optimize import differential_evolution
 
 from sklarpy._other import Params
-from sklarpy._utils import dataframe_or_array, TypeKeeper, check_multivariate_data, get_iterator, FitError
+from sklarpy._utils import dataframe_or_array, TypeKeeper, check_multivariate_data, get_iterator, FitError, NotImplemented
 from sklarpy._plotting import pair_plot, threeD_plot
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
 from sklarpy.misc import CorrelationMatrix
@@ -16,7 +16,7 @@ from sklarpy.misc import CorrelationMatrix
 __all__ = ['PreFitContinuousMultivariate']
 
 
-class PreFitContinuousMultivariate:
+class PreFitContinuousMultivariate(NotImplemented):
     _DATA_FIT_METHODS: Tuple[str] = ('low_dim_mle', )
 
     def __init__(self, name: str, params_obj: Params, num_params: int, max_num_variables: int):
@@ -30,9 +30,6 @@ class PreFitContinuousMultivariate:
 
     def __repr__(self) -> str:
         return self.__str__()
-
-    def __not_implemented(self, func_name):
-        raise NotImplementedError(f"{func_name} not implemented for {self.name}")
 
     def _get_x_array(self, x: dataframe_or_array) -> np.ndarray:
         x_array: np.ndarray = check_multivariate_data(x, allow_1d=True, allow_nans=False)
@@ -94,11 +91,11 @@ class PreFitContinuousMultivariate:
 
     def _logpdf(self, x: np.ndarray, params: tuple,  **kwargs) -> np.ndarray:
         # to be overridden by child class(es)
-        self.__not_implemented('log-pdf')
+        self._not_implemented('log-pdf')
 
     def _rvs(self, size: int, params: tuple) -> np.ndarray:
         # to be overridden by child class(es)
-        self.__not_implemented('rvs')
+        self._not_implemented('rvs')
 
     def _logpdf_cdf(self, func_name: str, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
         if func_name not in ('logpdf', 'cdf'):
@@ -118,7 +115,7 @@ class PreFitContinuousMultivariate:
             logpdf_values: np.ndarray = self.logpdf(x, params, False)
         except NotImplementedError:
             # raising a function specific exception
-            self.__not_implemented('pdf')
+            self._not_implemented('pdf')
         pdf_values: np.ndarray = np.exp(logpdf_values)
         return TypeKeeper(x).type_keep_from_1d_array(pdf_values, match_datatype, col_name=['pdf'])
 
@@ -170,7 +167,7 @@ class PreFitContinuousMultivariate:
             pdf_values: np.ndarray = self.pdf(x, params, False)
         except NotImplementedError:
             # raising a function specific exception
-            self.__not_implemented('likelihood')
+            self._not_implemented('likelihood')
 
         if np.any(np.isinf(pdf_values)):
             return np.inf
@@ -181,7 +178,7 @@ class PreFitContinuousMultivariate:
             logpdf_values: np.ndarray = self.logpdf(x, params, False, **kwargs)
         except NotImplementedError:
             # raising a function specific exception
-            self.__not_implemented('log-likelihood')
+            self._not_implemented('log-likelihood')
 
         if np.any(np.isinf(logpdf_values)):
             # returning -np.inf instead of nan
@@ -193,7 +190,7 @@ class PreFitContinuousMultivariate:
             loglikelihood: float = self.loglikelihood(x, params)
         except NotImplementedError:
             # raising a function specific exception
-            self.__not_implemented('aic')
+            self._not_implemented('aic')
         return 2 * (self.num_params - loglikelihood)
 
     def bic(self, x: dataframe_or_array, params: Union[Params, tuple]) -> float:
@@ -201,7 +198,7 @@ class PreFitContinuousMultivariate:
             loglikelihood: float = self.loglikelihood(x, params)
         except NotImplementedError:
             # raising a function specific exception
-            self.__not_implemented('bic')
+            self._not_implemented('bic')
 
         u_array: np.ndarray = self._get_x_array(x)
         num_data_points: int = u_array.shape[0]
@@ -559,4 +556,6 @@ class PreFitContinuousMultivariate:
     # TODO: have the copula classes be a separate class which inherits from each multivariate gen class -> makes param checks easier etc
 
     # TODO: low dim mle should not optimise for loc when copula is true!!! ugh... have 2 low dim mle funcs. one for copulas, one not
+
+    # TODO: check what happens when 1d data parsed
 
