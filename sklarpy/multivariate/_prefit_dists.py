@@ -164,14 +164,11 @@ class PreFitContinuousMultivariate(NotImplemented):
 
     def likelihood(self, x: dataframe_or_array, params: Union[Params, tuple]) -> float:
         try:
-            pdf_values: np.ndarray = self.pdf(x, params, False)
+            loglikelihood: float = self.loglikelihood(x, params)
         except NotImplementedError:
             # raising a function specific exception
             self._not_implemented('likelihood')
-
-        if np.any(np.isinf(pdf_values)):
-            return np.inf
-        return float(np.product(pdf_values))
+        return np.exp(loglikelihood)
 
     def loglikelihood(self, x: dataframe_or_array, params: Union[Params, tuple], **kwargs) -> float:
         try:
