@@ -105,15 +105,10 @@ class MarginalFitter(Savable):
         marginal_dict
             The best fitted distribution for our variable.
         """
-        get_best_options: dict = {'significant': True, 'pvalue': 0.05}
-        for option in get_best_options:
-            if option in univariate_fitter_options:
-                get_best_options[option] = univariate_fitter_options.pop(option)
-
         variable_data: np.ndarray = self._data[:, index]
         fitter: UnivariateFitter = UnivariateFitter(variable_data)
         fitter.fit(**univariate_fitter_options)
-        marginal_dist = fitter.get_best(**get_best_options)
+        marginal_dist = fitter.get_best(**univariate_fitter_options)
         return marginal_dist
 
     def fit(self, univariate_fitter_options: dict = None, **kwargs):
@@ -334,7 +329,6 @@ class MarginalFitter(Savable):
         # plotting
         title: str = f"{self.name} Data Pair-Plot"
         pair_plot(plot_df, title, color, alpha, figsize, grid, plot_kde, show)
-
 
     @property
     def marginals(self) -> dict:

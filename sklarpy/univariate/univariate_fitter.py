@@ -125,7 +125,7 @@ class UnivariateFitter(Savable):
 
     def fit(self, distributions: str_or_iterable = None, data_type=None, multimodal: bool = False,
             numerical: bool = False, timeout: int = 10, raise_error: bool = False,
-            use_processpoolexecutor: bool = False):
+            use_processpoolexecutor: bool = False, **kwargs):
         """Fits the specified probability distributions to the data.
 
         Parameters
@@ -310,7 +310,7 @@ class UnivariateFitter(Savable):
             return summary
         return summary.sort_values(by=sortby)
 
-    def get_best(self, significant: bool = True, pvalue: float = 0.05, raise_error: bool = False):
+    def get_best(self, significant: bool = True, pvalue: float = 0.05, raise_error: bool = False, **kwargs):
         """Returns the fitted probability distribution which minimises the sum of squared error between the empirical
         and fitted pdfs.
 
