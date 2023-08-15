@@ -233,15 +233,13 @@ class PreFitContinuousMultivariate(NotImplemented):
                 if not isinstance(var_range, np.ndarray):
                     raise TypeError("var1_range and var2_range must be None or numpy arrays.")
 
-        elif params is not None:
+        else:
             rvs_array: np.ndarray = self.rvs(num_generate, params)
             if rvs_array.shape[1] != 2:
                 raise NotImplementedError(f"{func_str}_plot is not implemented when the number of variables is not 2.")
             xmin, xmax = rvs_array.min(axis=0), rvs_array.max(axis=0)
             var1_range: np.ndarray = np.linspace(xmin[0], xmax[0], num_points)
             var2_range: np.ndarray = np.linspace(xmin[1], xmax[1], num_points)
-        else:
-            raise ValueError("At least one of var1_range and var2_range or params must be non-none.")
 
         if axes_names is None:
             axes_names = ('variable 1', 'variable 2')
@@ -267,23 +265,23 @@ class PreFitContinuousMultivariate(NotImplemented):
                     color=color, alpha=alpha, figsize=figsize, grid=grid,
                     axis_names=axes_names, zlim=zlim, show_progress=show_progress, show=show)
 
-    def pdf_plot(self, var1_range: np.ndarray = None, var2_range: np.ndarray = None, params: Union[Params, tuple] = None, color: str = 'royalblue', alpha: float = 1.0,
+    def pdf_plot(self, params: Union[Params, tuple], var1_range: np.ndarray = None, var2_range: np.ndarray = None, color: str = 'royalblue', alpha: float = 1.0,
                  figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (None, None),
                  num_generate: int = 1000, num_points: int = 100, show_progress: bool = True, show: bool = True) -> None:
         self._pdf_cdf_mccdf_plot(func_str='pdf', var1_range=var1_range, var2_range=var2_range, params=params, color=color, alpha=alpha, figsize=figsize, grid=grid,
                                  axes_names=axes_names, zlim=zlim, num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show)
 
-    def cdf_plot(self, var1_range: np.ndarray = None, var2_range: np.ndarray = None, params: Union[Params, tuple] = None, color: str = 'royalblue', alpha: float = 1.0,
+    def cdf_plot(self, params: Union[Params, tuple], var1_range: np.ndarray = None, var2_range: np.ndarray = None, color: str = 'royalblue', alpha: float = 1.0,
                  figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (0, 1),
                  num_generate: int = 1000, num_points: int = 100, show_progress: bool = True, show: bool = True) -> None:
         self._pdf_cdf_mccdf_plot(func_str='cdf', var1_range=var1_range, var2_range=var2_range, params=params, color=color, alpha=alpha, figsize=figsize, grid=grid,
                                  axes_names=axes_names, zlim=zlim, num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show)
 
-    def mc_cdf_plot(self, var1_range: np.ndarray = None, var2_range: np.ndarray = None, params: Union[Params, tuple] = None, mc_num_generate: int = 10 ** 4, color: str = 'royalblue', alpha: float = 1.0,
+    def mc_cdf_plot(self, params: Union[Params, tuple], var1_range: np.ndarray = None, var2_range: np.ndarray = None, mc_num_generate: int = 10 ** 4, color: str = 'royalblue', alpha: float = 1.0,
                  figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (0, 1),
                  num_generate: int = 1000, num_points: int = 100, show_progress: bool = True, show: bool = True) -> None:
         self._pdf_cdf_mccdf_plot(func_str='mc_cdf', var1_range=var1_range, var2_range=var2_range, params=params, color=color, alpha=alpha, figsize=figsize, grid=grid,
-                                 axes_names=axes_names, zlim=zlim, num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show)
+                                 axes_names=axes_names, zlim=zlim, num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show, mc_num_generate=mc_num_generate)
 
     @property
     def name(self) -> str:
@@ -556,3 +554,4 @@ class PreFitContinuousMultivariate(NotImplemented):
 
     # TODO: check what happens when 1d data parsed
 
+    # TODO: i dont think params can be none in plots...
