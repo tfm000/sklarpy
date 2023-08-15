@@ -125,6 +125,6 @@ def check_multivariate_data(data: data_iterable, num_variables: int = None, allo
             raise ValueError("data dimensions do not match the number of variables.")
 
     # checking for nan values
-    if not (allow_nans and np.isnan(data_array).sum() == 0):
+    if (not allow_nans) and (np.isnan(data_array).sum() != 0):
         raise ValueError("data must not contain NaN values")
     return data_array
