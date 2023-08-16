@@ -82,7 +82,8 @@ class UnivariateFitter(Savable):
             else:
                 if dist in distributions_map['all']:
                     res = res.union([dist])
-                logging.warning(f"{dist} is not an implemented distribution. Check naming is correct.")
+                else:
+                    logging.warning(f"{dist} is not an implemented distribution. Check naming is correct.")
 
         if not multimodal:
             # removing all multimodal distributions
