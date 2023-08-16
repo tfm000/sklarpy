@@ -182,24 +182,25 @@ class PreFitContinuousMultivariate(NotImplemented):
             return -np.inf
         return float(np.sum(logpdf_values))
 
-    def aic(self, x: dataframe_or_array, params: Union[Params, tuple]) -> float:
+    def aic(self, data: dataframe_or_array, params: Union[Params, tuple], **kwargs) -> float:
         try:
-            loglikelihood: float = self.loglikelihood(x, params)
+            loglikelihood: float = self.loglikelihood(data, params)
         except NotImplementedError:
             # raising a function specific exception
             self._not_implemented('aic')
-        return 2 * (self.num_params - loglikelihood)
+        data_array: np.ndarray = self._get_x_array(data)
+        return 2 * (self.num_scalar_params(data_array.shape[1], **kwargs) - loglikelihood)
 
-    def bic(self, x: dataframe_or_array, params: Union[Params, tuple]) -> float:
+    def bic(self, data: dataframe_or_array, params: Union[Params, tuple], **kwargs) -> float:
         try:
-            loglikelihood: float = self.loglikelihood(x, params)
+            loglikelihood: float = self.loglikelihood(data, params)
         except NotImplementedError:
             # raising a function specific exception
             self._not_implemented('bic')
 
-        u_array: np.ndarray = self._get_x_array(x)
-        num_data_points: int = u_array.shape[0]
-        return -2 * loglikelihood + np.log(num_data_points) * self.num_params
+        data_array: np.ndarray = self._get_x_array(data)
+        num_data_points, d = data_array.shape
+        return -2 * loglikelihood + np.log(num_data_points) * self.num_scalar_params(d, **kwargs)
 
     def marginal_pairplot(self, params: Union[Params, tuple], color: str = 'royalblue', alpha: float = 1.0, figsize: tuple = (8, 8),
                           grid: bool = True, axes_names: tuple = None, plot_kde: bool = True,
@@ -227,7 +228,7 @@ class PreFitContinuousMultivariate(NotImplemented):
 
     def _pdf_cdf_mccdf_plot(self, func_str: str, var1_range: np.ndarray, var2_range: np.ndarray, params: Union[Params, tuple], color: str, alpha: float, figsize: tuple,
                             grid: bool, axes_names: Iterable, zlim: tuple, num_generate: int, num_points: int, show_progress: bool, show: bool, mc_num_generate: int = None):
-        # # checking arguments
+        # checking arguments
         if (var1_range is not None) and (var2_range is not None):
             for var_range in (var1_range, var2_range):
                 if not isinstance(var_range, np.ndarray):
@@ -290,6 +291,14 @@ class PreFitContinuousMultivariate(NotImplemented):
     @property
     def num_params(self) -> int:
         return self._num_params
+
+    def _num_shape_scalar_params(self, d: int, copula: bool = False) -> int:
+        num_shape_scalar_params = 0.5 * d * (d-1) if copula else 0.5 * d * (d+1)
+        return int(num_shape_scalar_params)
+
+    @abstractmethod
+    def num_scalar_params(self, d: int, copula: bool, **kwargs) -> int:
+        pass
 
     @staticmethod
     def _shape_from_array(arr: np.ndarray, d: int) -> np.ndarray:
@@ -498,6 +507,7 @@ class PreFitContinuousMultivariate(NotImplemented):
             raise ValueError("data and params cannot both be None when fitting.")
         elif params is not None:
             # User has provided a params object or tuple
+            num_data_points: int = 0
 
             # saving params
             if isinstance(params, self._params_obj):
@@ -516,7 +526,7 @@ class PreFitContinuousMultivariate(NotImplemented):
             # user has provided data to fit
 
             # getting info from data
-            data_array: np.ndarray = check_multivariate_data(data)
+            data_array: np.ndarray = check_multivariate_data(data, allow_1d=True, allow_nans=False)
             num_variables: int = data_array.shape[1]
             if num_variables > self._max_num_variables:
                 raise FitError(f"Too many columns in data to interpret as variables for {self.name} distribution.")
@@ -526,14 +536,16 @@ class PreFitContinuousMultivariate(NotImplemented):
             params_dict, _ = self._fit_given_params_tuple(params_tuple)
             params: Params = self._params_obj(params_dict, self.name, num_variables)
 
+            num_data_points: int = data_array.shape[0]
+
         # fitting TypeKeeper object
         type_keeper: TypeKeeper = TypeKeeper(data)
 
-        # calculating other fit info
+        # calculating fit statistics
         fit_info['likelihood'] = self.likelihood(data, params)
         fit_info['loglikelihood'] = self.loglikelihood(data, params)
-        fit_info['aic'] = self.aic(data, params)
-        fit_info['bic'] = self.bic(data, params)
+        fit_info['aic'] = self.aic(data, params, **kwargs)
+        fit_info['bic'] = self.bic(data, params, **kwargs)
 
         # calculating fit bounds
         fitted_bounds: np.ndarray = np.full((num_variables, 2), np.nan, dtype=float)
@@ -541,11 +553,14 @@ class PreFitContinuousMultivariate(NotImplemented):
         fitted_bounds[:, 1] = data_array.max(axis=0)
         fit_info['fitted_bounds'] = fitted_bounds
 
-        # other fit value
+        # other fit values
         fit_info['type_keeper'] = type_keeper
         fit_info['params'] = params
         fit_info['num_variables'] = num_variables
         fit_info['success'] = success
+        fit_info['num_data_points'] = num_data_points
+        fit_info['num_params'] = len(params)
+        fit_info['num_scalar_params'] = self.num_scalar_params(num_variables, **kwargs)
         return FittedContinuousMultivariate(self, fit_info)
 
     # TODO: have the copula classes be a separate class which inherits from each multivariate gen class -> makes param checks easier etc
