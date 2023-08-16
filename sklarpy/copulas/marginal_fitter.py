@@ -41,6 +41,9 @@ class MarginalFitter(Savable):
     def __repr__(self):
         return self.__str__()
 
+    def __len__(self) -> int:
+        return self.num_variables
+
     def _check_univariate_fitter_options(self, univariate_fitter_options: dict) -> dict:
         """Standardising and checking the user provided univariate_fitter_options is in the required format.
 
@@ -137,7 +140,6 @@ class MarginalFitter(Savable):
         self:
             self
         """
-
         univariate_fitter_options: dict = self._check_univariate_fitter_options(univariate_fitter_options)
         summaries: list = []
         self._fitted_marginals = {}
