@@ -55,6 +55,8 @@ class multivariate_gaussian_kde_gen(PreFitContinuousMultivariate):
     def fit(self, data: dataframe_or_array = None, params: Union[Params, tuple] = None, **kwargs) -> FittedContinuousMultivariate:
         return super().fit(data=data, params=params, method='gaussian_kde_fit', **kwargs)
 
+    def num_scalar_params(self, d: int = None, copula: bool = False, **kwargs) -> int:
+        return 0
 
 # if __name__ == '__main__':
 #     import pandas as pd

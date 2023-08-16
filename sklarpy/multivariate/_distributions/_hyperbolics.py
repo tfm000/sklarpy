@@ -11,6 +11,8 @@ __all__ = ['multivariate_marginal_hyperbolic_gen', 'multivariate_hyperbolic_gen'
 
 
 class multivariate_hyperbolic_base_gen(multivariate_gen_hyperbolic_gen):
+    _NUM_W_PARAMS: int = 2
+
     @abstractmethod
     def _init_lamb(self, *args):
         pass

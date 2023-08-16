@@ -64,6 +64,9 @@ class multivariate_normal_gen(PreFitContinuousMultivariate):
     def fit(self, data: dataframe_or_array = None, params: Union[Params, tuple] = None, method: str = 'mle', **kwargs) -> FittedContinuousMultivariate:
         return super().fit(data=data, params=params, method=method, **kwargs)
 
+    def num_scalar_params(self, d: int, copula: bool = False, **kwargs) -> int:
+        vec_num: int = 0 if copula else d
+        return vec_num + self._num_shape_scalar_params(d=d, copula=copula)
 
 
 

@@ -14,6 +14,8 @@ __all__ = ['multivariate_skewed_t_gen']
 
 
 class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
+    _NUM_W_PARAMS: int = 1
+
     def _get_params(self, params: Union[Params, tuple], **kwargs) -> tuple:
         params_tuple: tuple = PreFitContinuousMultivariate._get_params(self, params, **kwargs)
         dof: float = params_tuple[1] if len(params_tuple) == 6 else params_tuple[0]

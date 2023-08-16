@@ -14,6 +14,7 @@ __all__ = ['multivariate_gen_hyperbolic_gen']
 class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
     _ASYMMETRIC: bool = True
     _DATA_FIT_METHODS = (*PreFitContinuousMultivariate._DATA_FIT_METHODS, 'em')
+    _NUM_W_PARAMS: int = 3
 
     def _check_w_params(self, params: tuple) -> None:
         # checking lambda, chi and psi
@@ -387,6 +388,10 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         self._check_params(params, **kwargs)
         return {'lamb': params[0], 'chi': params[1], 'psi': params[2], 'loc': params[3], 'shape': params[4], 'gamma': params[5]}, params[3].size
 
+    def num_scalar_params(self, d: int, copula: bool = False, **kwargs) -> int:
+        vec_num: int = d if copula else 2 * d
+        vec_num -= 0 if self._ASYMMETRIC else d
+        return self._NUM_W_PARAMS + vec_num + self._num_shape_scalar_params(d=d, copula=copula)
 
 
 # if __name__ == '__main__':
