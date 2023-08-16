@@ -24,6 +24,9 @@ fitted_msh = multivariate_sym_hyperbolic.fit(rvs_df, show_progress=True)
 print(fitted_msh.params.to_dict)
 print(fitted_msh.params.cov)
 
+# printing a summary of our fit
+print(fitted_msh.summary)
+
 # can plot
 fitted_msh.pdf_plot(show=False)
 fitted_msh.mc_cdf_plot(show=False)
