@@ -4,6 +4,8 @@ import pandas as pd
 from sklarpy._other import Savable, Copyable, Params
 from sklarpy._utils import dataframe_or_array, TypeKeeper
 
+__all__ = ['FittedContinuousMultivariate']
+
 
 class FittedContinuousMultivariate(Savable, Copyable):
     def __init__(self, obj, fit_info: dict):
@@ -121,15 +123,35 @@ class FittedContinuousMultivariate(Savable, Copyable):
         self.__pdf_cdf_mccdf_plot('mc_cdf', var1_range=var1_range, var2_range=var2_range, color=color, alpha=alpha, figsize=figsize, grid=grid,
                                   axes_names=axes_names, zlim=zlim, num_points=num_points,
                                   show_progress=show_progress, show=show, mc_num_generate=mc_num_generate)
+
     @property
     def params(self) -> Params:
         return self.__fit_info.copy()['params']
 
     @property
     def num_params(self) -> int:
-        return len(self.params)
+        return self.__fit_info.copy()['num_params']
+
+    @property
+    def num_scalar_params(self) -> int:
+        return self.__fit_info.copy()['num_scalar_params']
 
     @property
     def num_variables(self) -> int:
         return self.__fit_info.copy()['num_variables']
 
+    @property
+    def fitted_num_data_points(self) -> int:
+        """The number of data points used to fit the distribution."""
+        return self.__fit_info['num_data_points']
+
+    @property
+    def converged(self) -> bool:
+        return self.__fit_info.copy()['success']
+
+    @property
+    def summary(self) -> pd.DataFrame:
+        """A dataframe containing summary information of the distribution fit."""
+        index: list = ['Distribution', '#Variables', '#Params', '#Scalar Params', 'Converged', 'Likelihood', 'Log-Likelihood', 'AIC', 'BIC', '#Fitted Data Points']
+        data: list = [self.name, self.num_variables, self.num_params, self.num_scalar_params, self.converged, self.likelihood(), self.loglikelihood(), self.aic(), self.bic(), self.fitted_num_data_points]
+        return pd.DataFrame(data, index=index, columns=['summary'])
