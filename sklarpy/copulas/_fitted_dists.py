@@ -33,13 +33,13 @@ class FittedCopula(Savable, Copyable):
         return self.__obj.rvs(size=size, copula_params=self.copula_params, mdists=self.mdists, ppf_approx=ppf_approx)
 
     def copula_logpdf(self, u: Union[pd.DataFrame, np.ndarray], match_datatype: bool = True) -> Union[pd.DataFrame, np.ndarray]:
-        return self.__obj.copula_logpdf(u=u, copula_params=self.copula_params, mdists=self.mdists, match_datatype=match_datatype)
+        return self.__obj.copula_logpdf(u=u, copula_params=self.copula_params, match_datatype=match_datatype)
 
     def copula_pdf(self, u: Union[pd.DataFrame, np.ndarray], match_datatype: bool = True) -> Union[pd.DataFrame, np.ndarray]:
-        return self.__obj.copula_pdf(u=u, copula_params=self.copula_params, mdists=self.mdists, match_datatype=match_datatype)
+        return self.__obj.copula_pdf(u=u, copula_params=self.copula_params, match_datatype=match_datatype)
 
     def copula_cdf(self, u: Union[pd.DataFrame, np.ndarray], mc_cdf: bool = False, match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
-        return self.__obj.copula_cdf(u=u, copula_params=self.copula_params, mdists=self.mdists, mc_cdf=mc_cdf, match_datatype=match_datatype, **kwargs)
+        return self.__obj.copula_cdf(u=u, copula_params=self.copula_params, mc_cdf=mc_cdf, match_datatype=match_datatype, **kwargs)
 
     def copula_rvs(self, size: int) -> np.ndarray:
         return self.__obj.copula_rvs(size=size, copula_params=self.copula_params)

@@ -81,9 +81,10 @@ class PreFitCopula(NotImplemented):
         mdists_dict: dict = self._get_mdists(mdists, d=x_array.shape[1], check=True)
 
         # calculating u values
-        res: dict = self.__mdist_calcs(funcs=['cdf'], data=x_array, mdists=mdists_dict, check=True)
+        res: dict = self.__mdist_calcs(funcs=['cdf', 'logpdf'], data=x_array, mdists=mdists_dict, check=True)
 
-        logpdf_values: np.ndarray = self._z_logpdf(u=res['cdf'], copula_params=copula_params, **kwargs) + self._mdist_logpdf_sum(x=x_array, mdists=mdists_dict)
+        # calculating logpdf values
+        logpdf_values: np.ndarray = self.copula_logpdf(u=res['cdf'], copula_params=copula_params, match_datatype=False, **kwargs) + res['logpdf'].sum(axis=1)
         return TypeKeeper(x).type_keep_from_1d_array(array=logpdf_values, match_datatype=match_datatype, col_name=['logpdf'])
 
     def pdf(self, x: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
@@ -108,56 +109,50 @@ class PreFitCopula(NotImplemented):
         res: dict = self.__mdist_calcs(funcs=[func_str], data=copula_rvs, mdists=mdists, check=True)
         return res[func_str]
 
-    def _z_logpdf(self, u: np.ndarray, copula_params: Union[Params, tuple], **kwargs) -> np.ndarray:
-        # calculating logpdf values of z distribution
-        z: np.ndarray = self._u_to_z(u, copula_params)
-        return self._mv_object.logpdf(x=z, params=copula_params, match_datatype=False, **kwargs)
+    def _h_logpdf_sum(self, g: np.ndarray, copula_params: Union[Params, tuple]) -> np.ndarray:
+        # logpdf of the marginals of G
+        return np.full((g.shape[0], ), 0.0, dtype=float)
 
-    def _mdist_logpdf_sum(self, x: np.ndarray, mdists: dict) -> np.ndarray:
-        res: dict = self.__mdist_calcs(funcs=['logpdf'], data=x, mdists=mdists, check=False)
-        return res['logpdf'].sum(axis=1)
-
-    def copula_logpdf(self, u: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
+    def copula_logpdf(self, u: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
         # checking data
         u_array: np.ndarray = self._get_data_array(data=u, is_u=True)
-        mdists_dict: dict = self._get_mdists(mdists, d=u_array.shape[1], check=True)
 
-        # calculating x values
-        res: dict = self.__mdist_calcs(funcs=['ppf'], data=u_array, mdists=mdists_dict, check=False)
-
-        copula_logpdf_values: np.ndarray = self._z_logpdf(u=u_array, copula_params=copula_params, **kwargs) - self._mdist_logpdf_sum(x=res['ppf'], mdists=mdists_dict)
+        # calculating copula logpdf
+        g: np.ndarray = self._u_to_g(u=u_array, copula_params=copula_params)
+        g_logpdf: np.ndarray = self._mv_object.logpdf(x=g, params=copula_params, match_datatype=False, **kwargs)
+        copula_logpdf_values: np.ndarray = g_logpdf - self._h_logpdf_sum(g=g, copula_params=copula_params)
         return TypeKeeper(u).type_keep_from_1d_array(array=copula_logpdf_values, match_datatype=match_datatype, col_name=['copula_logpdf'])
 
-    def copula_pdf(self, u: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
+    def copula_pdf(self, u: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
         try:
-            copula_logpdf_values: np.ndarray = self.copula_logpdf(u=u, copula_params=copula_params, mdists=mdists, match_datatype=False, **kwargs)
+            copula_logpdf_values: np.ndarray = self.copula_logpdf(u=u, copula_params=copula_params, match_datatype=False, **kwargs)
         except NotImplementedError:
             # raising a function specific exception
             self._not_implemented('copula_pdf')
         copula_pdf_values: np.ndarray = np.exp(copula_logpdf_values)
         return TypeKeeper(u).type_keep_from_1d_array(array=copula_pdf_values, match_datatype=match_datatype, col_name=['copula_pdf'])
 
-    def copula_cdf(self, u: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], mc_cdf: bool = False, match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
+    def copula_cdf(self, u: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], mc_cdf: bool = False, match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
         u_array: np.ndarray = self._get_data_array(data=u, is_u=True)
-        z: np.ndarray = self._u_to_z(u_array, copula_params)
+        g: np.ndarray = self._u_to_g(u_array, copula_params)
         mc_str: str = "mc_" if mc_cdf else ""
-        func_str = f"self._mv_object.{mc_str}cdf(x=z, param=copula_params, match_datatype=False, **kwargs)"
+        func_str = f"self._mv_object.{mc_str}cdf(x=g, param=copula_params, match_datatype=False, **kwargs)"
         copula_cdf_values: np.ndarray = eval(func_str)
         return TypeKeeper(u).type_keep_from_1d_array(array=copula_cdf_values, match_datatype=match_datatype, col_name=[f'{mc_str}cdf'])
 
-    def _z_to_u(self, z: np.ndarray, copula_params: Union[Params, tuple]) -> np.ndarray:
-        # z = mv rv
+    def _g_to_u(self, g: np.ndarray, copula_params: Union[Params, tuple]) -> np.ndarray:
+        # g = mv rv
         # u = copula rv
         # x = overall rv
-        # i.e. for gaussian copula, z = ppf(u) and therefore u = cdf(z)
-        return z
+        # i.e. for gaussian copula, g = ppf(u) and therefore u = cdf(g)
+        return g
 
-    def _u_to_z(self, u: np.ndarray, copula_params: Union[Params, tuple]):
+    def _u_to_g(self, u: np.ndarray, copula_params: Union[Params, tuple]):
         return u
 
     def copula_rvs(self, size: int, copula_params: Union[Params, tuple]) -> np.ndarray:
         mv_rvs: np.ndarray = self._mv_object.rvs(size, copula_params)
-        return self._z_to_u(mv_rvs, copula_params)
+        return self._g_to_u(mv_rvs, copula_params)
 
     def _get_components_summary(self, fitted_mv_object: FittedContinuousMultivariate, mdists: dict, typekeeper: TypeKeeper) -> pd.DataFrame:
         # getting summary of marginal dists
