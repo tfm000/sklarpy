@@ -11,7 +11,7 @@ continuous_parametric_names: tuple = ('alpha', 'anglit', 'arcsine', 'argus', 'be
                                       'erlang', 'expon', 'exponnorm', 'exponpow', 'exponweib', 'f', 'fatiguelife',
                                       'fisk', 'foldcauchy', 'foldnorm', 'gamma', 'gausshyper', 'genexpon', 'genextreme',
                                       'gengamma', 'genhalflogistic',
-                                      # 'genhyperbolic',
+                                      'genhyperbolic',
                                       'geninvgauss', 'genlogistic',
                                       'gennorm', 'genpareto', 'gig',
                                       # 'gilbrat',
