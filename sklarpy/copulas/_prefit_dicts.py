@@ -99,7 +99,7 @@ class PreFitCopula(NotImplemented):
     def cdf(self, x: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], mc_cdf: bool = False, match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
         x_array: np.ndarray = self._get_data_array(data=x, is_u=False)
         res: dict = self.__mdist_calcs(funcs=['cdf'], data=x_array, mdists=mdists, check=True)
-        copula_cdf_values: np.ndarray = self.copula_cdf(u=res['cdf'], copula_params=copula_params, mdists=mdists, mc_cdf=mc_cdf, match_datatype=False, **kwargs)
+        copula_cdf_values: np.ndarray = self.copula_cdf(u=res['cdf'], copula_params=copula_params, mc_cdf=mc_cdf, match_datatype=False, **kwargs)
         mc_str: str = "mc_" if mc_cdf else ""
         return TypeKeeper(x).type_keep_from_1d_array(array=copula_cdf_values, match_datatype=match_datatype, col_name=[f'{mc_str}cdf'])
 
@@ -136,7 +136,7 @@ class PreFitCopula(NotImplemented):
         u_array: np.ndarray = self._get_data_array(data=u, is_u=True)
         g: np.ndarray = self._u_to_g(u_array, copula_params)
         mc_str: str = "mc_" if mc_cdf else ""
-        func_str = f"self._mv_object.{mc_str}cdf(x=g, param=copula_params, match_datatype=False, **kwargs)"
+        func_str = f"self._mv_object.{mc_str}cdf(x=g, params=copula_params, match_datatype=False, **kwargs)"
         copula_cdf_values: np.ndarray = eval(func_str)
         return TypeKeeper(u).type_keep_from_1d_array(array=copula_cdf_values, match_datatype=match_datatype, col_name=[f'{mc_str}cdf'])
 
@@ -203,8 +203,8 @@ class PreFitCopula(NotImplemented):
         type_keeper: TypeKeeper = TypeKeeper(data)
 
         # calculating fit statistics
-        likelihood: float = self.likelihood(data=data, copula_params=fitted_mv_object.params, mdists=mdists_dict)
         loglikelihood: float = self.loglikelihood(data=data, copula_params=fitted_mv_object.params, mdists=mdists_dict)
+        likelihood = np.exp(loglikelihood)
         aic: float = self.aic(data=data, copula_params=fitted_mv_object.params, mdists=mdists_dict)
         bic: float = self.bic(data=data, copula_params=fitted_mv_object.params, mdists=mdists_dict)
 
@@ -367,7 +367,7 @@ class PreFitCopula(NotImplemented):
                  num_generate: int = 1000, num_points: int = 100, show_progress: bool = True, show: bool = True) -> None:
         self._threeD_plot(func_str='mc_cdf', copula_params=copula_params, mdists=mdists, ppf_approx=ppf_approx, var1_range=var1_range,
                           var2_range=var2_range, color=color, alpha=alpha, figsize=figsize, grid=grid, axes_names=axes_names, zlim=zlim,
-                          num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show)
+                          num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show, mc_num_generate=mc_num_generate)
 
     def copula_pdf_plot(self, copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], ppf_approx: bool = True, var1_range: np.ndarray = None, var2_range: np.ndarray = None, color: str = 'royalblue', alpha: float = 1.0,
                  figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (None, None),
