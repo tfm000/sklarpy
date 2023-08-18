@@ -32,7 +32,7 @@ class PreFitContinuousMultivariate(NotImplemented):
         return self.__str__()
 
     def _get_x_array(self, x: dataframe_or_array) -> np.ndarray:
-        x_array: np.ndarray = check_multivariate_data(x, allow_1d=True, allow_nans=False)
+        x_array: np.ndarray = check_multivariate_data(x, allow_1d=True, allow_nans=True)
 
         if x_array.shape[1] > self._max_num_variables:
             raise ValueError(f"too many variables for {self.name}")
@@ -102,10 +102,18 @@ class PreFitContinuousMultivariate(NotImplemented):
             raise ValueError("func_name invalid")
 
         x_array: np.ndarray = self._get_x_array(x)
+        shape: tuple = x_array.shape
+        output: np.ndarray = np.full((x_array.shape[0], ), np.nan)
+        mask: np.ndarray = np.isnan(x_array).any(axis=1)  # only calculating for non-nan rows
+        if mask.sum() == shape[0]:
+            # all provided data is nans
+            return output
+
         params_tuple: tuple = self._get_params(params, **kwargs)
 
-        values: np.ndarray = eval(f"self._{func_name}(x_array, params_tuple, **kwargs)")
-        return TypeKeeper(x).type_keep_from_1d_array(values, match_datatype=match_datatype, col_name=[func_name])
+        values: np.ndarray = eval(f"self._{func_name}(x_array[~mask], params_tuple, **kwargs)")
+        output[~mask] = values
+        return TypeKeeper(x).type_keep_from_1d_array(output, match_datatype=match_datatype, col_name=[func_name])
 
     def logpdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
         return self._logpdf_cdf("logpdf", x, params, match_datatype, **kwargs)
@@ -125,13 +133,19 @@ class PreFitContinuousMultivariate(NotImplemented):
     def mc_cdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool, num_generate: int = 10 ** 4, show_progress: bool = True, **kwargs) -> dataframe_or_array:
         # converting x to a numpy array
         x_array: np.ndarray = self._get_x_array(x)
+        shape: tuple = x_array.shape
+        output: np.ndarray = np.full((x_array.shape[0], ), np.nan)
+        mask: np.ndarray = np.isnan(x_array).any(axis=1)  # only calculating for non-nan rows
+        if mask.sum() == shape[0]:
+            # all provided data is nans
+            return output
 
         # argument checks
         if not isinstance(num_generate, int) or (num_generate <= 0):
             raise TypeError("num_generate must be a positive integer")
 
         # whether to show progress
-        iterator = get_iterator(x_array, show_progress, "calculating monte-carlo cdf values")
+        iterator = get_iterator(x_array[~mask], show_progress, "calculating monte-carlo cdf values")
 
         # generating rvs
         rvs = kwargs.get("rvs", None)
@@ -148,7 +162,8 @@ class PreFitContinuousMultivariate(NotImplemented):
             mc_cdf_values.append(mc_cdf_val)
         mc_cdf_values: np.ndarray = np.asarray(mc_cdf_values)
 
-        return TypeKeeper(x).type_keep_from_1d_array(mc_cdf_values, match_datatype, col_name=['mc cdf'])
+        output[~mask] = mc_cdf_values
+        return TypeKeeper(x).type_keep_from_1d_array(output, match_datatype, col_name=['mc cdf'])
 
     def rvs(self, size: int, params: Union[Params, tuple]) -> np.ndarray:
         # checks
@@ -180,7 +195,8 @@ class PreFitContinuousMultivariate(NotImplemented):
         if np.any(np.isinf(logpdf_values)):
             # returning -np.inf instead of nan
             return -np.inf
-        return float(np.sum(logpdf_values))
+        mask: np.ndarray = np.isnan(logpdf_values)
+        return float(np.sum(logpdf_values[~mask]))
 
     def aic(self, data: dataframe_or_array, params: Union[Params, tuple], **kwargs) -> float:
         try:
@@ -200,6 +216,7 @@ class PreFitContinuousMultivariate(NotImplemented):
 
         data_array: np.ndarray = self._get_x_array(data)
         num_data_points, d = data_array.shape
+        num_data_points -= np.isnan(data_array).sum()
         return -2 * loglikelihood + np.log(num_data_points) * self.num_scalar_params(d, **kwargs)
 
     def marginal_pairplot(self, params: Union[Params, tuple], color: str = 'royalblue', alpha: float = 1.0, figsize: tuple = (8, 8),
