@@ -122,7 +122,7 @@ class FittedCopula(Savable, Copyable):
                  num_generate: int = 1000, num_points: int = 100, show_progress: bool = True, show: bool = True) -> None:
         self._threeD_plot(func_str='mc_cdf', ppf_approx=ppf_approx, var1_range=var1_range,
                           var2_range=var2_range, color=color, alpha=alpha, figsize=figsize, grid=grid, axes_names=axes_names, zlim=zlim,
-                          num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show)
+                          num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show, mc_num_generate=mc_num_generate)
 
     def copula_pdf_plot(self, ppf_approx: bool = True, var1_range: np.ndarray = None, var2_range: np.ndarray = None, color: str = 'royalblue', alpha: float = 1.0,
                  figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (None, None),
