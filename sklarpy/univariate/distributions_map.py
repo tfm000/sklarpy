@@ -13,7 +13,7 @@ continuous_parametric_names: tuple = ('alpha', 'anglit', 'arcsine', 'argus', 'be
                                       'gengamma', 'genhalflogistic',
                                       'genhyperbolic',
                                       'geninvgauss', 'genlogistic',
-                                      'gennorm', 'genpareto', 'gig',
+                                      'gennorm', 'genpareto', 'gh', 'gig',
                                       # 'gilbrat',
                                       'gompertz', 'gumbel_l', 'gumbel_r',
                                       'halfcauchy', 'halfgennorm', 'halflogistic', 'halfnorm', 'hypsecant', 'ig', 'invgamma',

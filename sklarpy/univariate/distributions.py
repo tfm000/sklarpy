@@ -4,7 +4,7 @@ import scipy.stats
 from sklarpy.univariate._prefitted_dists import PreFitParametricContinuousUnivariate, \
     PreFitParametricDiscreteUnivariate, PreFitNumericalContinuousUnivariate, PreFitNumericalDiscreteUnivariate
 from sklarpy.univariate._distributions import discrete_empirical_fit, continuous_empirical_fit, _gig, _ig, kde_fit, \
-    dlaplace_fit, duniform_fit, geometric_fit, planck_fit, poisson_fit
+    dlaplace_fit, duniform_fit, geometric_fit, planck_fit, poisson_fit, _gh
 from sklarpy.univariate.distributions_map import distributions_map
 
 __all__ = [*distributions_map['all']]
@@ -50,6 +50,7 @@ geninvgauss = PreFitParametricContinuousUnivariate('geninvgauss', scipy.stats.ge
 genlogistic = PreFitParametricContinuousUnivariate('genlogistic', scipy.stats.genlogistic.pdf, scipy.stats.genlogistic.cdf, scipy.stats.genlogistic.ppf, scipy.stats.genlogistic.support, scipy.stats.genlogistic.fit, scipy.stats.genlogistic.rvs)
 gennorm = PreFitParametricContinuousUnivariate('gennorm', scipy.stats.gennorm.pdf, scipy.stats.gennorm.cdf, scipy.stats.gennorm.ppf, scipy.stats.gennorm.support, scipy.stats.gennorm.fit, scipy.stats.gennorm.rvs)
 genpareto = PreFitParametricContinuousUnivariate('genpareto', scipy.stats.genpareto.pdf, scipy.stats.genpareto.cdf, scipy.stats.genpareto.ppf, scipy.stats.genpareto.support, scipy.stats.genpareto.fit, scipy.stats.genpareto.rvs)
+gh = PreFitParametricContinuousUnivariate("gh", _gh.pdf, _gh.cdf, _gh.ppf, _gh.support, _gh.fit)
 gig = PreFitParametricContinuousUnivariate('gig', _gig.pdf, _gig.cdf, _gig.ppf, _gig.support, _gig.fit, _gig.rvs)
 # gilbrat = PreFitParametricContinuousUnivariate('gilbrat', scipy.stats.gilbrat.pdf, scipy.stats.gilbrat.cdf, scipy.stats.gilbrat.ppf, scipy.stats.gilbrat.support, scipy.stats.gilbrat.fit, scipy.stats.gilbrat.rvs)
 gompertz = PreFitParametricContinuousUnivariate('gompertz', scipy.stats.gompertz.pdf, scipy.stats.gompertz.cdf, scipy.stats.gompertz.ppf, scipy.stats.gompertz.support, scipy.stats.gompertz.fit, scipy.stats.gompertz.rvs)

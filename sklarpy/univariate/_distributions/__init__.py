@@ -8,3 +8,4 @@ from sklarpy.univariate._distributions._duniform import duniform_fit
 from sklarpy.univariate._distributions._geometric import geometric_fit
 from sklarpy.univariate._distributions._planck import planck_fit
 from sklarpy.univariate._distributions._poisson import poisson_fit
+from sklarpy.univariate._distributions._gh import _gh
