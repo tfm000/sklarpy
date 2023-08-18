@@ -44,10 +44,14 @@ def check_params(params: tuple) -> tuple:
     tuple
         The parameters of the probability distribution.
     """
-    if isinstance(params, tuple):
-        return params
-    raise TypeError("params must be a tuple")
+    if not isinstance(params, tuple):
+        raise TypeError("params must be a tuple")
 
+    for param in params:
+        if not (isinstance(param, int) or isinstance(param, float)):
+            raise ValueError("all parameters must be scalar values.")
+
+    return params
 
 def check_univariate_data(data: data_iterable) -> np.ndarray:
     """
