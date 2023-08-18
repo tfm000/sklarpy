@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 from sklarpy._other import Savable
-from sklarpy._utils import dataframe_or_array, FitError, TypeKeeper, check_multivariate_data
+from sklarpy._utils import dataframe_or_array, FitError, TypeKeeper, check_multivariate_data, get_iterator
 from sklarpy.univariate import UnivariateFitter
 from sklarpy._plotting import pair_plot
 
@@ -18,7 +18,7 @@ class MarginalFitter(Savable):
         """Used for fitting the best univariate distributions to each variable in a given multivariate dataset.
 
         Parameters
-        ===========
+        -----------
         data: dataframe_or_array
             The dataset containing a sample of your random variables. Can be a pd.DataFrame or np.ndarray.
             Data may be continuous or discrete or both.
@@ -48,7 +48,7 @@ class MarginalFitter(Savable):
         """Standardising and checking the user provided univariate_fitter_options is in the required format.
 
         Parameters
-        ===========
+        ----------
         univariate_fitter_options: dict
             User provided arguments to use in our UnivariateFitter objects when fitting each marginal distribution.
             The relevant arguments are those found in the .fit and .get_best methods for UnivariateFitter.
@@ -62,11 +62,11 @@ class MarginalFitter(Savable):
             empty dictionary, {}, for it.
 
         See Also
-        ========
+        --------
         UnivariateFitter
 
         Returns
-        ========
+        -------
         univariate_fitter_options: dict
             Standardised univariate_fitter_options dictionary.
         """
@@ -97,14 +97,14 @@ class MarginalFitter(Savable):
         """Selects the probability distribution which best fits a given marginal.
 
         Parameters
-        ==========
+        ----------
         index: int
             The index of the variable we are fitting.
         univariate_fitter_options: dict
             The arguments of UnivariateFitter to use for this particular variable.
 
         Returns
-        ========
+        -------
         marginal_dict
             The best fitted distribution for our variable.
         """
@@ -118,7 +118,7 @@ class MarginalFitter(Savable):
         """Fits the best univariate distributions to each variable in a given multivariate dataset
 
         Parameters
-        ===========
+        ----------
         univariate_fitter_options: dict
             User provided arguments to use in our UnivariateFitter objects when fitting each marginal distribution.
             The relevant arguments are those found in the .fit and .get_best methods for UnivariateFitter.
@@ -130,13 +130,20 @@ class MarginalFitter(Savable):
             described above as values. Note, that if you choose to provide different arguments for different variables,
             all variables must be specified. If you wish to use the default arguments for a particular variable, pass an
             empty dictionary, {}, for it.
+        kwargs:
+            See below
+
+        Keyword arguments
+        ------------------
+        show_progress: bool
+            Whether to show the progress of your fitting.
 
         See Also
-        ========
+        --------
         UnivariateFitter
 
         Returns
-        ========
+        --------
         self:
             self
         """
@@ -144,7 +151,8 @@ class MarginalFitter(Savable):
         summaries: list = []
         self._fitted_marginals = {}
 
-        for index in range(self._num_variables):
+        iterator = get_iterator(range(self._num_variables), kwargs.get('show_progress', False), 'MarginalFitter Progress: ')
+        for index in iterator:
             marginal_dist = self._fit_single_marginal(index, univariate_fitter_options[index])
             self._fitted_marginals[index] = marginal_dist
             summaries.append(marginal_dist.summary)
@@ -166,7 +174,7 @@ class MarginalFitter(Savable):
         """implements pdf, cdf, ppf and logpdf for our marginal distributions
 
         Parameters
-        ===========
+        ----------
         func: str
             The name of the function to be used as a string.
         x: dataframe_or_array
@@ -176,7 +184,7 @@ class MarginalFitter(Savable):
             Default is True.
 
         Returns
-        =======
+        -------
         values: data_iterable
             Function values
         """
@@ -201,7 +209,7 @@ class MarginalFitter(Savable):
         """Calculates the pdf values for each univariate marginal distribution for a given set of observations x.
 
         Parameters
-        ===========
+        ----------
         x: dataframe_or_array
             The values to calculate the marginal pdf values of.
             Must be the same dimension as the number of variables.
@@ -211,7 +219,7 @@ class MarginalFitter(Savable):
             Default is True.
 
         Returns
-        ========
+        --------
         marginal_pdf_values: dataframe_or_array
             Marginal pdf values.
         """
@@ -221,7 +229,7 @@ class MarginalFitter(Savable):
         """Calculates the cdf values for each univariate marginal distribution for a given set of observations x.
 
         Parameters
-        ===========
+        ----------
         x: dataframe_or_array
             The values to calculate the marginal cdf values, P(X<=x), of.
             Must be the same dimension as the number of variables.
@@ -231,7 +239,7 @@ class MarginalFitter(Savable):
             Default is True.
 
         Returns
-        ========
+        --------
         marginal_cdf_values: dataframe_or_array
             Marginal cdf values.
         """
@@ -241,7 +249,7 @@ class MarginalFitter(Savable):
         """Calculates the ppf values for each univariate marginal distribution for a given set of observations x.
 
         Parameters
-        ===========
+        -----------
         q: dataframe_or_array
             The quartile values to calculate the marginal ppf values, i.e. cdf^-1(q), of.
             Must be the same dimension as the number of variables.
@@ -250,7 +258,7 @@ class MarginalFitter(Savable):
             Default is True.
 
         Returns
-        ========
+        -------
         marginal_ppf_values: dataframe_or_array
             Marginal ppf values.
         """
@@ -260,7 +268,7 @@ class MarginalFitter(Savable):
         """Calculates the pdf values for each univariate marginal distribution for a given set of observations x.
 
         Parameters
-        ===========
+        ----------
         x: dataframe_or_array
             The values to calculate the marginal log-pdf values of.
             Must be the same dimension as the number of variables.
@@ -270,7 +278,7 @@ class MarginalFitter(Savable):
             Default is True.
 
         Returns
-        ========
+        -------
         marginal_logpdf_values: dataframe_or_array
             Marginal log-pdf values.
         """
@@ -280,7 +288,7 @@ class MarginalFitter(Savable):
         """Randomly samples values from the marginal distributions.
 
         Parameters
-        ===========
+        ----------
         size: int
             The number of samples to generate from each marginal distribution.
         match_datatype: bool
@@ -288,7 +296,7 @@ class MarginalFitter(Savable):
             Default is True.
 
         Returns
-        ========
+        ---------
         marginal_rvs_values: dataframe_or_array
             A random sample with shape (size, num_variables)
         """
