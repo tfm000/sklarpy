@@ -157,8 +157,8 @@ class PreFitUnivariateBase:
         return self._support(*params)
 
     def _fit_ppf_approx(self, params: tuple, num_points: int, eps: float = 0.01) -> Callable:
-        if not isinstance(num_points, int) and num_points > 0:
-            raise TypeError("num_points must be a positive integer.")
+        if not isinstance(num_points, int) and num_points > 1:
+            raise TypeError("num_points must be a positive integer greater than 1.")
         if not isinstance(eps, float) and (eps >= 0.0) and (eps <= 1.0):
             raise TypeError("eps must be a float between 0.0 and 1.0")
 
@@ -202,6 +202,28 @@ class PreFitUnivariateBase:
         ppf_approx: Callable = self._fit_ppf_approx(params, num_points, eps)
 
         return np.array([ppf_approx(qi) if ((qi >= eps) and (qi <= 1-eps)) else float(self.ppf(qi, params)) for qi in q], dtype=float)
+
+    def _fit_cdf_approx(self, params: tuple, num_points: int, bounds: tuple) -> Callable:
+        if not isinstance(num_points, int) and num_points > 1:
+            raise TypeError("num_points must be a positive integer greater than 1.")
+
+        # fitting linear interpolator
+        x_: np.ndarray = np.linspace(*bounds, num_points, dtype=float)
+        cdf_x_vals: np.ndarray = self.cdf(x_, params)
+        return scipy.interpolate.interp1d(x_, cdf_x_vals, 'linear', bounds_error=False)
+
+    def cdf_approx(self, x: num_or_array, params: tuple, num_points: int = 100, **kwargs) -> np.ndarray:
+        x: np.ndarray = univariate_num_to_array(x)
+        params: tuple = check_params(params)
+
+        if x.size <= num_points:
+            # faster to use cdf directly
+            return self.cdf(x, params)
+
+        # fitting cdf approx function
+        bounds: tuple = x.min(), x.max()
+        cdf_approx = self._fit_cdf_approx(params, num_points, bounds)
+        return np.array([cdf_approx(xi) for xi in x], dtype=float)
 
     def rvs(self, size: tuple, params: tuple, ppf_approx: bool = False, **kwargs) -> np.ndarray:
         """Random sampler.
