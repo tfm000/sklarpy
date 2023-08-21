@@ -14,13 +14,12 @@ __all__ = ['gaussian_copula', 'gaussian_kde_copula', 'gen_hyperbolic_copula', 'm
 ########################################################################################################################
 # Numerical/Non-Parametric
 ########################################################################################################################
-
+gaussian_kde_copula: gaussian_kde_copula_gen = gaussian_kde_copula_gen(name="gaussian_kde", mv_object=multivariate_gaussian_kde)
 
 ########################################################################################################################
 # Parametric
 ########################################################################################################################
 gaussian_copula: gaussian_copula_gen = gaussian_copula_gen(name="gaussian", mv_object=multivariate_normal)
-gaussian_kde_copula: gaussian_kde_copula_gen = gaussian_kde_copula_gen(name="gaussian_kde", mv_object=multivariate_gaussian_kde)
 gen_hyperbolic_copula: gen_hyperbolic_copula_gen = gen_hyperbolic_copula_gen(name="gen_hyperbolic", mv_object=multivariate_gen_hyperbolic)
 marginal_hyperbolic_copula: marginal_hyperbolic_copula_gen = marginal_hyperbolic_copula_gen(name="marginal_hyperbolic", mv_object=multivariate_marginal_hyperbolic)
 hyperbolic_copula: hyperbolic_copula_gen = hyperbolic_copula_gen(name="hyperbolic", mv_object=multivariate_hyperbolic)
