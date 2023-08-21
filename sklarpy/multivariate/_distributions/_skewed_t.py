@@ -126,14 +126,12 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
     def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple, copula: bool=False) -> np.ndarray:
         d: int = data.shape[1]
         dof0: float = np.random.uniform(*bounds[0])
-        if not copula:
-            loc0: np.ndarray = data.mean(axis=0, dtype=float).flatten()
-        else:
-            loc0: np.ndarray = np.zeros((d,), dtype=float)
         data_stds: np.ndarray = data.std(axis=0, dtype=float)
         gamma0: np.ndarray = np.random.normal(scale=data_stds, size=(d,))
-        theta0: np.ndarray = np.array([dof0, *loc0, *gamma0], dtype=float)
-        return theta0
+        if not copula:
+            loc0: np.ndarray = data.mean(axis=0, dtype=float).flatten()
+            return np.array([dof0, *loc0, *gamma0], dtype=float)
+        return np.array([dof0, *gamma0], dtype=float)
 
     @staticmethod
     def _exp_w(params: tuple) -> float:
