@@ -217,7 +217,7 @@ class PreFitCopula(NotImplemented):
         # building summary
         num_params: int = self.num_params(mdists=mdists)
         num_scalar_params: int = self.num_scalar_params(mdists=mdists_dict)
-        index: list = ['Distribution', '#Variables', '#Params', '#Scalar Params', '#Converged', 'Likelihood', 'Log-Likelihood', 'AIC', 'BIC', '#Fitted Data Points']
+        index: list = ['Distribution', '#Variables', '#Params', '#Scalar Params', 'Converged', 'Likelihood', 'Log-Likelihood', 'AIC', 'BIC', '#Fitted Data Points']
         values: list = ['Joint Distribution', fitted_mv_object.num_variables, num_params, num_scalar_params, fitted_mv_object.converged, likelihood, loglikelihood, aic, bic, fitted_mv_object.fitted_num_data_points]
         summary: pd.DataFrame = pd.DataFrame(values, index=index, columns=['Joint Distribution'])
         component_summary: pd.DataFrame = self._get_components_summary(fitted_mv_object=fitted_mv_object, mdists=mdists_dict, typekeeper=type_keeper)
@@ -318,7 +318,8 @@ class PreFitCopula(NotImplemented):
             rvs_array: np.ndarray = self.rvs(size=num_generate, copula_params=copula_params, mdists=mdists, ppf_approx=ppf_approx)
             if rvs_array.shape[1] != 2:
                 raise NotImplementedError(f"{func_str}_plot is not implemented when the number of variables is not 2.")
-            xmin, xmax = (rvs_array.min(axis=0), rvs_array.max(axis=0)) if 'copula' not in func_str else (0.0, 1.0)
+            eps: float = 10**-2
+            xmin, xmax = (rvs_array.min(axis=0), rvs_array.max(axis=0)) if 'copula' not in func_str else (eps, 1.0-eps)
             var1_range: np.ndarray = np.linspace(xmin[0], xmax[0], num_points)
             var2_range: np.ndarray = np.linspace(xmin[1], xmax[1], num_points)
 

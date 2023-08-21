@@ -90,7 +90,8 @@ class FittedCopula(Savable, Copyable):
             raise TypeError("num_points must be a strictly positive integer.")
 
         # creating our ranges
-        rng_bounds = np.array([[0,1], [0, 1]], dtype=float) if 'copula' in func_str else self.__fit_info['fitted_bounds']
+        eps: float = 10 ** -2
+        rng_bounds = np.array([[eps,1-eps], [eps, 1-eps]], dtype=float) if 'copula' in func_str else self.__fit_info['fitted_bounds']
         if var1_range is None:
             var1_range: np.ndarray = np.linspace(rng_bounds[0][0], rng_bounds[0][1], num_points)
         if var2_range is None:
