@@ -13,7 +13,7 @@ class hyperbolic_copula_base_gen(gen_hyperbolic_copula_gen):
 
     def _u_g_pdf(self, func: Callable, arr: np.ndarray, copula_params: Union[Params, tuple], **kwargs) -> np.ndarray:
         lamb: float = self._get_lamb(copula_params=copula_params)
-        copula_params: tuple = lamb, copula_params[0], copula_params[1], copula_params[2], copula_params[3], copula_params[4]
+        copula_params: tuple = lamb, *copula_params
         return super()._u_g_pdf(func=func, arr=arr, copula_params=copula_params, **kwargs)
 
 
