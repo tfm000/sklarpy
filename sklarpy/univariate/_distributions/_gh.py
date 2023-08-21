@@ -48,11 +48,28 @@ class gh_gen:
     def support(self, *params):
         return -np.inf, np.inf
 
+    def _ppf_to_solve(self, xi, qi, *params):
+        return self._cdf_single(xi, *params) - qi
+
     def _ppf_single(self, qi: float, *params):
-        def to_solve(xi):
-            return self._cdf_single(xi, *params) - qi
-        res = scipy.optimize.root(to_solve, params[3])
-        return float(res['x']) if res['success'] else np.nan
+        # Code adapted from scipy code
+        factor = 2.
+        left, right = self.support(*params)
+
+        if np.isinf(left):
+            left = min(-factor, right)
+            while self._ppf_to_solve(left, qi, *params) > 0.:
+                left, right = left * factor, left
+            # left is now such that cdf(left) <= q
+            # if right has changed, then cdf(right) > q
+
+        if np.isinf(right):
+            right = max(factor, left)
+            while self._ppf_to_solve(right, qi, *params) < 0.:
+                left, right = right, right * factor
+            # right is now such that cdf(right) >= q
+
+        return scipy.optimize.brentq(self._ppf_to_solve, left, right, args=(qi, *params))
 
     def ppf(self, q, *params):
         return np.vectorize(self._ppf_single, otypes=[float])(q, *params)
