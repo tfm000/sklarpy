@@ -22,7 +22,7 @@ rvs_df: pd.DataFrame = pd.DataFrame(rvs, columns=['Process A', 'Process B'], dty
 # fitting a skewed-t copula to our generated data
 from sklarpy.copulas import skewed_t_copula
 
-fitted_copula = skewed_t_copula.fit(data=rvs_df, method='low-dim mle', univariate_fitter_options={'pvalue': 0.0}, show_progress=True)
+fitted_copula = skewed_t_copula.fit(data=rvs_df, method='low-dim mle', univariate_fitter_options={'significant': False}, show_progress=True)
 print(fitted_copula.copula_params.to_dict)
 print(fitted_copula.mdists)
 
