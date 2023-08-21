@@ -1,6 +1,7 @@
 from typing import Callable, Iterable
 import numpy as np
 import matplotlib.pyplot as plt
+import warnings
 
 from sklarpy._utils import get_iterator
 
@@ -52,7 +53,12 @@ def threeD_plot(func: Callable, var1_range: np.ndarray, var2_range: np.ndarray, 
     for i in iterator:
         points[:, 0] = var1_range[i]
         points[:, 1] = var2_range
-        Z[:, i] = func(points, **func_kwargs)
+
+        try:
+            Z[:, i] = func(points, **func_kwargs)
+        except OverflowError:
+            warnings.warn("Overflow encountered in plot")
+            continue
     X, Y = np.meshgrid(var1_range, var2_range)
 
     # plotting
