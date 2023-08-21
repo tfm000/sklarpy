@@ -42,5 +42,5 @@ fitted_copula.save()
 # we can then easily load this object
 from sklarpy import load
 
-loaded_copula = load('skewed_t_copula.pickle')
+loaded_copula = load('skewed_t.pickle')
 print(loaded_copula.summary)
