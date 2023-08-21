@@ -4,7 +4,7 @@ import scipy.stats
 from sklarpy.univariate._prefitted_dists import PreFitParametricContinuousUnivariate, \
     PreFitParametricDiscreteUnivariate, PreFitNumericalContinuousUnivariate, PreFitNumericalDiscreteUnivariate
 from sklarpy.univariate._distributions import discrete_empirical_fit, continuous_empirical_fit, _gig, _ig, kde_fit, \
-    dlaplace_fit, duniform_fit, geometric_fit, planck_fit, poisson_fit, _gh
+    dlaplace_fit, duniform_fit, geometric_fit, planck_fit, poisson_fit, _gh, _skewed_t
 from sklarpy.univariate.distributions_map import distributions_map
 
 __all__ = [*distributions_map['all']]
@@ -105,6 +105,7 @@ rice = PreFitParametricContinuousUnivariate('rice', scipy.stats.rice.pdf, scipy.
 semicircular = PreFitParametricContinuousUnivariate('semicircular', scipy.stats.semicircular.pdf, scipy.stats.semicircular.cdf, scipy.stats.semicircular.ppf, scipy.stats.semicircular.support, scipy.stats.semicircular.fit, scipy.stats.semicircular.rvs)
 skewcauchy = PreFitParametricContinuousUnivariate('skewcauchy', scipy.stats.skewcauchy.pdf, scipy.stats.skewcauchy.cdf, scipy.stats.skewcauchy.ppf, scipy.stats.skewcauchy.support, scipy.stats.skewcauchy.fit, scipy.stats.skewcauchy.rvs)
 skewnorm = PreFitParametricContinuousUnivariate('skewnorm', scipy.stats.skewnorm.pdf, scipy.stats.skewnorm.cdf, scipy.stats.skewnorm.ppf, scipy.stats.skewnorm.support, scipy.stats.skewnorm.fit, scipy.stats.skewnorm.rvs)
+skewed_t = PreFitParametricContinuousUnivariate('skewed_t', _skewed_t.pdf, _skewed_t.cdf, _skewed_t.ppf, _skewed_t.support, _skewed_t.fit)
 # studentized_range = PreFitParametricContinuousUnivariate('studentized_range', scipy.stats.studentized_range.pdf, scipy.stats.studentized_range.cdf, scipy.stats.studentized_range.ppf, scipy.stats.studentized_range.support, scipy.stats.studentized_range.fit, scipy.stats.studentized_range.rvs)
 student_t = PreFitParametricContinuousUnivariate('student_t', scipy.stats.t.pdf, scipy.stats.t.cdf, scipy.stats.t.ppf, scipy.stats.t.support, scipy.stats.t.fit, scipy.stats.t.rvs)
 trapezoid = PreFitParametricContinuousUnivariate('trapezoid', scipy.stats.trapezoid.pdf, scipy.stats.trapezoid.cdf, scipy.stats.trapezoid.ppf, scipy.stats.trapezoid.support, scipy.stats.trapezoid.fit, scipy.stats.trapezoid.rvs)

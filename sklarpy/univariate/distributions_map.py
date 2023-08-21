@@ -23,7 +23,7 @@ continuous_parametric_names: tuple = ('alpha', 'anglit', 'arcsine', 'argus', 'be
                                       'lomax', 'maxwell', 'mielke', 'moyal', 'nakagami', 'ncf', 'nct', 'ncx2', 'normal',
                                       'norminvgauss', 'pareto', 'pearson3', 'powerlaw', 'powerlognorm', 'powernorm',
                                       'rayleigh', 'rdist', 'recipinvgauss', 'reciprocal', 'rice', 'semicircular',
-                                      'skewcauchy', 'skewnorm', 'student_t', 'trapezoid', 'trapz', 'triang', 'truncexpon',
+                                      'skewcauchy', 'skewnorm', 'skewed_t', 'student_t', 'trapezoid', 'trapz', 'triang', 'truncexpon',
                                       'truncnorm', 'tukeylambda', 'uniform', 'vonmises', 'vonmises_line', 'wald',
                                       'weibull_max', 'weibull_min', 'wrapcauchy')
 common_continuous_parametric_names: tuple = ('cauchy', 'chi2', 'expon', 'gamma', 'lognorm', 'normal', 'powerlaw',
