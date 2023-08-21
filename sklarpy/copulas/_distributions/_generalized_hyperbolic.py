@@ -10,7 +10,7 @@ __all__ = ['gen_hyperbolic_copula_gen']
 
 class gen_hyperbolic_copula_gen(PreFitCopula):
 
-    def __u_g_pdf(self, func: Callable, arr: np.ndarray, copula_params: Union[Params, tuple], **kwargs) -> np.ndarray:
+    def _u_g_pdf(self, func: Callable, arr: np.ndarray, copula_params: Union[Params, tuple], **kwargs) -> np.ndarray:
         shape: tuple = arr.shape
         output: np.ndarray = np.full(shape, np.nan)
         for i in range(shape[1]):
@@ -19,11 +19,11 @@ class gen_hyperbolic_copula_gen(PreFitCopula):
         return output
 
     def _g_to_u(self, g: np.ndarray, copula_params: Union[Params, tuple]) -> np.ndarray:
-        return self.__u_g_pdf(func=gh.cdf_approx, arr=g, copula_params=copula_params, num_points=10)
+        return self._u_g_pdf(func=gh.cdf_approx, arr=g, copula_params=copula_params, num_points=10)
 
     def _u_to_g(self, u: np.ndarray, copula_params: Union[Params, tuple]):
-        return self.__u_g_pdf(func=gh.ppf_approx, arr=u, copula_params=copula_params, num_points=10)
+        return self._u_g_pdf(func=gh.ppf_approx, arr=u, copula_params=copula_params, num_points=10)
 
     def _h_logpdf_sum(self, g: np.ndarray, copula_params: Union[Params, tuple]) -> np.ndarray:
-        pdf_vals: np.ndarray = self.__u_g_pdf(func=gh.pdf, arr=g, copula_params=copula_params)
+        pdf_vals: np.ndarray = self._u_g_pdf(func=gh.pdf, arr=g, copula_params=copula_params)
         return np.log(pdf_vals).sum(axis=1)
