@@ -33,6 +33,7 @@ print(fitted_copula.summary)
 fitted_copula.copula_pdf_plot(show=False)
 fitted_copula.pdf_plot(show=False)
 fitted_copula.mc_cdf_plot(show=False)
+fitted_copula.marginal_pairplot(show=False)
 plt.show()
 
 # we can also save our fitted copula, as well as its parameters
