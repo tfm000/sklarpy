@@ -330,7 +330,7 @@ class PreFitCopula(NotImplemented):
             raise ValueError("mc_num_generate cannot be none for a monte-carlo function.")
 
         # title and name of plot to show user
-        plot_name: str = func_str.replace('_', ' ').upper()
+        plot_name: str = func_str.replace('_', ' ').upper().replace('COPULA', 'Copula')
         title: str = f"{self.name.replace('_', ' ').title()} {plot_name} Plot"
 
         # func kwargs
