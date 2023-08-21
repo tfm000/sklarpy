@@ -42,11 +42,17 @@ def threeD_plot(func: Callable, var1_range: np.ndarray, var2_range: np.ndarray, 
         raise TypeError("func_kwargs must be a dictionary.")
 
     # whether to show progress
+    num_points: int = var1_range.size
     iterator_msg: str = f"calculating {func_name} values".replace("  ", " ")
-    iterator = get_iterator(var2_range, show_progress, iterator_msg)
+    iterator = get_iterator(range(num_points), show_progress, iterator_msg)
 
     # data for plot
-    Z: np.ndarray = np.array([[float(func(np.array([[x, y]]), **func_kwargs)) for x in var1_range] for y in iterator])
+    Z: np.ndarray = np.full((num_points, num_points), np.nan, dtype=float)
+    points: np.ndarray = np.full((num_points, 2), np.nan, dtype=float)
+    for i in iterator:
+        points[:, 0] = var1_range[i]
+        points[:, 1] = var2_range
+        Z[:, i] = func(points, **func_kwargs)
     X, Y = np.meshgrid(var1_range, var2_range)
 
     # plotting
