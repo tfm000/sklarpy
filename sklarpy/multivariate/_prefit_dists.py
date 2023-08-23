@@ -364,7 +364,7 @@ class PreFitContinuousMultivariate(NotImplemented):
     def _get_bounds(self, default_bounds: dict, d: int, as_tuple: bool, **kwargs) -> Union[dict, tuple]:
         bounds_dict: dict = kwargs.get('bounds', {})
         bounds_dict = {param: bounds_dict.get(param, default_bounds[param]) for param in default_bounds}
-        to_remove = ['loc'] if kwargs.get('copula', False) else []
+        to_remove = ['loc'] if kwargs.get('copula', False) and 'loc' in bounds_dict else []
         return self._remove_bounds(bounds_dict, to_remove, d, as_tuple)
 
     def _remove_bounds(self, bounds_dict: dict, to_remove: list, d: int, as_tuple: bool) -> Union[dict, tuple]:
