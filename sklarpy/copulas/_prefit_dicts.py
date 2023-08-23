@@ -184,14 +184,23 @@ class PreFitCopula(NotImplemented):
         if (data is None) and (copula_params is None or mdists is None):
             raise ValueError("copula_params and mdist must be provided if data is not.")
 
+        if mdists is None:
+            # fitting marginal distributions
+            mdists: MarginalFitter = MarginalFitter(data=data).fit(**kwargs)
+        d: int = len(mdists)
+        mdists_dict: dict = self._get_mdists(mdists=mdists, d=d, check=True)
+
+        if copula_params is None:
+            # calculating u values
+            data_array: Union[np.ndarray, None] = self._get_data_array(data=data, is_u=False)
+            res: dict = self.__mdist_calcs(funcs=['cdf'], data=data_array, mdists=mdists_dict, check=False)
+            u_array: Union[np.ndarray, None] = res['cdf']
+        else:
+            u_array: Union[np.ndarray, None] = None
+
         # fitting copula
         kwargs['copula'] = True
-        fitted_mv_object: FittedContinuousMultivariate = self._mv_object.fit(data=data, params=copula_params, **kwargs)
-
-        # fitting marginal distributions
-        if mdists is None:
-            mdists: MarginalFitter = MarginalFitter(data=data).fit(**kwargs)
-        mdists_dict: dict = self._get_mdists(mdists=mdists, d=fitted_mv_object.num_variables, check=True)
+        fitted_mv_object: FittedContinuousMultivariate = self._mv_object.fit(data=u_array, params=copula_params, **kwargs)
 
         if len(mdists_dict) != fitted_mv_object.num_variables:
             raise ValueError("number of variables of for mdist and copula params do not match.")
