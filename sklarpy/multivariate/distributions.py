@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 from sklarpy.multivariate._distributions._gaussian_kde import multivariate_gaussian_kde_gen
 from sklarpy.multivariate._distributions._generalized_hyperbolic import multivariate_gen_hyperbolic_gen
@@ -8,6 +9,7 @@ from sklarpy.multivariate._distributions._skewed_t import multivariate_skewed_t_
 from sklarpy.multivariate._distributions._student_t import multivariate_student_t_gen
 from sklarpy.multivariate._distributions._symmetric_generalized_hyperbolic import multivariate_sym_gen_hyperbolic_gen
 from sklarpy.multivariate._distributions._symmetric_hyperbolics import multivariate_sym_hyperbolic_gen, multivariate_sym_nig_gen, multivariate_sym_marginal_hyperbolic_gen
+from sklarpy.multivariate._distributions._archimedean import multivariate_clayton_gen, multivariate_gumbel_gen
 
 from sklarpy.multivariate._params._gaussian_kde import MultivariateGaussianKDEParams
 from sklarpy.multivariate._params._generalized_hyperbolic import MultivariateGenHyperbolicParams
@@ -17,6 +19,7 @@ from sklarpy.multivariate._params._skewed_t import MultivariateSkewedTParams
 from sklarpy.multivariate._params._student_t import MultivariateStudentTParams
 from sklarpy.multivariate._params._symmetric_generalized_hyperbolic import MultivariateSymGenHyperbolicParams
 from sklarpy.multivariate._params._symmetric_hyperbolics import MultivariateSymMarginalHyperbolicParams, MultivariateSymHyperbolicParams, MultivariateSymNIGParams
+from sklarpy.multivariate._params._archimedean import MultivariateClaytonParams, MultivariateGumbelParams
 
 __all__ = ['multivariate_gaussian_kde', 'multivariate_gen_hyperbolic', 'multivariate_marginal_hyperbolic', 'multivariate_hyperbolic', 'multivariate_nig',
            'multivariate_normal', 'multivariate_skewed_t', 'multivariate_student_t', 'multivariate_sym_gen_hyperbolic',
@@ -42,3 +45,9 @@ multivariate_sym_gen_hyperbolic: multivariate_sym_gen_hyperbolic_gen = multivari
 multivariate_sym_marginal_hyperbolic: multivariate_sym_marginal_hyperbolic_gen = multivariate_sym_marginal_hyperbolic_gen(name='multivariate_sym_marginal_hyperbolic', params_obj=MultivariateSymMarginalHyperbolicParams, num_params=4, max_num_variables=np.inf)
 multivariate_sym_hyperbolic: multivariate_sym_hyperbolic_gen = multivariate_sym_hyperbolic_gen(name='multivariate_sym_hyperbolic', params_obj=MultivariateSymHyperbolicParams, num_params=4, max_num_variables=np.inf)
 multivariate_sym_nig: multivariate_sym_nig_gen = multivariate_sym_nig_gen(name='multivariate_sym_nig', params_obj=MultivariateSymNIGParams, num_params=4, max_num_variables=np.inf)
+
+########################################################################################################################
+# Copula Only
+########################################################################################################################
+multivariate_clayton: multivariate_clayton_gen = multivariate_clayton_gen(name='multivariate_clayton', params_obj=MultivariateClaytonParams, num_params=2, max_num_variables=np.inf)
+multivariate_gumbel: multivariate_gumbel_gen = multivariate_gumbel_gen(name='multivariate_gumbel', params_obj=MultivariateGumbelParams, num_params=2, max_num_variables=sys.getrecursionlimit())
