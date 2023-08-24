@@ -93,12 +93,16 @@ class PreFitContinuousMultivariate(NotImplemented):
         # to be overridden by child class(es)
         self._not_implemented('log-pdf')
 
+    def _pdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
+        # to be overridden by child class(es)
+        self._not_implemented('pdf')
+
     def _rvs(self, size: int, params: tuple) -> np.ndarray:
         # to be overridden by child class(es)
         self._not_implemented('rvs')
 
-    def _logpdf_cdf(self, func_name: str, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
-        if func_name not in ('logpdf', 'cdf'):
+    def _logpdf_pdf_cdf(self, func_name: str, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
+        if func_name not in ('logpdf', 'pdf', 'cdf'):
             raise ValueError("func_name invalid")
 
         x_array: np.ndarray = self._get_x_array(x)
@@ -116,19 +120,19 @@ class PreFitContinuousMultivariate(NotImplemented):
         return TypeKeeper(x).type_keep_from_1d_array(output, match_datatype=match_datatype, col_name=[func_name])
 
     def logpdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
-        return self._logpdf_cdf("logpdf", x, params, match_datatype, **kwargs)
+        return self._logpdf_pdf_cdf("logpdf", x, params, match_datatype, **kwargs)
 
     def pdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
         try:
+            # using logpdf when possible
             logpdf_values: np.ndarray = self.logpdf(x, params, False)
+            pdf_values: np.ndarray = np.exp(logpdf_values)
+            return TypeKeeper(x).type_keep_from_1d_array(pdf_values, match_datatype, col_name=['pdf'])
         except NotImplementedError:
-            # raising a function specific exception
-            self._not_implemented('pdf')
-        pdf_values: np.ndarray = np.exp(logpdf_values)
-        return TypeKeeper(x).type_keep_from_1d_array(pdf_values, match_datatype, col_name=['pdf'])
+            return self._logpdf_pdf_cdf("pdf", x, params, match_datatype, **kwargs)
 
     def cdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
-        return self._logpdf_cdf("cdf", x, params, match_datatype, **kwargs)
+        return self._logpdf_pdf_cdf("cdf", x, params, match_datatype, **kwargs)
 
     def mc_cdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool, num_generate: int = 10 ** 4, show_progress: bool = True, **kwargs) -> dataframe_or_array:
         # converting x to a numpy array
