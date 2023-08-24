@@ -126,7 +126,7 @@ class PreFitContinuousMultivariate(NotImplemented):
         except NotImplementedError:
             # using pdf if possible
             try:
-                pdf_values: np.ndarray = self.pdf(x, params, False)
+                pdf_values: np.ndarray = self._logpdf_pdf_cdf("pdf", x, params, False, **kwargs)
                 logpdf_values: np.ndarray = np.log(pdf_values)
                 return TypeKeeper(x).type_keep_from_1d_array(logpdf_values, match_datatype, col_name=['logpdf'])
             except NotImplementedError:
@@ -136,9 +136,8 @@ class PreFitContinuousMultivariate(NotImplemented):
     def pdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
         try:
             # using logpdf when possible
-            logpdf_values: np.ndarray = self.logpdf(x, params, False)
-            pdf_values: np.ndarray = np.exp(logpdf_values)
-            return TypeKeeper(x).type_keep_from_1d_array(pdf_values, match_datatype, col_name=['pdf'])
+            logpdf_values: Union[np.ndarray, pd.DataFrame] = self.logpdf(x, params, match_datatype)
+            return np.exp(logpdf_values)
         except NotImplementedError:
             return self._logpdf_pdf_cdf("pdf", x, params, match_datatype, **kwargs)
 
