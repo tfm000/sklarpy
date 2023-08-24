@@ -2,14 +2,11 @@
 import numpy as np
 from abc import abstractmethod
 from typing import Union, Tuple
-import pandas as pd
 import scipy.stats
 
-from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate, FittedContinuousMultivariate
-from sklarpy._utils import get_iterator, FitError, check_multivariate_data
-from sklarpy._other import Params
+from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
+from sklarpy._utils import get_iterator, FitError
 
-# params_example = ('theta', 'dim') -> dim only needed for non-bivariate copulas
 __all__ = ['multivariate_clayton_gen']
 
 
