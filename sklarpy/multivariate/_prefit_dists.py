@@ -120,7 +120,18 @@ class PreFitContinuousMultivariate(NotImplemented):
         return TypeKeeper(x).type_keep_from_1d_array(output, match_datatype=match_datatype, col_name=[func_name])
 
     def logpdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
-        return self._logpdf_pdf_cdf("logpdf", x, params, match_datatype, **kwargs)
+        try:
+            # using logpdf when possible
+            return self._logpdf_pdf_cdf("logpdf", x, params, match_datatype, **kwargs)
+        except NotImplementedError:
+            # using pdf if possible
+            try:
+                pdf_values: np.ndarray = self.pdf(x, params, False)
+                logpdf_values: np.ndarray = np.log(pdf_values)
+                return TypeKeeper(x).type_keep_from_1d_array(logpdf_values, match_datatype, col_name=['logpdf'])
+            except NotImplementedError:
+                # raising a function specific exception
+                self._not_implemented('logpdf')
 
     def pdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
         try:
