@@ -30,11 +30,11 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
             raise ValueError("d (dimensions parameter) must be greater than or equal to 2.")
 
         theta = params[0]
-        theta_lb: float = self._DEFAULT_BOUNDS[0] if d == 2 else self._DEFAULT_STRICT_BOUNDS[0]
+        bounds: float = self._DEFAULT_BOUNDS if d == 2 else self._DEFAULT_STRICT_BOUNDS
         if not (isinstance(theta, float) or isinstance(theta, int)):
             raise TypeError("theta must be a scalar value.")
-        elif theta < theta_lb:
-            raise ValueError(f"theta parameter must be greater than or equal to {theta_lb} when d={d}")
+        elif not bounds[0] <= theta <= bounds[1]:
+            raise ValueError(f"theta parameter must lie within {bounds[0]} <= theta <= {bounds[1]} when d={d}. However, theta={theta}")
 
     @abstractmethod
     def _generator(self, u: np.ndarray, params: tuple) -> np.ndarray:
@@ -88,13 +88,22 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
     def _get_low_dim_mle_objective_func_args(self, data: np.ndarray, **kwargs) -> tuple:
         return data.shape[1],
 
-    @abstractmethod
+    def _inverse_kendall_tau_calc(self, kendall_tau: float) -> float:
+        pass
+
     def _inverse_kendall_tau(self, data: np.ndarray, **kwargs) -> float:
         d: int = data.shape[1]
         if d != 2:
             raise FitError("Archimedean copulas can only be fit using inverse kendall's tau when the number of variables is exactly 2.")
 
-        return scipy.stats.kendalltau(data[:, 0], data[:, 1]).statistic
+        kendall_tau: float = scipy.stats.kendalltau(data[:, 0], data[:, 1]).statistic
+        theta: float = self._inverse_kendall_tau_calc(kendall_tau=kendall_tau)
+        params: tuple = (theta, d)
+        try:
+            self._check_params(params=params)
+        except Exception:
+            raise FitError(f"cannot fit {self.name} using inverse kendall's tau method. This is because the fitted theta parameter likely lies outside its permitted range.")
+        return (theta, d), ~np.isinf(theta)
 
     def _mle(self, data: np.ndarray, **kwargs) -> tuple:
         return super()._low_dim_mle(data, **kwargs)
@@ -143,11 +152,8 @@ class multivariate_clayton_gen(multivariate_archimedean_base_gen):
     def _get_dim(self, params: tuple) -> int:
         return params[1]
 
-    def _inverse_kendall_tau(self, data: np.ndarray, **kwargs) -> tuple:
-        kendall_tau: float = super()._inverse_kendall_tau(data=data, **kwargs)
-        theta: float = 2 * kendall_tau / (1 - kendall_tau)
-        d: int = data.shape[1]
-        return (theta, d), ~np.isinf(theta)
+    def _inverse_kendall_tau_calc(self, kendall_tau: float) -> float:
+        return 2 * kendall_tau / (1 - kendall_tau)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
         return {'theta': params[0], 'd': params[1]}, params[1]
@@ -192,11 +198,8 @@ class multivariate_gumbel_gen(multivariate_archimedean_base_gen):
     def _get_dim(self, params: tuple) -> int:
         return params[1]
 
-    def _inverse_kendall_tau(self, data: np.ndarray, **kwargs) -> tuple:
-        kendall_tau: float = super()._inverse_kendall_tau(data=data, **kwargs)
-        theta: float = 1 / (1 - kendall_tau)
-        d: int = data.shape[1]
-        return (theta, d), ~np.isinf(theta)
+    def _inverse_kendall_tau_calc(self, kendall_tau: float) -> float:
+        return 1 / (1 - kendall_tau)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
         return {'theta': params[0], 'd': params[1]}, params[1]
