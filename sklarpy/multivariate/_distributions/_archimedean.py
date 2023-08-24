@@ -18,6 +18,24 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
     _DEFAULT_STRICT_BOUNDS: tuple
     _DEFAULT_BOUNDS: tuple
 
+    def _check_params(self, params: tuple, **kwargs) -> None:
+        # checking correct number of params passed
+        super()._check_params(params)
+
+        # checking valid theta and dimensions parameters
+        d = self._get_dim(params)
+        if not isinstance(d, int):
+            raise TypeError("d (dimensions parameter) must be an integer.")
+        elif d < 2:
+            raise ValueError("d (dimensions parameter) must be greater than or equal to 2.")
+
+        theta = params[0]
+        theta_lb: float = self._DEFAULT_BOUNDS[0] if d == 2 else self._DEFAULT_STRICT_BOUNDS[0]
+        if not (isinstance(theta, float) or isinstance(theta, int)):
+            raise TypeError("theta must be a scalar value.")
+        elif theta < theta_lb:
+            raise ValueError(f"theta parameter must be greater than or equal to {theta_lb} when d={d}")
+
     @abstractmethod
     def _generator(self, u: np.ndarray, params: tuple) -> np.ndarray:
         pass
@@ -155,8 +173,8 @@ class multivariate_clayton_gen(multivariate_archimedean_base_gen):
 
 
 class multivariate_gumbel_gen(multivariate_archimedean_base_gen):
-    _DEFAULT_STRICT_BOUNDS = (1.01, 100.0)
-    _DEFAULT_BOUNDS = (1.01, 100.0)
+    _DEFAULT_STRICT_BOUNDS = (1.0, 100.0)
+    _DEFAULT_BOUNDS = (1.0, 100.0)
 
     def _generator(self, u: np.ndarray, params: tuple) -> np.ndarray:
         theta: float = params[0]
