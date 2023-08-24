@@ -96,12 +96,18 @@ class PreFitCopula(NotImplemented):
         pdf_values: np.ndarray = np.exp(logpdf_values)
         return TypeKeeper(x).type_keep_from_1d_array(array=pdf_values, match_datatype=match_datatype, col_name=['pdf'])
 
-    def cdf(self, x: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], mc_cdf: bool = False, match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
+    def __cdf_mccdf(self, mc_cdf: bool, x: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
         x_array: np.ndarray = self._get_data_array(data=x, is_u=False)
         res: dict = self.__mdist_calcs(funcs=['cdf'], data=x_array, mdists=mdists, check=True)
-        copula_cdf_values: np.ndarray = self.copula_cdf(u=res['cdf'], copula_params=copula_params, mc_cdf=mc_cdf, match_datatype=False, **kwargs)
         mc_str: str = "mc_" if mc_cdf else ""
+        copula_cdf_values: np.ndarray = eval(f"self.copula_{mc_str}cdf(u=res['cdf'], copula_params=copula_params, match_datatype=False, **kwargs)")
         return TypeKeeper(x).type_keep_from_1d_array(array=copula_cdf_values, match_datatype=match_datatype, col_name=[f'{mc_str}cdf'])
+
+    def cdf(self, x: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict],  match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
+        return self.__cdf_mccdf(mc_cdf=False, x=x, copula_params=copula_params, mdists=mdists, match_datatype=match_datatype, **kwargs)
+
+    def mc_cdf(self, x: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
+        return self.__cdf_mccdf(mc_cdf=True, x=x, copula_params=copula_params, mdists=mdists, match_datatype=match_datatype, **kwargs)
 
     def rvs(self, size: int, copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], ppf_approx: bool = True) -> np.ndarray:
         copula_rvs: np.ndarray = self.copula_rvs(size=size, copula_params=copula_params)
@@ -132,13 +138,19 @@ class PreFitCopula(NotImplemented):
         copula_pdf_values: np.ndarray = np.exp(copula_logpdf_values)
         return TypeKeeper(u).type_keep_from_1d_array(array=copula_pdf_values, match_datatype=match_datatype, col_name=['copula_pdf'])
 
-    def copula_cdf(self, u: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], mc_cdf: bool = False, match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
+    def __copula_cdf_mccdf(self, mc_cdf: bool, u: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
         u_array: np.ndarray = self._get_data_array(data=u, is_u=True)
         g: np.ndarray = self._u_to_g(u_array, copula_params)
         mc_str: str = "mc_" if mc_cdf else ""
         func_str = f"self._mv_object.{mc_str}cdf(x=g, params=copula_params, match_datatype=False, **kwargs)"
         copula_cdf_values: np.ndarray = eval(func_str)
         return TypeKeeper(u).type_keep_from_1d_array(array=copula_cdf_values, match_datatype=match_datatype, col_name=[f'{mc_str}cdf'])
+
+    def copula_cdf(self, u: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
+        return self.__copula_cdf_mccdf(mc_cdf=False, u=u, copula_params=copula_params, match_datatype=match_datatype, **kwargs)
+
+    def copula_mc_cdf(self, u: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
+        return self.__copula_cdf_mccdf(mc_cdf=True, u=u, copula_params=copula_params, match_datatype=match_datatype, **kwargs)
 
     def _g_to_u(self, g: np.ndarray, copula_params: Union[Params, tuple]) -> np.ndarray:
         # g = mv rv
@@ -316,19 +328,34 @@ class PreFitCopula(NotImplemented):
 
     def _threeD_plot(self, func_str: str, copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], ppf_approx: bool, var1_range: np.ndarray, var2_range: np.ndarray, color: str, alpha: float,
                  figsize: tuple, grid: bool, axes_names: tuple, zlim: tuple,
-                 num_generate: int, num_points: int, show_progress: bool, show: bool, mc_num_generate: int = None) -> None:
+                 num_generate: int, num_points: int, show_progress: bool, show: bool, mc_num_generate: int = None, ranges_to_u: bool = False) -> None:
+
         # checking arguments
+        test_rvs: np.ndarray = self.rvs(size=2, copula_params=copula_params, mdists=mdists, ppf_approx=ppf_approx)
+        if test_rvs.shape[1] != 2:
+            raise NotImplementedError(f"{func_str}_plot is not implemented when the number of variables is not 2.")
+
+        if (not isinstance(num_points, int)) or (num_points <= 0):
+            raise TypeError("num_points must be a strictly positive integer.")
+
         if (var1_range is not None) and (var2_range is not None):
             for var_range in (var1_range, var2_range):
                 if not isinstance(var_range, np.ndarray):
                     raise TypeError("var1_range and var2_range must be None or numpy arrays.")
 
+            if ranges_to_u:
+                # converting x to u
+                mdists_dict: dict = self._get_mdists(mdists=mdists, d=2, check=True)
+                var1_range = mdists_dict[0].cdf(var1_range)
+                var2_range = mdists_dict[1].cdf(var2_range)
+
         else:
-            rvs_array: np.ndarray = self.rvs(size=num_generate, copula_params=copula_params, mdists=mdists, ppf_approx=ppf_approx)
-            if rvs_array.shape[1] != 2:
-                raise NotImplementedError(f"{func_str}_plot is not implemented when the number of variables is not 2.")
-            eps: float = 10**-2
-            xmin, xmax = (rvs_array.min(axis=0), rvs_array.max(axis=0)) if 'copula' not in func_str else (eps, 1.0-eps)
+            if 'copula' in func_str:
+                eps: float = 10 ** -2
+                xmin, xmax = np.array([[eps, eps], [1-eps, 1-eps]], dtype=float)
+            else:
+                rvs_array: np.ndarray = self.rvs(size=num_generate, copula_params=copula_params, mdists=mdists, ppf_approx=ppf_approx)
+                xmin, xmax = (rvs_array.min(axis=0), rvs_array.max(axis=0))
             var1_range: np.ndarray = np.linspace(xmin[0], xmax[0], num_points)
             var2_range: np.ndarray = np.linspace(xmin[1], xmax[1], num_points)
 
@@ -344,10 +371,10 @@ class PreFitCopula(NotImplemented):
 
         # func kwargs
         func_kwargs: dict = {'copula_params': copula_params, 'mdists': mdists, 'match_datatype': False, 'show_progress': False}
-        if 'mc' in func_str:
-            rvs = self.rvs(size=mc_num_generate, copula_params=copula_params, mdists=mdists, ppf_approx=ppf_approx)
-            func_kwargs = {**func_kwargs, **{'rvs': rvs, func_str: True}}
-            func_str = func_str.replace('mc_', '')
+        if func_str == 'copula_mc_cdf':
+            urvs = self.copula_rvs(size=mc_num_generate, copula_params=copula_params)
+            grvs: np.ndarray = self._u_to_g(urvs, copula_params)
+            func_kwargs['rvs'] = grvs
         else:
             func_kwargs['rvs'] = None
         func: Callable = eval(f"self.{func_str}")
@@ -368,16 +395,18 @@ class PreFitCopula(NotImplemented):
     def cdf_plot(self, copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], ppf_approx: bool = True, var1_range: np.ndarray = None, var2_range: np.ndarray = None, color: str = 'royalblue', alpha: float = 1.0,
                  figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (None, None),
                  num_generate: int = 1000, num_points: int = 100, show_progress: bool = True, show: bool = True) -> None:
-        self._threeD_plot(func_str='cdf', copula_params=copula_params, mdists=mdists, ppf_approx=ppf_approx, var1_range=var1_range,
+        ranges_to_u: bool = not (var1_range is None and var2_range is None)
+        self._threeD_plot(func_str='copula_cdf', copula_params=copula_params, mdists=mdists, ppf_approx=ppf_approx, var1_range=var1_range,
                           var2_range=var2_range, color=color, alpha=alpha, figsize=figsize, grid=grid, axes_names=axes_names, zlim=zlim,
-                          num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show)
+                          num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show, ranges_to_u=ranges_to_u)
 
     def mc_cdf_plot(self, copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], ppf_approx: bool = True, var1_range: np.ndarray = None, var2_range: np.ndarray = None, mc_num_generate: int = 10 ** 4, color: str = 'royalblue', alpha: float = 1.0,
                  figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (None, None),
                  num_generate: int = 1000, num_points: int = 100, show_progress: bool = True, show: bool = True) -> None:
-        self._threeD_plot(func_str='mc_cdf', copula_params=copula_params, mdists=mdists, ppf_approx=ppf_approx, var1_range=var1_range,
+        ranges_to_u: bool = not (var1_range is None and var2_range is None)
+        self._threeD_plot(func_str='copula_mc_cdf', copula_params=copula_params, mdists=mdists, ppf_approx=ppf_approx, var1_range=var1_range,
                           var2_range=var2_range, color=color, alpha=alpha, figsize=figsize, grid=grid, axes_names=axes_names, zlim=zlim,
-                          num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show, mc_num_generate=mc_num_generate)
+                          num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show, mc_num_generate=mc_num_generate, ranges_to_u=ranges_to_u)
 
     def copula_pdf_plot(self, copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], ppf_approx: bool = True, var1_range: np.ndarray = None, var2_range: np.ndarray = None, color: str = 'royalblue', alpha: float = 1.0,
                  figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (None, None),
@@ -386,7 +415,21 @@ class PreFitCopula(NotImplemented):
                           var2_range=var2_range, color=color, alpha=alpha, figsize=figsize, grid=grid, axes_names=axes_names, zlim=zlim,
                           num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show)
 
+    def copula_cdf_plot(self, copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], ppf_approx: bool = True, var1_range: np.ndarray = None, var2_range: np.ndarray = None, color: str = 'royalblue', alpha: float = 1.0,
+                 figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (None, None),
+                 num_generate: int = 1000, num_points: int = 100, show_progress: bool = True, show: bool = True) -> None:
+        self._threeD_plot(func_str='copula_cdf', copula_params=copula_params, mdists=mdists, ppf_approx=ppf_approx, var1_range=var1_range,
+                          var2_range=var2_range, color=color, alpha=alpha, figsize=figsize, grid=grid, axes_names=axes_names, zlim=zlim,
+                          num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show)
+
+    def copula_mc_cdf_plot(self, copula_params: Union[Params, tuple], mdists: Union[MarginalFitter, dict], ppf_approx: bool = True, var1_range: np.ndarray = None, var2_range: np.ndarray = None, mc_num_generate: int = 10 ** 4, color: str = 'royalblue',
+                        alpha: float = 1.0,
+                        figsize: tuple = (8, 8), grid: bool = True, axes_names: tuple = None, zlim: tuple = (None, None),
+                        num_generate: int = 1000, num_points: int = 100, show_progress: bool = True, show: bool = True) -> None:
+        self._threeD_plot(func_str='copula_mc_cdf', copula_params=copula_params, mdists=mdists, ppf_approx=ppf_approx, var1_range=var1_range,
+                          var2_range=var2_range, color=color, alpha=alpha, figsize=figsize, grid=grid, axes_names=axes_names, zlim=zlim,
+                          num_generate=num_generate, num_points=num_points, show_progress=show_progress, show=show, mc_num_generate=mc_num_generate)
+
     @property
     def name(self) -> str:
         return self._name
-
