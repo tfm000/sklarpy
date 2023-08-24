@@ -1,3 +1,4 @@
+# Contains code for the skewed-t copula model
 import numpy as np
 from typing import Union, Callable
 
@@ -9,7 +10,7 @@ __all__ = ['skewed_t_copula_gen']
 
 
 class skewed_t_copula_gen(PreFitCopula):
-
+    """The Multivariate Skewed-T copula model."""
     def _u_g_pdf(self, func: Callable, arr: np.ndarray, copula_params: Union[Params, tuple], **kwargs) -> np.ndarray:
         shape: tuple = arr.shape
         output: np.ndarray = np.full(shape, np.nan)

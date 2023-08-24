@@ -152,6 +152,29 @@ class PreFitCopula(NotImplemented):
     def copula_mc_cdf(self, u: Union[pd.DataFrame, np.ndarray], copula_params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> Union[pd.DataFrame, np.ndarray]:
         return self.__copula_cdf_mccdf(mc_cdf=True, u=u, copula_params=copula_params, match_datatype=match_datatype, **kwargs)
 
+    def _u_g_pdf(self, func: Callable, arr: np.ndarray, copula_params: Union[Params, tuple], **kwargs) -> np.ndarray:
+        """Utility function able to implement _g_to_u, _u_to_g and _h_logpdf_sum methods without duplicate code.
+
+        Parameters
+        ----------
+        func: Callable
+            The univariate distribution function to evaluate for each dimension vector of the array matrix.
+            Must take a 1D array, univariate distribution parameters and any user specified kwargs as arguments.
+        arr: np.ndarray
+            A multivariate array with shape (num_observations, num_variables), which you wish to evaluate.
+        copula_params: Union[Params, tuple]
+            The parameters of the multivariate distribution used to specify your copula distribution.
+            Can be a Params object or the specific multivariate distribution or a tuple containing
+            these parameters in the correct order.
+        kwargs:
+            Any additional keyword arguments
+
+        Returns
+        -------
+        output: np.ndarray
+            The output of your specified function
+        """
+
     def _g_to_u(self, g: np.ndarray, copula_params: Union[Params, tuple]) -> np.ndarray:
         # g = mv rv
         # u = copula rv

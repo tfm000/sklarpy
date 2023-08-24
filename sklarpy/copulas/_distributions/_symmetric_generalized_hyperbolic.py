@@ -1,3 +1,4 @@
+# Contains code for the symmetric generalized hyperbolic copula model
 import numpy as np
 from typing import Union, Callable
 
@@ -8,6 +9,7 @@ __all__ = ['sym_gen_hyperbolic_copula_gen']
 
 
 class sym_gen_hyperbolic_copula_gen(gen_hyperbolic_copula_gen):
+    """The Multivariate Symmetric Generalized Hyperbolic copula model."""
     def _u_g_pdf(self, func: Callable, arr: np.ndarray, copula_params: Union[Params, tuple], **kwargs) -> np.ndarray:
         loc: np.ndarray = copula_params[3]
         copula_params: tuple = copula_params[0], copula_params[1], copula_params[2], loc, copula_params[4], np.zeros(loc.shape, dtype=float)

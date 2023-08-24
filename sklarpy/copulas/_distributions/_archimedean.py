@@ -1,15 +1,16 @@
+# Contains code for archimedean copula models
 from sklarpy.copulas._prefit_dicts import PreFitCopula
 
 __all__ = ['clayton_copula_gen', 'gumbel_copula_gen', 'frank_copula_gen']
 
 
 class clayton_copula_gen(PreFitCopula):
-    pass
+    """The Multivariate Clayton copula model."""
 
 
 class gumbel_copula_gen(PreFitCopula):
-    pass
+    """The Multivariate Gumbel copula model."""
 
 
 class frank_copula_gen(PreFitCopula):
-    pass
+    """The Bivariate Frank copula model."""

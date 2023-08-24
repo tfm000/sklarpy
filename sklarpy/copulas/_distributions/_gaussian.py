@@ -1,3 +1,4 @@
+# Contains code for the gaussian copula model
 import numpy as np
 import scipy.stats
 from typing import Union
@@ -9,6 +10,7 @@ __all__ = ['gaussian_copula_gen']
 
 
 class gaussian_copula_gen(PreFitCopula):
+    """The Multivariate Gaussian copula model."""
     def _g_to_u(self, g: np.ndarray, copula_params_tuple: Union[Params, tuple]) -> np.ndarray:
         return scipy.stats.norm.cdf(x=g)
 

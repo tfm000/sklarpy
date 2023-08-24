@@ -1,3 +1,4 @@
+# Contains code for the generalized hyperbolic copula model
 import numpy as np
 from typing import Union, Callable
 
@@ -9,7 +10,7 @@ __all__ = ['gen_hyperbolic_copula_gen']
 
 
 class gen_hyperbolic_copula_gen(PreFitCopula):
-
+    """The Multivariate Generalized Hyperbolic copula model."""
     def _u_g_pdf(self, func: Callable, arr: np.ndarray, copula_params: Union[Params, tuple], **kwargs) -> np.ndarray:
         shape: tuple = arr.shape
         output: np.ndarray = np.full(shape, np.nan)
