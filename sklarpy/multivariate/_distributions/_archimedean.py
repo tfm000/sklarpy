@@ -7,7 +7,7 @@ import scipy.stats
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy._utils import get_iterator, FitError
 
-__all__ = ['multivariate_clayton_gen']
+__all__ = ['multivariate_clayton_gen', 'multivariate_gumbel_gen']
 
 
 class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
