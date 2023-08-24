@@ -116,13 +116,6 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
         return {'theta': params[0]}
 
-    def fit(self, data: Union[np.ndarray, pd.DataFrame] = None, params: Union[Params, tuple] = None, method: str = None, **kwargs) -> FittedContinuousMultivariate:
-        if method is None and data is not None:
-            data_array: np.ndarray = check_multivariate_data(data, allow_1d=True)
-            d: int = data_array.shape[1]
-            method = 'inverse_kendall_tau' if d == 2 else 'mle'
-        return super().fit(data=data, params=params, method=method, **kwargs)
-
     def num_scalar_params(self, d: int, copula: bool, **kwargs) -> int:
         return 2
 
