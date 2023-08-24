@@ -6,20 +6,20 @@ from sklarpy.copulas._distributions._skewed_t import skewed_t_copula_gen
 from sklarpy.copulas._distributions._student_t import student_t_copula_gen
 from sklarpy.copulas._distributions._symmetric_generalized_hyperbolic import sym_gen_hyperbolic_copula_gen
 from sklarpy.copulas._distributions._symmetric_hyperbolics import sym_marginal_hyperbolic_copula_gen, sym_hyperbolic_copula_gen, sym_nig_copula_gen
-from sklarpy.copulas._distributions._archimedean import clayton_copula_gen, gumbel_copula_gen
+from sklarpy.copulas._distributions._archimedean import clayton_copula_gen, gumbel_copula_gen, frank_copula_gen
 
 from sklarpy.multivariate import multivariate_normal, multivariate_gaussian_kde, multivariate_gen_hyperbolic, \
     multivariate_marginal_hyperbolic, multivariate_hyperbolic, multivariate_nig, \
     multivariate_student_t, multivariate_skewed_t, multivariate_sym_gen_hyperbolic, \
     multivariate_sym_marginal_hyperbolic, multivariate_sym_hyperbolic, multivariate_sym_nig
 
-from sklarpy.multivariate.distributions import multivariate_clayton, multivariate_gumbel
+from sklarpy.multivariate.distributions import multivariate_clayton, multivariate_gumbel, bivariate_frank
 
 __all__ = ['gaussian_copula', 'gaussian_kde_copula', 'gen_hyperbolic_copula',
            'marginal_hyperbolic_copula', 'hyperbolic_copula', 'nig_copula',
            'skewed_t_copula', 'student_t_copula', 'sym_gen_hyperbolic_copula',
            'sym_marginal_hyperbolic_copula', 'sym_hyperbolic_copula', 'sym_nig_copula',
-           'clayton_copula'
+           'clayton_copula', 'gumbel_copula', 'frank_copula'
            ]
 
 ########################################################################################################################
@@ -43,3 +43,4 @@ sym_hyperbolic_copula: sym_hyperbolic_copula_gen = sym_hyperbolic_copula_gen(nam
 sym_nig_copula: sym_nig_copula_gen = sym_nig_copula_gen(name="sym_nig", mv_object=multivariate_sym_nig)
 clayton_copula: clayton_copula_gen = clayton_copula_gen(name="clayton", mv_object=multivariate_clayton)
 gumbel_copula: gumbel_copula_gen = gumbel_copula_gen(name="gumbel", mv_object=multivariate_gumbel)
+frank_copula: frank_copula_gen = frank_copula_gen(name="frank", mv_object=bivariate_frank)

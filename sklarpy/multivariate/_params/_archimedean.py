@@ -1,6 +1,6 @@
 from sklarpy._other import Params
 
-__all__ = ['MultivariateClaytonParams', 'MultivariateGumbelParams']
+__all__ = ['MultivariateClaytonParams', 'MultivariateGumbelParams', 'BivariateFrankParams']
 
 
 class MultivariateArchimedeanParamsBase(Params):
@@ -8,14 +8,19 @@ class MultivariateArchimedeanParamsBase(Params):
     def theta(self) -> float:
         return self.to_dict['theta']
 
-
-class MultivariateClaytonParams(MultivariateArchimedeanParamsBase):
     @property
     def d(self) -> int:
         return self.to_dict['d']
+
+
+class MultivariateClaytonParams(MultivariateArchimedeanParamsBase):
+    pass
+
 
 
 class MultivariateGumbelParams(MultivariateArchimedeanParamsBase):
-    @property
-    def d(self) -> int:
-        return self.to_dict['d']
+    pass
+
+
+class BivariateFrankParams(MultivariateArchimedeanParamsBase):
+    pass
