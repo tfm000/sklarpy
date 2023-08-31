@@ -1,3 +1,4 @@
+# Contains a base class used for adding object copying functionality
 import copy
 
 
@@ -5,19 +6,19 @@ __all__ = ['Copyable']
 
 
 class Copyable:
-    """Class used for copying"""
+    """Base class used for adding object copying functionality"""
     def copy(self, name: str = None):
         """Returns a copy of your SklarPy object.
 
         Parameters
-        ===========
+        ----------
         name : str
             The name of your copied object. If None, the name of the original is used.
 
         Returns
-        ========
+        --------
         self:
-            self
+            Copied object
         """
         if name is None:
             new_name: str = self.name

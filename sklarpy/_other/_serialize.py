@@ -1,4 +1,4 @@
-# Contains functions for loading and saving SklarPy objects.
+# Contains code for loading and saving SklarPy objects.
 import dill
 import os
 from pathlib import Path
@@ -12,10 +12,10 @@ def load(file: str, fix_extension: bool = True):
     """Loads pickled files.
 
     Parameters
-    ==========
+    ----------
     file: str
-        The file to read. Must include the full file path. The .pickle extension is optional provided fix_extension is
-        True.
+        The file to read. Must include the full file path.
+        Including the .pickle extension is optional provided fix_extension is True.
     fix_extension: bool
         Whether to replace any existing extension with the '.pickle' file extension. Default is True.
 
@@ -50,10 +50,19 @@ def load(file: str, fix_extension: bool = True):
 
 
 class Savable:
-    """Class used for saving."""
+    """Base class used for saving SklarPy objects."""
     _OBJ_NAME: str
 
     def __init__(self, name: str):
+        """Base class used for saving SklarPy objects.
+
+        Parameters
+        ----------
+        name : str
+            The name of your object.
+            When saving, if no file_path is specified,
+            this will also be the name of the pickle file the object is saved to.
+        """
         if name is None:
             name = self._OBJ_NAME
         elif not isinstance(name, str):
@@ -69,7 +78,7 @@ class Savable:
         """Saves object as a pickled file.
 
         Parameters
-        ==========
+        ----------
         file_path: Union[str, None]
             The location and file name where you are saving your object. If None, the object is saved under
             its name in the current working directory. If a file is given, it must include the full file
@@ -78,10 +87,11 @@ class Savable:
             True to overwrite existing files saved under the same name. False to save under a unique name.
             Default is False.
         fix_extension: bool
-            Whether to replace any existing extension with the '.pickle' file extension. Default is True.
+            Whether to replace any existing extension with the '.pickle' file extension / add the
+            '.pickle' extension if None given. Default is True.
 
         Returns
-        =======
+        -------
         file_name: str
             The path to the saved object
 
