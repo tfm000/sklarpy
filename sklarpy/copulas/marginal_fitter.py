@@ -187,8 +187,8 @@ class MarginalFitter(Savable):
 
         Returns
         -------
-        values: data_iterable
-            implemented method values
+        values: Union[pd.DataFrame, np.ndarray]
+            implemented method values.
         """
         self._fit_check()
 
@@ -222,7 +222,7 @@ class MarginalFitter(Savable):
 
         Returns
         --------
-        marginal_pdf_values: dataframe_or_array
+        marginal_pdf_values: Union[pd.DataFrame, np.ndarray]
             Marginal pdf values.
         """
         return self._pdfs_cdf_ppfs_logpdfs_inputs('pdf', x, match_datatype)
@@ -232,7 +232,7 @@ class MarginalFitter(Savable):
 
         Parameters
         ----------
-        x: dataframe_or_array
+        x: Union[pd.DataFrame, np.ndarray]
             The values to evaluate the marginal cdf P(X<=x), at.
             Must be the same dimension as the number of variables.
             If None passes, the cdf values of the sample used in the original dataset are returned.
@@ -242,7 +242,7 @@ class MarginalFitter(Savable):
 
         Returns
         --------
-        marginal_cdf_values: dataframe_or_array
+        marginal_cdf_values: Union[pd.DataFrame, np.ndarray]
             Marginal cdf values.
         """
         return self._pdfs_cdf_ppfs_logpdfs_inputs('cdf', x, match_datatype)
@@ -252,7 +252,7 @@ class MarginalFitter(Savable):
 
         Parameters
         -----------
-        q: dataframe_or_array
+        q: Union[pd.DataFrame, np.ndarray]
             The quartile values to evaluate the marginal ppf, cdf^-1(q), at.
             Must be the same dimension as the number of variables.
         match_datatype: bool
@@ -261,7 +261,7 @@ class MarginalFitter(Savable):
 
         Returns
         -------
-        marginal_ppf_values: dataframe_or_array
+        marginal_ppf_values: Union[pd.DataFrame, np.ndarray]
             Marginal ppf values.
         """
         return self._pdfs_cdf_ppfs_logpdfs_inputs('ppf', q, match_datatype)
@@ -271,7 +271,7 @@ class MarginalFitter(Savable):
 
         Parameters
         ----------
-        x: dataframe_or_array
+        x: Union[pd.DataFrame, np.ndarray]
             The values to evaluate the marginal log-pdf at.
             Must be the same dimension as the number of variables.
             If None passes, the log-pdf values of the sample used in the original dataset are returned.
@@ -281,7 +281,7 @@ class MarginalFitter(Savable):
 
         Returns
         -------
-        marginal_logpdf_values: dataframe_or_array
+        marginal_logpdf_values: Union[pd.DataFrame, np.ndarray]
             Marginal log-pdf values.
         """
         return self._pdfs_cdf_ppfs_logpdfs_inputs('logpdf', x, match_datatype)
@@ -299,7 +299,7 @@ class MarginalFitter(Savable):
 
         Returns
         ---------
-        marginal_rvs_values: dataframe_or_array
+        marginal_rvs_values: Union[pd.DataFrame, np.ndarray]
             A random sample with shape (size, num_variables)
         """
         self._fit_check()
@@ -373,8 +373,7 @@ class MarginalFitter(Savable):
 
     @property
     def marginals(self) -> dict:
-        """Returns a dict with marginals as values and the indices as keys
-        """
+        """Returns a dict with univariate marginal distributions as values and indices as keys."""
         if not self._fitted:
             raise FitError('MarginalFitter object has not been fitted.')
         return self._fitted_marginals.copy()

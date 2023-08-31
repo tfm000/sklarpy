@@ -1,3 +1,4 @@
+# Contains code for building copula models
 from sklarpy.copulas._distributions._gaussian import gaussian_copula_gen
 from sklarpy.copulas._distributions._gaussian_kde import gaussian_kde_copula_gen
 from sklarpy.copulas._distributions._generalized_hyperbolic import gen_hyperbolic_copula_gen
