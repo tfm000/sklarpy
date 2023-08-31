@@ -1,6 +1,7 @@
 # <u> Copulas </u>
 
 This directory contains code for all copula models implemented in SklarPy.
+
 Examples of how to use these models can be found in the `examples` folder.
 
 ## <u> SklarPy Copula Models </u>
