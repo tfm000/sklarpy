@@ -7,8 +7,8 @@ from collections import deque
 import scipy.integrate
 from scipy.optimize import differential_evolution
 
-from sklarpy._other import Params
-from sklarpy._utils import dataframe_or_array, TypeKeeper, check_multivariate_data, get_iterator, FitError, NotImplemented
+from sklarpy._other import Params, NotImplemented
+from sklarpy._utils import dataframe_or_array, TypeKeeper, check_multivariate_data, get_iterator, FitError
 from sklarpy._plotting import pair_plot, threeD_plot
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
 from sklarpy.misc import CorrelationMatrix
@@ -144,7 +144,7 @@ class PreFitContinuousMultivariate(NotImplemented):
     def cdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool = True, **kwargs) -> dataframe_or_array:
         return self._logpdf_pdf_cdf("cdf", x, params, match_datatype, **kwargs)
 
-    def mc_cdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool, num_generate: int = 10 ** 4, show_progress: bool = True, **kwargs) -> dataframe_or_array:
+    def mc_cdf(self, x: dataframe_or_array, params: Union[Params, tuple], match_datatype: bool, num_generate: int = 10 ** 4, show_progress: bool = False, **kwargs) -> dataframe_or_array:
         # converting x to a numpy array
         x_array: np.ndarray = self._get_x_array(x)
         shape: tuple = x_array.shape
@@ -478,11 +478,10 @@ class PreFitContinuousMultivariate(NotImplemented):
 
         Keyword arguments
         ------------------
-        corr_method: str
-            When fitting to data only.
-            multivariate_normal and multivariate_student_t only.
-            The method to use when fitting th correlation matrix to data.
-            See SklarPy's CorrelationMatrix documentation for more information.
+        cov_method: str
+            The method to use when fitting a covariance matrix to the observed data.
+            The covariance matrix is required in mle, low-dim mle and em algorithms for all non-archimedean distributions.
+            See SklarPy's CorrelationMatrix documentation for more information on implemented methods.
             Default is `laloux_pp_kendall`.
         bounds: dict
             When fitting to data only.

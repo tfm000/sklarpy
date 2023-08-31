@@ -7,4 +7,3 @@ from sklarpy._utils._input_handlers import univariate_num_to_array, check_params
     check_array_datatype, check_multivariate_data
 from sklarpy._utils._type_keeper import TypeKeeper
 from sklarpy._utils._iterator import get_iterator
-from sklarpy._utils._not_implemented import NotImplemented
