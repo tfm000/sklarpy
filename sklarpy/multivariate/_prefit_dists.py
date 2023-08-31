@@ -7,7 +7,7 @@ from collections import deque
 import scipy.integrate
 from scipy.optimize import differential_evolution
 
-from sklarpy._other import Params, NotImplemented
+from sklarpy._other import Params, NotImplementedBase
 from sklarpy._utils import dataframe_or_array, TypeKeeper, check_multivariate_data, get_iterator, FitError
 from sklarpy._plotting import pair_plot, threeD_plot
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
@@ -16,7 +16,7 @@ from sklarpy.misc import CorrelationMatrix
 __all__ = ['PreFitContinuousMultivariate']
 
 
-class PreFitContinuousMultivariate(NotImplemented):
+class PreFitContinuousMultivariate(NotImplementedBase):
     _DATA_FIT_METHODS: Tuple[str] = ('low_dim_mle', )
 
     def __init__(self, name: str, params_obj: Params, num_params: int, max_num_variables: int):

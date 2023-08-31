@@ -1,9 +1,9 @@
 # Contains a base class for raising errors when an object's method cannot be implemented
 
-__all__ = ['NotImplemented']
+__all__ = ['NotImplementedBase']
 
 
-class NotImplemented:
+class NotImplementedBase:
     """Base class for raising errors when an object's method cannot be implemented."""
     def _not_implemented(self, func_name: str):
         """Raises a method and object specific not implemented error.
