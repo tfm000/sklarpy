@@ -1,3 +1,4 @@
+# Contains code for producing 3D plots
 from typing import Callable, Iterable
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,6 +13,54 @@ def threeD_plot(func: Callable, var1_range: np.ndarray, var2_range: np.ndarray, 
                 title: str = '3d Plot', color: str = 'royalblue', alpha: float = 1.0, figsize: tuple = (8, 8), grid: bool = True,
                 axis_names: Iterable = ('variable 1', 'variable 2'), zlim: tuple = (None, None),
                 show_progress: bool = True, show: bool = True) -> None:
+    """Function able to easily implement 3D plots of functions.
+
+    Parameters
+    ----------
+    func: Callable
+        The callable function / method to plot.
+        Must take a numpy array of size (n, 2) as values in the first argument, where n is an arbitrary size.
+        Any additional arguments can be set via func_kwargs.
+    var1_range: np.ndarray
+        numpy array containing a range of values for the x1 / u1 variable to plot across.
+    var2_range: np.ndarray
+        numpy array containing a range of values for the x2 / u2 variable to plot across.
+    func_kwargs: dict
+        Optional. A dictionary containing any additional keyword / general arguments for the function.
+        Default is None, implying no additional arguments are required.
+    func_name: str
+        Optional. The name of the function being evaluated. Used when labeling the plot figure and z axis,
+        as well as when showing the progress of the plotting, if specified.
+        Default is ''.
+    title: str
+        Optional. The matplotlib.pyplot title to use in your plot.
+        Default is '3d Plot'.
+    color : str
+        Optional. The matplotlib.pyplot color to use in your plot.
+        Default is 'royalblue'.
+    alpha : float
+        Optional. The matplotlib.pyplot alpha to use in your plot.
+        Default is 1.0
+    figsize: tuple
+        Optional. The matplotlib.pyplot figsize tuple to size the overall figure.
+        Default figsize is (8,8)
+    grid : bool
+        Optional. True to include a grid in the 3D plot. False for no grid.
+        Default is True.
+    axes_names: Iterable
+        The names of your axes / variables to use in your plot.
+        If provided, must be an iterable with the same length as the number of variables (length 2).
+        Default is "('variable 1', 'variable 2')".
+    zlim: tuple
+        Optional. The matplotlib.pyplot bounds of the z-axis to use in your plot.
+        Default is (None, None) -> No z-axis bounds.
+    show_progress: bool
+        Optional. Whether to show the progress of the plotting.
+        Default is True.
+    show: bool
+        True to display the plot when the function is called.
+        Default is True.
+    """
 
     # checking arguments
     if not callable(func):
