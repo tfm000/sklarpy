@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import copy
 import scipy.interpolate
 
-from sklarpy.misc import inverse_transform, continuous_goodness_of_fit, discrete_goodness_of_fit
+from sklarpy.misc import inverse_transform, continuous_gof, discrete_gof
 from sklarpy._utils import num_or_array, univariate_num_to_array, check_params, check_univariate_data, FitError, \
     prob_bounds, check_array_datatype, data_iterable
 from sklarpy.univariate._fitted_dists import FittedContinuousUnivariate, FittedDiscreteUnivariate
@@ -845,7 +845,7 @@ class PreFitParametricContinuousUnivariate(PreFitUnivariateBase):
     def __init__(self, name: str, pdf: Callable, cdf: Callable, ppf: Callable, support: Callable, fit: Callable,
                  rvs: Callable = None):
         PreFitUnivariateBase.__init__(self, name, pdf, cdf, ppf, support, fit, rvs)
-        self._gof: Callable = partial(continuous_goodness_of_fit, cdf=self.cdf, name=self.name)
+        self._gof: Callable = partial(continuous_gof, cdf=self.cdf, name=self.name)
 
 
 class PreFitParametricDiscreteUnivariate(PreFitUnivariateBase):
@@ -857,7 +857,7 @@ class PreFitParametricDiscreteUnivariate(PreFitUnivariateBase):
     def __init__(self, name: str, pdf: Callable, cdf: Callable, ppf: Callable, support: Callable, fit: Callable,
                  rvs: Callable = None):
         PreFitUnivariateBase.__init__(self, name, pdf, cdf, ppf, support, fit, rvs)
-        self._gof: Callable = partial(discrete_goodness_of_fit, support=self.support, pdf=self.pdf, ppf=self.ppf,
+        self._gof: Callable = partial(discrete_gof, support=self.support, pdf=self.pdf, ppf=self.ppf,
                                       name=self.name)
 
 
@@ -866,7 +866,7 @@ class PreFitNumericalContinuousUnivariate(PreFitNumericalUnivariateBase):
     X_DATA_TYPE = float
 
     def _gof(self, data: np.ndarray, params: tuple = ()):
-        return continuous_goodness_of_fit(data, params, self.cdf, self.name)
+        return continuous_gof(data, params, self.cdf, self.name)
 
 
 class PreFitNumericalDiscreteUnivariate(PreFitNumericalUnivariateBase):
@@ -874,4 +874,4 @@ class PreFitNumericalDiscreteUnivariate(PreFitNumericalUnivariateBase):
     X_DATA_TYPE = int
 
     def _gof(self, data: np.ndarray, params: tuple = ()):
-        return discrete_goodness_of_fit(data, params, self.support, self.pdf, self.ppf, self.name)
+        return discrete_gof(data, params, self.support, self.pdf, self.ppf, self.name)
