@@ -11,11 +11,14 @@ __all__ = ['gaussian_copula_gen']
 
 class gaussian_copula_gen(PreFitCopula):
     """The Multivariate Gaussian copula model."""
-    def _g_to_u(self, g: np.ndarray, copula_params_tuple: Union[Params, tuple]) -> np.ndarray:
+    def _g_to_u(self, g: np.ndarray, copula_params_tuple: Union[Params, tuple]
+                ) -> np.ndarray:
         return scipy.stats.norm.cdf(x=g)
 
-    def _u_to_g(self, u: np.ndarray, copula_params: Union[Params, tuple]) -> np.ndarray:
+    def _u_to_g(self, u: np.ndarray, copula_params: Union[Params, tuple]) \
+            -> np.ndarray:
         return scipy.stats.norm.ppf(q=u)
 
-    def _h_logpdf_sum(self, g: np.ndarray, copula_params: Union[Params, tuple]) -> np.ndarray:
+    def _h_logpdf_sum(self, g: np.ndarray, copula_params: Union[Params, tuple]
+                      ) -> np.ndarray:
         return scipy.stats.norm.logpdf(g).sum(axis=1)

@@ -15,9 +15,11 @@ def load(file: str, fix_extension: bool = True):
     ----------
     file: str
         The file to read. Must include the full file path.
-        Including the .pickle extension is optional provided fix_extension is True.
+        Including the .pickle extension is optional provided fix_extension is
+        True.
     fix_extension: bool
-        Whether to replace any existing extension with the '.pickle' file extension. Default is True.
+        Whether to replace any existing extension with the '.pickle' file
+        extension. Default is True.
 
     See Also
     ---------
@@ -61,7 +63,8 @@ class Savable:
         name : str
             The name of your object.
             When saving, if no file_path is specified,
-            this will also be the name of the pickle file the object is saved to.
+            this will also be the name of the pickle file the object is saved
+            to.
         """
         if name is None:
             name = self._OBJ_NAME
@@ -74,21 +77,25 @@ class Savable:
         """The name of your object"""
         return self._name
 
-    def save(self, file_path: str = None, overwrite: bool = False, fix_extension: bool = True) -> str:
+    def save(self, file_path: str = None, overwrite: bool = False,
+             fix_extension: bool = True) -> str:
         """Saves object as a pickled file.
 
         Parameters
         ----------
         file_path: Union[str, None]
-            The location and file name where you are saving your object. If None, the object is saved under
-            its name in the current working directory. If a file is given, it must include the full file
-            path. The .pickle extension is optional provided fix_extension is True.
+            The location and file name where you are saving your object.
+            If None, the object is saved under its name in the current working
+            directory. If a file is given, it must include the full file path.
+            The '.pickle' extension is optional provided fix_extension is True.
         overwrite: bool
-            True to overwrite existing files saved under the same name. False to save under a unique name.
+            True to overwrite existing files saved under the same name.
+            False to save under a unique name.
             Default is False.
         fix_extension: bool
-            Whether to replace any existing extension with the '.pickle' file extension / add the
-            '.pickle' extension if None given. Default is True.
+            Whether to replace any existing extension with the '.pickle' file
+            extension / add the '.pickle' extension if None given.
+            Default is True.
 
         Returns
         -------
@@ -110,7 +117,8 @@ class Savable:
 
         for bool_arg in (overwrite, fix_extension):
             if not isinstance(bool_arg, bool):
-                raise TypeError("overwrite, fix_extension arguments must both be boolean.")
+                raise TypeError("overwrite, fix_extension arguments must both "
+                                "be boolean.")
 
         # Changing file extension to .pickle
         file_name, extension = os.path.splitext(file_path)

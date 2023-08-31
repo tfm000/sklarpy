@@ -13,7 +13,8 @@ class Copyable:
         Parameters
         ----------
         name : str
-            The name of your copied object. If None, the name of the original is used.
+            The name of your copied object. If None, the name of the original
+            is used.
 
         Returns
         --------

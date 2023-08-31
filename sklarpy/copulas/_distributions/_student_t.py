@@ -11,11 +11,14 @@ __all__ = ['student_t_copula_gen']
 
 class student_t_copula_gen(PreFitCopula):
     """The Multivariate Student-T copula model."""
-    def _g_to_u(self, g: np.ndarray, copula_params: Union[Params, tuple]) -> np.ndarray:
+    def _g_to_u(self, g: np.ndarray, copula_params: Union[Params, tuple]) \
+            -> np.ndarray:
         return scipy.stats.t.cdf(g, df=copula_params[-1])
 
-    def _u_to_g(self, u: np.ndarray, copula_params: Union[Params, tuple]) -> np.ndarray:
+    def _u_to_g(self, u: np.ndarray, copula_params: Union[Params, tuple]) \
+            -> np.ndarray:
         return scipy.stats.t.ppf(u, df=copula_params[-1])
 
-    def _h_logpdf_sum(self, g: np.ndarray, copula_params: Union[Params, tuple]) -> np.ndarray:
+    def _h_logpdf_sum(self, g: np.ndarray, copula_params: Union[Params, tuple]
+                      ) -> np.ndarray:
         return scipy.stats.t.logpdf(g, df=copula_params[-1]).sum(axis=1)

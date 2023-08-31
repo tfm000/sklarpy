@@ -37,10 +37,12 @@ class Params(Savable):
         return param_name in self.to_dict
 
     def __getitem__(self, index: Union[str, int]):
-        """Allows the user to retrieve a parameter value either via its name or index value."""
+        """Allows the user to retrieve a parameter value either via its name or
+        index value."""
         if self.__contains__(index):
             return self.to_dict[index]
-        elif isinstance(index, int) and ((0 <= index < len(self)) or (-len(self) <= index < 0)):
+        elif isinstance(index, int) and ((0 <= index < len(self)) or
+                                         (-len(self) <= index < 0)):
             return self.to_tuple[index]
         raise KeyError(f"{index} not valid")
 

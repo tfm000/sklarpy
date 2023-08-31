@@ -1,4 +1,5 @@
-# Contains code for converting function output type to match the user's inputted data type
+# Contains code for converting function output type to match the user's
+# inputted data type
 import pandas as pd
 import numpy as np
 from typing import Union
@@ -7,10 +8,13 @@ __all__ = ['TypeKeeper']
 
 
 class TypeKeeper:
-    """Class used for converting function output type to match the user's inputted data type."""
+    """Class used for converting function output type to match the user's
+    inputted data type."""
     _HANDLED_TYPES: tuple = (pd.DataFrame, np.ndarray, type(None))
 
-    def _check_valid_type(self, user_input: Union[pd.DataFrame, np.ndarray, None]) -> None:
+    def _check_valid_type(self,
+                          user_input: Union[pd.DataFrame, np.ndarray, None]) \
+            -> None:
         """Checks if the user input's input is a type supported by TypeKeeper.
 
         Parameters
@@ -21,7 +25,9 @@ class TypeKeeper:
         if type(user_input) not in self._HANDLED_TYPES:
             raise TypeError("Invalid type entered into TypeKeeper")
 
-    def _get_required_info(self, user_input: Union[pd.DataFrame, np.ndarray, None]) -> dict:
+    def _get_required_info(self,
+                           user_input: Union[pd.DataFrame, np.ndarray, None]) \
+            -> dict:
         """Extracts information needed from the user's input to preserve type.
 
         Parameters
@@ -34,8 +40,6 @@ class TypeKeeper:
         original_info: dict
             A dictionary containing information on the user's original input
         """
-
-        # returns a tuple, first index type, second contains the shape of the original input #####here
         user_input_type = type(user_input)
         if user_input_type == pd.DataFrame:
             ndims: int = len(user_input.columns)
@@ -49,10 +53,12 @@ class TypeKeeper:
             ndims: int = 0
             shape: tuple = (0, 0)
             other: dict = {}
-        return {'type': user_input_type, 'ndims': ndims, 'shape': shape, 'other': other}
+        return {'type': user_input_type, 'ndims': ndims, 'shape': shape,
+                'other': other}
 
     def __init__(self, user_input: Union[pd.DataFrame, np.ndarray, None]):
-        """Object used for converting function output type to match the user's inputted data type.
+        """Object used for converting function output type to match the user's
+         inputted data type.
 
         Parameters
         ----------
@@ -62,11 +68,14 @@ class TypeKeeper:
         self._check_valid_type(user_input)
         self._original_info: dict = self._get_required_info(user_input)
 
-    def _type_keep_dataframe_from_1d_array(self, array: np.ndarray, col_name: list = None, add_index: bool = False) -> pd.DataFrame:
-        """Converts a numpy array into a dataframe whilst incorporating information
-        about the user's original data input.
+    def _type_keep_dataframe_from_1d_array(
+            self, array: np.ndarray, col_name: list = None,
+            add_index: bool = False) -> pd.DataFrame:
+        """Converts a numpy array into a dataframe whilst incorporating
+        information about the user's original data input.
 
-        User's original data input must have been a pandas dataframe to use this method.
+        User's original data input must have been a pandas dataframe to use
+        this method.
 
         Parameters
         ----------
@@ -78,7 +87,8 @@ class TypeKeeper:
             If None parsed, the column is labeled as 0.
             Default is None.
         add_index: bool
-            Optional. True to use the index of the user's original dataframe for this output.
+            Optional. True to use the index of the user's original dataframe
+            for this output.
 
         Returns
         -------
@@ -93,10 +103,13 @@ class TypeKeeper:
             if len(array) == self._original_info['shape'][0]:
                 df.index = self._original_info['other']['index']
             else:
-                raise ValueError("array is not the same length as original index.")
+                raise ValueError("array is not the same length as original "
+                                 "index.")
         return df
 
-    def type_keep_from_1d_array(self, array: np.ndarray, match_datatype: bool = True, **kwargs) -> Union[np.ndarray, pd.DataFrame]:
+    def type_keep_from_1d_array(
+            self, array: np.ndarray, match_datatype: bool = True, **kwargs) \
+            -> Union[np.ndarray, pd.DataFrame]:
         """Converts a numpy array into the user's original datatype.
 
         Parameters
@@ -104,7 +117,8 @@ class TypeKeeper:
         array : np.ndarray
             numpy array to convert into the user's original datatype.
         match_datatype: bool
-            Optional. True to convert the user's datatype to match the original.
+            Optional. True to convert the user's datatype to match the
+            original.
             Default is True.
         kwargs:
             Keyword arguments to pass to _type_keep_dataframe_from_1d_array.
@@ -112,7 +126,8 @@ class TypeKeeper:
         Returns
         -------
         res: Union[np.ndarray, pd.DataFrame]
-            The array transformed into the user's original datatype, if desired.
+            The array transformed into the user's original datatype,
+            if desired.
         """
         # checking arguments
         if not isinstance(match_datatype, bool):
@@ -133,28 +148,34 @@ class TypeKeeper:
             # original type is None or np.ndarray
             return array
 
-    def _type_keep_dataframe_from_2d_array(self, array: np.ndarray, add_index: bool = False) -> pd.DataFrame:
-        """Converts a numpy array into a dataframe whilst incorporating information
-        about the user's original data input.
+    def _type_keep_dataframe_from_2d_array(
+            self, array: np.ndarray, add_index: bool = False) -> pd.DataFrame:
+        """Converts a numpy array into a dataframe whilst incorporating
+        information about the user's original data input.
 
-        User's original data input must have been a pandas dataframe to use this method.
+        User's original data input must have been a pandas dataframe to use
+        this method.
 
         Parameters
         ----------
         array: np.ndarray
             numpy array to convert into a dataframe.
         add_index: bool
-            Optional. True to use the index of the user's original dataframe for this output.
+            Optional. True to use the index of the user's original dataframe
+            for this output.
 
         Returns
         -------
         df: pd.DataFrame
             The array transformed into a pd.DataFrame object.
         """
-        return self._type_keep_dataframe_from_1d_array(array, self._original_info['other']['cols'], add_index)
+        return self._type_keep_dataframe_from_1d_array(
+            array, self._original_info['other']['cols'], add_index)
 
     def check_dimensions(self, x: Union[pd.DataFrame, np.ndarray]) -> None:
-        """Checks whether the dimensions of x match those of the original datatype.
+        """Checks whether the dimensions of x match those of the original
+        datatype.
+
         Raises ValueError if dimensions do not match.
 
         Parameters
@@ -173,10 +194,13 @@ class TypeKeeper:
         elif x is None:
             x_dims: int = 0
 
-        if (x_dims != self._original_info['ndims']) and (self._original_info['type'] != type(None)):
+        if (x_dims != self._original_info['ndims']) and \
+                (self._original_info['type'] != type(None)):
             raise ValueError("dimensions of x do not match original input.")
 
-    def type_keep_from_2d_array(self, array: np.ndarray, match_datatype: bool = True, **kwargs) -> Union[np.ndarray, pd.DataFrame]:
+    def type_keep_from_2d_array(
+            self, array: np.ndarray, match_datatype: bool=True, **kwargs) \
+            -> Union[np.ndarray, pd.DataFrame]:
         """Converts a numpy array into the user's original datatype.
 
         Parameters
@@ -184,7 +208,8 @@ class TypeKeeper:
         array : np.ndarray
             numpy array to convert into the user's original datatype.
         match_datatype: bool
-            Optional. True to convert the user's datatype to match the original.
+            Optional. True to convert the user's datatype to match the
+            original.
             Default is True.
         kwargs:
             Keyword arguments to pass to _type_keep_dataframe_from_2d_array.
@@ -192,7 +217,8 @@ class TypeKeeper:
         Returns
         -------
         res: Union[np.ndarray, pd.DataFrame]
-            The array transformed into the user's original datatype, if desired.
+            The array transformed into the user's original datatype,
+            if desired.
         """
         # checking arguments
         if not match_datatype:
@@ -228,10 +254,12 @@ class TypeKeeper:
         """
         for column in self._original_info['other']['cols']:
             if column not in df.columns:
-                raise ValueError(f"{column} in original input, but not in secondary input")
+                raise ValueError(f"{column} in original input, but not in "
+                                 f"secondary input")
         return df[self._original_info['other']['cols']]
 
-    def match_secondary_input(self, x: Union[pd.DataFrame, np.ndarray]) -> Union[pd.DataFrame, np.ndarray]:
+    def match_secondary_input(self, x: Union[pd.DataFrame, np.ndarray]) \
+            -> Union[pd.DataFrame, np.ndarray]:
         """Ensures x matches the same dimensions and (for dataframes)
         column order as the original input.
 
@@ -256,7 +284,9 @@ class TypeKeeper:
             return self._match_secondary_dataframe(x)
         return x
 
-    def match_square_matrix(self, square_matrix: Union[pd.DataFrame, np.ndarray]) -> Union[pd.DataFrame, np.ndarray]:
+    def match_square_matrix(
+            self, square_matrix: Union[pd.DataFrame, np.ndarray])\
+            -> Union[pd.DataFrame, np.ndarray]:
         """Ensures a square matrix matches the same dimensions and
         (for dataframes) column order as the original input.
 

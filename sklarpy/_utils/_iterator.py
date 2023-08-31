@@ -6,7 +6,8 @@ __all__ = ['get_iterator']
 
 
 def get_iterator(x: Iterable, show_progress: bool, msg: str) -> Iterable:
-    """Allows the user to receive messages on the progress of a given iteration in the logs.
+    """Allows the user to receive messages on the progress of a given iteration
+    in the logs.
 
     Parameters
     -----------

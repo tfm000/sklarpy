@@ -9,28 +9,36 @@ from sklarpy._utils import get_iterator
 __all__ = ['threeD_plot']
 
 
-def threeD_plot(func: Callable, var1_range: np.ndarray, var2_range: np.ndarray, func_kwargs: dict = None, func_name: str = '',
-                title: str = '3d Plot', color: str = 'royalblue', alpha: float = 1.0, figsize: tuple = (8, 8), grid: bool = True,
-                axis_names: Iterable = ('variable 1', 'variable 2'), zlim: tuple = (None, None),
-                show_progress: bool = True, show: bool = True) -> None:
+def threeD_plot(func: Callable, var1_range: np.ndarray, var2_range: np.ndarray,
+                func_kwargs: dict = None, func_name: str = '',
+                title: str = '3d Plot', color: str = 'royalblue',
+                alpha: float = 1.0, figsize: tuple = (8, 8), grid: bool = True,
+                axis_names: Iterable = ('variable 1', 'variable 2'),
+                zlim: tuple = (None, None), show_progress: bool = True,
+                show: bool = True) -> None:
     """Function able to easily implement 3D plots of functions.
 
     Parameters
     ----------
     func: Callable
         The callable function / method to plot.
-        Must take a numpy array of size (n, 2) as values in the first argument, where n is an arbitrary size.
-        Any additional arguments can be set via func_kwargs.
+        Must take a numpy array of size (n, 2) as values in the first argument,
+         where n is an arbitrary size. Any additional arguments can be set via
+         func_kwargs.
     var1_range: np.ndarray
-        numpy array containing a range of values for the x1 / u1 variable to plot across.
+        numpy array containing a range of values for the x1 / u1 variable to
+        plot across.
     var2_range: np.ndarray
-        numpy array containing a range of values for the x2 / u2 variable to plot across.
+        numpy array containing a range of values for the x2 / u2 variable to
+        plot across.
     func_kwargs: dict
-        Optional. A dictionary containing any additional keyword / general arguments for the function.
+        Optional. A dictionary containing any additional keyword / general
+        arguments for the function.
         Default is None, implying no additional arguments are required.
     func_name: str
-        Optional. The name of the function being evaluated. Used when labeling the plot figure and z axis,
-        as well as when showing the progress of the plotting, if specified.
+        Optional. The name of the function being evaluated. Used when labeling
+        the plot figure and z axis, as well as when showing the progress of the
+        plotting, if specified.
         Default is ''.
     title: str
         Optional. The matplotlib.pyplot title to use in your plot.
@@ -42,17 +50,20 @@ def threeD_plot(func: Callable, var1_range: np.ndarray, var2_range: np.ndarray, 
         Optional. The matplotlib.pyplot alpha to use in your plot.
         Default is 1.0
     figsize: tuple
-        Optional. The matplotlib.pyplot figsize tuple to size the overall figure.
+        Optional. The matplotlib.pyplot figsize tuple to size the overall
+        figure.
         Default figsize is (8,8)
     grid : bool
         Optional. True to include a grid in the 3D plot. False for no grid.
         Default is True.
     axes_names: Iterable
         The names of your axes / variables to use in your plot.
-        If provided, must be an iterable with the same length as the number of variables (length 2).
+        If provided, must be an iterable with the same length as the number of
+        variables (length 2).
         Default is "('variable 1', 'variable 2')".
     zlim: tuple
-        Optional. The matplotlib.pyplot bounds of the z-axis to use in your plot.
+        Optional. The matplotlib.pyplot bounds of the z-axis to use in your
+        plot.
         Default is (None, None) -> No z-axis bounds.
     show_progress: bool
         Optional. Whether to show the progress of the plotting.
@@ -68,7 +79,8 @@ def threeD_plot(func: Callable, var1_range: np.ndarray, var2_range: np.ndarray, 
 
     for rng in (var1_range, var2_range):
         if not (isinstance(rng, np.ndarray) or rng.ndim == 1):
-            raise TypeError("var1_range and var2_range must be 1-dimensional numpy arrays.")
+            raise TypeError("var1_range and var2_range must be 1-dimensional "
+                            "numpy arrays.")
 
     for boolean in (grid, show_progress, show):
         if not isinstance(boolean, bool):

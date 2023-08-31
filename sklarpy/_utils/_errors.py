@@ -1,6 +1,7 @@
 # Contains custom errors for SklarPy
 
-__all__ = ['SignificanceError', 'FitError', 'DiscreteError', 'SaveError', 'LoadError', 'DistributionError']
+__all__ = ['SignificanceError', 'FitError', 'DiscreteError', 'SaveError',
+           'LoadError', 'DistributionError']
 
 
 class SignificanceError(Exception):
@@ -9,7 +10,8 @@ class SignificanceError(Exception):
 
 
 class DiscreteError(Exception):
-    """Error to raise when fitting a discrete distribution to continuous data."""
+    """Error to raise when fitting a discrete distribution to continuous data.
+    """
     pass
 
 

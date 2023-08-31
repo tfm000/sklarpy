@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 from typing import Iterable, Union
 
-__all__ = ['univariate_num_to_array', 'check_params', 'check_univariate_data', 'check_array_datatype',
-           'check_multivariate_data']
+__all__ = ['univariate_num_to_array', 'check_params', 'check_univariate_data',
+           'check_array_datatype', 'check_multivariate_data']
 
 
 def univariate_num_to_array(x: Union[float, int, np.ndarray]) -> np.ndarray:
@@ -30,7 +30,8 @@ def univariate_num_to_array(x: Union[float, int, np.ndarray]) -> np.ndarray:
 
 def check_params(params: tuple) -> tuple:
     """
-    Checks whether the given parameters match those required by SklarPy's probability distributions.
+    Checks whether the given parameters match those required by SklarPy's
+    probability distributions.
 
     Parameters
     ----------
@@ -52,7 +53,9 @@ def check_params(params: tuple) -> tuple:
     return params
 
 
-def check_univariate_data(data: Union[pd.DataFrame, pd.Series, np.ndarray, Iterable]) -> np.ndarray:
+def check_univariate_data(
+        data: Union[pd.DataFrame, pd.Series, np.ndarray, Iterable]) \
+        -> np.ndarray:
     """
     Checks user inputted data for univariate distribution fitting.
 
@@ -70,7 +73,8 @@ def check_univariate_data(data: Union[pd.DataFrame, pd.Series, np.ndarray, Itera
         return data.flatten()
     elif isinstance(data, pd.DataFrame):
         if len(data.columns) != 1:
-            raise ValueError("data must be a single column dataframe for it to be considered univariate.")
+            raise ValueError("data must be a single column dataframe for it to"
+                             " be considered univariate.")
         return data.to_numpy()
     elif isinstance(data, pd.Series):
         return data.to_numpy()
@@ -107,8 +111,10 @@ def check_array_datatype(arr: np.ndarray, must_be_numeric: bool = True):
     return float
 
 
-def check_multivariate_data(data: Union[pd.DataFrame, pd.Series, np.ndarray, Iterable], num_variables: int = None,
-                            allow_1d: bool = False, allow_nans: bool = True) -> np.ndarray:
+def check_multivariate_data(
+        data: Union[pd.DataFrame, pd.Series, np.ndarray, Iterable],
+        num_variables: int = None, allow_1d: bool = False,
+        allow_nans: bool = True) -> np.ndarray:
     """Checks user inputted data for multivariate distribution fitting.
 
     Parameters
@@ -151,7 +157,8 @@ def check_multivariate_data(data: Union[pd.DataFrame, pd.Series, np.ndarray, Ite
     # checking number of variables
     if num_variables is not None:
         if data_array.ndim != num_variables:
-            raise ValueError("data dimensions do not match the number of variables.")
+            raise ValueError("data dimensions do not match the number of "
+                             "variables.")
 
     # checking for nan values
     if (not allow_nans) and (np.isnan(data_array).sum() != 0):
