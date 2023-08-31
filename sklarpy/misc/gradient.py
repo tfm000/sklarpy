@@ -1,25 +1,31 @@
 # contains code for calculating gradients of functions
 import numpy as np
-from typing import Callable
+import pandas as pd
+from typing import Callable, Union, Iterable
 from collections import deque
 
-from sklarpy._utils import check_univariate_data, data_iterable
+from sklarpy._utils import check_univariate_data
 
 __all__ = ['gradient_1d']
 
 
-def gradient_1d(func: Callable, x: data_iterable, eps: float = 10 ** -2, domain: tuple = None) -> np.ndarray:
-    """Calculates the numerical first derivative / gradient of a given 1-dimensional function.
+def gradient_1d(func: Callable,
+                x: Union[pd.DataFrame, pd.Series, np.ndarray, Iterable],
+                eps: float = 10 ** -2,  domain: tuple = None) -> np.ndarray:
+    """Calculates the numerical first derivative / gradient of a given
+    1-dimensional function.
 
     Parameters
     ----------
     func : Callable
-        The function to differentiate. Must accept floats / integer values as arguments.
-    x: data_iterable
-        The data points to calculate the derivative at. Must be a 1-dimensional array, dataframe, series or
-        iterable containing integer or scalar values.
+        The function to differentiate. Must accept scalar values as arguments.
+    x: Union[pd.DataFrame, pd.Series, np.ndarray, Iterable]
+        The data points to calculate the derivative at. Must be a 1-dimensional
+        array, dataframe, series or iterable containing integer or scalar
+        values.
     eps: float
-        The epsilon value to use when computing the numerical first derivative. Default is 0.01.
+        The epsilon value to use when computing the numerical first derivative.
+        Default is 0.01.
     domain: tuple
         The domain on which your function is valid. Optional.
 
@@ -28,7 +34,7 @@ def gradient_1d(func: Callable, x: data_iterable, eps: float = 10 ** -2, domain:
     gradient : ndarray
         The numerical gradient of your function.
     """
-    # arg checks
+    # checking arguments
     x: np.ndarray = check_univariate_data(x)
 
     if domain is None:
@@ -51,7 +57,8 @@ def gradient_1d(func: Callable, x: data_iterable, eps: float = 10 ** -2, domain:
             # nan if outside domain
             gradients.append(np.nan)
         else:
-            # determining upper and lower values to use when calculating the derivative
+            # determining upper and lower values to use when calculating the
+            # derivative
             if xi - eps >= domain[0]:
                 lower: float = xi - eps
             else:
