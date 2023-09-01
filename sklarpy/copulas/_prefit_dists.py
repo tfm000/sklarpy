@@ -187,7 +187,7 @@ class PreFitCopula(NotImplementedBase):
             distribution at.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -237,7 +237,7 @@ class PreFitCopula(NotImplementedBase):
             at.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -286,7 +286,7 @@ class PreFitCopula(NotImplementedBase):
             distribution at.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -332,7 +332,7 @@ class PreFitCopula(NotImplementedBase):
             at.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -374,7 +374,7 @@ class PreFitCopula(NotImplementedBase):
             at.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -423,7 +423,7 @@ class PreFitCopula(NotImplementedBase):
             joint distribution.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -471,7 +471,7 @@ class PreFitCopula(NotImplementedBase):
             marginal distribution of the random variable xi.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters in
              the correct order.
         match_datatype: bool
@@ -514,7 +514,7 @@ class PreFitCopula(NotImplementedBase):
             distribution of the random variable xi.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         match_datatype: bool
@@ -558,7 +558,7 @@ class PreFitCopula(NotImplementedBase):
             the joint distribution at.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         match_datatype: bool
@@ -601,7 +601,7 @@ class PreFitCopula(NotImplementedBase):
             distribution of the random variable xi.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         match_datatype: bool
@@ -679,7 +679,7 @@ class PreFitCopula(NotImplementedBase):
             which you wish to evaluate.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         kwargs:
@@ -713,7 +713,7 @@ class PreFitCopula(NotImplementedBase):
             distribution.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
 
@@ -793,7 +793,7 @@ class PreFitCopula(NotImplementedBase):
         ----------
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
 
@@ -860,7 +860,7 @@ class PreFitCopula(NotImplementedBase):
             Not required if `copula_params` and `mdists` provided.
         copula_params: Union[Params, tuple, None]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the
+            your copula distribution. Can be a Params object of the
             specific multivariate distribution or a tuple containing these
             parameters in the correct order. If not passed, user must provide
             a dataset to fit too.
@@ -992,7 +992,7 @@ class PreFitCopula(NotImplementedBase):
             distribution at.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -1027,7 +1027,7 @@ class PreFitCopula(NotImplementedBase):
             distribution at.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -1068,7 +1068,7 @@ class PreFitCopula(NotImplementedBase):
             at.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -1104,7 +1104,7 @@ class PreFitCopula(NotImplementedBase):
             at.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -1150,7 +1150,7 @@ class PreFitCopula(NotImplementedBase):
         ----------
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -1248,7 +1248,7 @@ class PreFitCopula(NotImplementedBase):
             The name of the method to implement
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -1425,7 +1425,7 @@ class PreFitCopula(NotImplementedBase):
         ----------
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -1529,7 +1529,7 @@ class PreFitCopula(NotImplementedBase):
         ----------
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -1636,7 +1636,7 @@ class PreFitCopula(NotImplementedBase):
         ----------
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -1736,7 +1736,7 @@ class PreFitCopula(NotImplementedBase):
         ----------
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -1828,7 +1828,7 @@ class PreFitCopula(NotImplementedBase):
         ----------
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
-            your copula distribution. Can be a Params object or the specific
+            your copula distribution. Can be a Params object of the specific
             multivariate distribution or a tuple containing these parameters
             in the correct order.
         mdists : Union[MarginalFitter, dict]
@@ -1916,6 +1916,11 @@ class PreFitCopula(NotImplementedBase):
 
         Parameters
         ----------
+        copula_params: Union[Params, tuple]
+            The parameters of the multivariate distribution used to specify
+            your copula distribution. Can be a Params object of the specific
+            multivariate distribution or a tuple containing these parameters
+            in the correct order.
         var1_range: np.ndarray
             numpy array containing a range of values for the u1 variable to
             plot across. If None passed, then an evenly spaced array of
