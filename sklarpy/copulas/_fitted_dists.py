@@ -556,15 +556,16 @@ class FittedCopula(Savable, Copyable):
             The names of your axes / variables to use in your plot.
             If provided, must be an iterable with the same length as the
             number of variables (length 2). If None provided, the axes will be
-            labeled using the names of the variables provided during the
-            joint distribution fit, if possible.
+            labeled using the names of the variables provided during the joint
+            distribution fit, if possible. Otherwise, the axes will be labeled
+            as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
             The number of random variables to generate from the joint
             distribution, to determine the bounds of our variables,
-            if necessary.
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range
@@ -678,14 +679,15 @@ class FittedCopula(Savable, Copyable):
             If provided, must be an iterable with the same length as the
             number of variables (length 2). If None provided, the axes will be
             labeled using the names of the variables provided during the joint
-            distribution fit, if possible.
+            distribution fit, if possible. Otherwise, the axes will be labeled
+            as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
             The number of random variables to generate from the joint
             distribution, to determine the bounds of our variables,
-            if necessary.
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range and
@@ -766,14 +768,15 @@ class FittedCopula(Savable, Copyable):
             If provided, must be an iterable with the same length as the
             number of variables (length 2). If None provided, the axes will be
             labeled using the names of the variables provided during the joint
-            distribution fit, if possible.
+            distribution fit, if possible. Otherwise, the axes will be labeled
+            as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
             The number of random variables to generate from the joint
             distribution, to determine the bounds of our variables,
-            if necessary.
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range and
@@ -860,14 +863,15 @@ class FittedCopula(Savable, Copyable):
             If provided, must be an iterable with the same length as the
             number of variables (length 2). If None provided, the axes will be
             labeled using the names of the variables provided during the joint
-            distribution fit, if possible.
+            distribution fit, if possible. Otherwise, the axes will be labeled
+            as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
             The number of random variables to generate from the joint
             distribution, to determine the bounds of our variables,
-            if necessary.
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range and
@@ -930,14 +934,15 @@ class FittedCopula(Savable, Copyable):
             If provided, must be an iterable with the same length as the
             number of variables (length 2). If None provided, the axes will be
             labeled using the names of the variables provided during the joint
-            distribution fit, if possible.
+            distribution fit, if possible. Otherwise, the axes will be labeled
+            as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
             The number of random variables to generate from the joint
             distribution, to determine the bounds of our variables,
-            if necessary.
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range and
@@ -1003,14 +1008,15 @@ class FittedCopula(Savable, Copyable):
             If provided, must be an iterable with the same length as the
             number of variables (length 2). If None provided, the axes will be
             labeled using the names of the variables provided during the joint
-            distribution fit, if possible.
+            distribution fit, if possible. Otherwise, the axes will be labeled
+            as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
             The number of random variables to generate from the
             joint distribution, to determine the bounds of our variables,
-            if necessary.
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range and
@@ -1084,14 +1090,15 @@ class FittedCopula(Savable, Copyable):
             If provided, must be an iterable with the same length as the
             number of variables (length 2). If None provided, the axes will be
             labeled using the names of the variables provided during the joint
-            distribution fit, if possible.
+            distribution fit, if possible. Otherwise, the axes will be labeled
+            as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
             The number of random variables to generate from the joint
             distribution, to determine the bounds of our variables,
-            if necessary.
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range and

@@ -182,6 +182,8 @@ class PreFitCopula(NotImplementedBase):
             -> Union[pd.DataFrame, np.ndarray]:
         """The log-pdf function of the overall joint distribution.
 
+        Parameters
+        ----------
         x: Union[pd.DataFrame, np.ndarray]
             The values to evaluate the log-pdf function of the joint
             distribution at.
@@ -232,6 +234,8 @@ class PreFitCopula(NotImplementedBase):
             **kwargs) -> Union[pd.DataFrame, np.ndarray]:
         """The pdf function of the overall joint distribution.
 
+        Parameters
+        ----------
         x: Union[pd.DataFrame, np.ndarray]
             The values to evaluate the pdf function of the joint distribution
             at.
@@ -327,6 +331,8 @@ class PreFitCopula(NotImplementedBase):
         to d-dimensional numerical integration. In these case, mc_cdf will
         likely evaluate faster.
 
+        Parameters
+        ----------
         x: Union[pd.DataFrame, np.ndarray]
             The values to evaluate the cdf function of the joint distribution
             at.
@@ -367,8 +373,10 @@ class PreFitCopula(NotImplementedBase):
         overall joint distribution. The standard cdf function may take time
         to evaluate for certain copula distributions, due to d-dimensional
         numerical integration. In these cases, mc_cdf will likely evaluate
-        faster
+        faster.
 
+        Parameters
+        ----------
         x: Union[pd.DataFrame, np.ndarray]
             The values to evaluate the cdf function of the joint distribution
             at.
@@ -1018,12 +1026,12 @@ class PreFitCopula(NotImplementedBase):
     def loglikelihood(self, data: Union[np.ndarray, pd.DataFrame],
                       copula_params: Union[Params, tuple],
                       mdists: Union[MarginalFitter, dict]) -> float:
-        """The loglikelihood function of the overall joint distribution.
+        """The log-likelihood function of the overall joint distribution.
 
         Parameters
         ----------
         data : Union[np.ndarray, pd.DataFrame]
-            The values to evaluate the loglikelihood function of the joint
+            The values to evaluate the log-likelihood function of the joint
             distribution at.
         copula_params: Union[Params, tuple]
             The parameters of the multivariate distribution used to specify
@@ -1179,9 +1187,7 @@ class PreFitCopula(NotImplementedBase):
         axes_names: Iterable
             The names of your axes / variables to use in your plots.
             If provided, must be an iterable with the same length as the number
-            of variables. If None provided, the axes will be labeled using the
-            names of the variables provided during the joint distribution fit,
-            if possible.
+            of variables. If None provided, the axes will not be labeled.
         plot_kde: bool
             True to plot the KDE of your marginal distributions in the
             diagonal plots
@@ -1294,15 +1300,14 @@ class PreFitCopula(NotImplementedBase):
             The names of your axes / variables to use in your plot.
             If provided, must be an iterable with the same length as the
             number of variables (length 2). If None provided, the axes will
-            be labeled using the names of the variables provided during the
-            joint distribution fit, if possible.
+            be labeled as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
             The number of random variables to generate from the joint
             distribution, to determine the bounds of our variables,
-            if necessary.
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range and
@@ -1470,16 +1475,15 @@ class PreFitCopula(NotImplementedBase):
         axes_names: Iterable
             The names of your axes / variables to use in your plot.
             If provided, must be an iterable with the same length as the
-            number of variables (length 2). If None provided, the axes will be
-            labeled using the names of the variables provided during the joint
-            distribution fit, if possible.
+            number of variables (length 2). If None provided, the axes will
+            be labeled as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
             The number of random variables to generate from the joint
             distribution, to determine the bounds of our variables,
-            if necessary.
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range and
@@ -1515,7 +1519,7 @@ class PreFitCopula(NotImplementedBase):
         2-dimensional / bivariate distributions.
 
         This may take time to evaluate for certain copula distributions,
-        due to d-dimensional numerical integration. In these case,
+        due to d-dimensional numerical integration. In these cases,
         mc_cdf_plot will likely evaluate faster.
 
         This requires the sampling of multivariate random variables from the
@@ -1574,16 +1578,15 @@ class PreFitCopula(NotImplementedBase):
         axes_names: Iterable
             The names of your axes / variables to use in your plot.
             If provided, must be an iterable with the same length as the
-            number of variables (length 2). If None provided, the axes will be
-            labeled using the names of the variables provided during the joint
-            distribution fit, if possible.
+            number of variables (length 2). If None provided, the axes will
+            be labeled as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
             The number of random variables to generate from the joint
             distribution, to determine the bounds of our variables,
-            if necessary.
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range and
@@ -1684,17 +1687,16 @@ class PreFitCopula(NotImplementedBase):
             Default is True.
         axes_names: Iterable
             The names of your axes / variables to use in your plot.
-            If provided, must be an iterable with the same length as the number
-            of variables (length 2). If None provided, the axes will be
-            labeled using the names of the variables provided during the joint
-            distribution fit, if possible.
+            If provided, must be an iterable with the same length as the
+            number of variables (length 2). If None provided, the axes will
+            be labeled as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
             The number of random variables to generate from the joint
             distribution, to determine the bounds of our variables,
-            if necessary.
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range and
@@ -1774,18 +1776,17 @@ class PreFitCopula(NotImplementedBase):
             True to include a grid in the 3D plot. False for no grid.
             Default is True.
         axes_names: Iterable
-            The names of your axes / variables to use in your plot. If
-            provided, must be an iterable with the same length as the number
-            of variables (length 2). If None provided, the axes will be
-            labeled using the names of the variables provided during the joint
-            distribution fit, if possible.
+            The names of your axes / variables to use in your plot.
+            If provided, must be an iterable with the same length as the
+            number of variables (length 2). If None provided, the axes will
+            be labeled as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
             The number of random variables to generate from the joint
             distribution, to determine the bounds of our variables,
-            if necessary.
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range and
@@ -1862,16 +1863,15 @@ class PreFitCopula(NotImplementedBase):
         axes_names: Iterable
             The names of your axes / variables to use in your plot.
             If provided, must be an iterable with the same length as the
-            number of variables (length 2). If None provided, the axes will be
-            labeled using the names of the variables provided during the joint
-            distribution fit, if possible.
+            number of variables (length 2). If None provided, the axes will
+            be labeled as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
             The number of random variables to generate from the joint
             distribution, to determine the bounds of our variables,
-            if necessary.
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range and
@@ -1950,16 +1950,15 @@ class PreFitCopula(NotImplementedBase):
         axes_names: Iterable
             The names of your axes / variables to use in your plot.
             If provided, must be an iterable with the same length as the
-            number of variables (length 2). If None provided, the axes will be
-            labeled using the names of the variables provided during the
-            joint distribution fit, if possible.
+            number of variables (length 2). If None provided, the axes will
+            be labeled as 'variable 1' and 'variable 2' respectively.
         zlim: tuple
             The matplotlib.pyplot bounds of the z-axis to use in your plot.
             Default is (None, None) -> No z-axis bounds.
         num_generate: int
-            The number of random variables to generate from the
-            joint distribution, to determine the bounds of our variables,
-            if necessary.
+            The number of random variables to generate from the joint
+            distribution, to determine the bounds of our variables,
+            if necessary. See var1_range and var2_range for more information.
             Default is 1000.
         num_points: int
             The number of points to use in your evenly spaced var1_range and
@@ -1983,5 +1982,5 @@ class PreFitCopula(NotImplementedBase):
 
     @property
     def name(self) -> str:
-        """Return the name of the copula model."""
+        """Returns the name of the copula model."""
         return self._name
