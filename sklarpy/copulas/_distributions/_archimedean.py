@@ -1,5 +1,5 @@
 # Contains code for archimedean copula models
-from sklarpy.copulas._prefit_dicts import PreFitCopula
+from sklarpy.copulas._prefit_dists import PreFitCopula
 
 __all__ = ['clayton_copula_gen', 'gumbel_copula_gen', 'frank_copula_gen']
 

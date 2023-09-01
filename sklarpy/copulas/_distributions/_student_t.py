@@ -3,7 +3,7 @@ import numpy as np
 import scipy.stats
 from typing import Union
 
-from sklarpy.copulas._prefit_dicts import PreFitCopula
+from sklarpy.copulas._prefit_dists import PreFitCopula
 from sklarpy._other import Params
 
 __all__ = ['student_t_copula_gen']

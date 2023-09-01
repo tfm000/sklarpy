@@ -2,7 +2,7 @@
 import numpy as np
 from typing import Union, Callable
 
-from sklarpy.copulas._prefit_dicts import PreFitCopula
+from sklarpy.copulas._prefit_dists import PreFitCopula
 from sklarpy._other import Params
 from sklarpy.univariate import gh
 

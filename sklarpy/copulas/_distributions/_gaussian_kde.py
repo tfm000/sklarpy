@@ -1,5 +1,5 @@
 # Contains code for the gaussian kde copula model
-from sklarpy.copulas._prefit_dicts import PreFitCopula
+from sklarpy.copulas._prefit_dists import PreFitCopula
 
 __all__ = ['gaussian_kde_copula_gen']
 
