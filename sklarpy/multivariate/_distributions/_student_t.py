@@ -9,6 +9,7 @@ from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
 from sklarpy._other import Params
 from sklarpy._utils import dataframe_or_array
+from sklarpy.misc import CorrelationMatrix
 
 __all__ = ['multivariate_student_t_gen']
 
@@ -27,7 +28,7 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
         super()._check_params(params)
 
         # checking valid location vector and shape matrix
-        loc, shape, dof = params
+        dof, loc, shape = params
         definiteness, ones = kwargs.get('definiteness', 'pd'), kwargs.get('ones', False)
         self._check_loc_shape(loc, shape, definiteness, ones)
 
@@ -39,34 +40,43 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
             raise ValueError(dof_msg)
 
     def _logpdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
-        return np.array([scipy.stats.multivariate_t.logpdf(x, loc=params[0].flatten(), shape=params[1], df=params[2])], dtype=float).flatten()
+        return np.array([scipy.stats.multivariate_t.logpdf(x, loc=params[1].flatten(), shape=params[2], df=params[0])], dtype=float).flatten()
 
     def _cdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
-        return np.array([scipy.stats.multivariate_t.cdf(x, loc=params[0].flatten(), shape=params[1], df=params[2])], dtype=float).flatten()
+        return np.array([scipy.stats.multivariate_t.cdf(x, loc=params[1].flatten(), shape=params[2], df=params[0])], dtype=float).flatten()
 
     def _rvs(self, size: int, params: tuple) -> np.ndarray:
-        return scipy.stats.multivariate_t.rvs(size=size, loc=params[0].flatten(), shape=params[1], df=params[2])
+        return scipy.stats.multivariate_t.rvs(size=size, loc=params[1].flatten(), shape=params[2], df=params[0])
 
     def _get_bounds(self, data: np.ndarray, as_tuple: bool, **kwargs) -> Union[dict, tuple]:
         d: int = data.shape[1]
         data_bounds: np.ndarray = np.array([data.min(axis=0), data.max(axis=0)], dtype=float).T
-        default_bounds: dict = {'loc': data_bounds, 'dof': (2.01, 100.0)}
+        default_bounds: dict = {'dof': (2.01, 100.0), 'loc': data_bounds}
         return super()._get_bounds(default_bounds, d, as_tuple, **kwargs)
 
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple, copula: bool) -> np.ndarray:
-        dof0: float = np.random.uniform(*bounds[-1])
+    def _get_params0(self, data: np.ndarray, bounds: tuple, copula: bool, **kwargs) -> tuple:
+        # getting theta0
+        dof0: float = np.random.uniform(*bounds[0])
         if not copula:
             loc0: np.ndarray = data.mean(axis=0, dtype=float).flatten()
-            return np.array([*loc0, dof0], dtype=float)
-        return np.array([dof0], dtype=float)
+            theta0: np.ndarray = np.array([dof0, *loc0.flatten()], dtype=float)
+            S: np.ndarray = CorrelationMatrix(data).cov(
+                method=kwargs.get('cov_method', 'pp_kendall'))
+        else:
+            theta0: np.ndarray = np.array([dof0], dtype=float)
+            loc = None
+            S: np.ndarray = CorrelationMatrix(data).corr(
+                method=kwargs.get('cov_method', 'pp_kendall'))
+
+        return self._low_dim_theta_to_params(theta=theta0, S=S, loc=loc, copula=copula)
 
     def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, loc: np.ndarray, copula: bool) -> tuple:
         d: int = S.shape[0]
 
-        dof: float = float(theta[-1])
+        dof: float = float(theta[0])
         if not copula:
             if loc is None:
-                loc: np.ndarray = theta[:d]
+                loc: np.ndarray = theta[1:d+1]
             loc = loc.reshape((d, 1))
 
             # calculating implied shape parameter
@@ -74,9 +84,11 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
         else:
             loc: np.ndarray = np.zeros((d, 1), dtype=float)
             shape: np.ndarray = S
-        return loc, shape, dof
+        return dof, loc, shape
 
     def _dof_low_dim_mle(self, data: np.ndarray, **kwargs) -> tuple:
+        kwargs['params0'] = kwargs['params0'][0],
+        kwargs['bounds'] = kwargs['bounds'][0],
         return super()._low_dim_mle(data, **kwargs)
 
     def _get_low_dim_mle_objective_func_args(self, data: np.ndarray, copula: bool, cov_method: str, **kwargs) -> tuple:
@@ -86,16 +98,13 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
 
     def _fit_given_data_kwargs(self, method: str, data: np.ndarray, **user_kwargs) -> dict:
         kwargs: dict = super()._fit_given_data_kwargs('low_dim_mle', data, **user_kwargs)
-        if method == 'dof_low_dim_mle':
-            kwargs['theta0'] = kwargs['theta0'][-1]
-            kwargs['bounds'] = kwargs['bounds'][-1],
         kwargs['method'] = method
         kwargs['tol'] = 0.01
         return kwargs
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
         self._check_params(params, **kwargs)
-        return {'loc': params[0], 'shape': params[1], 'dof': params[2]}, params[0].size
+        return {'dof': params[0], 'loc': params[1], 'shape': params[2]}, params[1].size
 
     def fit(self, data: dataframe_or_array = None, params: Union[Params, tuple] = None, method: str = 'dof-low-dim mle', **kwargs) -> FittedContinuousMultivariate:
         return super().fit(data=data, params=params, method=method, **kwargs)
