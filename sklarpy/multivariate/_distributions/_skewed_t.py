@@ -43,7 +43,7 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
         super()._check_params(params)
         self._num_params = 4
 
-    def _singular_logpdf(self, x: np.ndarray, params: tuple, **kwargs) -> float:
+    def _singular_logpdf(self, xrow: np.ndarray, params: tuple, **kwargs) -> float:
         # getting params
         _, dof, _, loc, shape, gamma = params
 
@@ -51,16 +51,16 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
         d: int = loc.size
         loc = loc.reshape((d, 1))
         gamma = gamma.reshape((d, 1))
-        x = x.reshape((d, 1))
+        xrow = xrow.reshape((d, 1))
 
         # common calculations
         shape_inv: np.ndarray = np.linalg.inv(shape)
-        q: float = dof + ((x - loc).T @ shape_inv @ (x - loc))
+        q: float = dof + ((xrow - loc).T @ shape_inv @ (xrow - loc))
         p: float = (gamma.T @ shape_inv @ gamma)
         s: float = 0.5*(dof + d)
 
         log_c: float = (1 - s) * np.log(2) - 0.5 * (2 * scipy.special.loggamma(0.5 * dof) + d * np.log(np.pi * dof) + np.log(np.linalg.det(shape)))
-        log_h: float = kv.logkv(s, np.sqrt(q * p)) + (x - loc).T @ shape_inv @ gamma - s * (np.log(q / dof) - np.log(np.sqrt(q * p)))
+        log_h: float = kv.logkv(s, np.sqrt(q * p)) + (xrow - loc).T @ shape_inv @ gamma - s * (np.log(q / dof) - np.log(np.sqrt(q * p)))
         return float(log_c + log_h)
 
     def _w_rvs(self, size: int, params: tuple) -> np.ndarray:
@@ -106,8 +106,8 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
         n: int = len(etas)
         return np.asarray(etas).reshape((n, 1)), np.asarray(deltas).reshape((n, 1)), np.asarray(zetas).reshape((n, 1))
 
-    def _add_randomness(self, params: tuple, bounds: tuple, d: int, randomness_var: float) -> tuple:
-        adj_params: tuple = super()._add_randomness(params, bounds, d, randomness_var)
+    def _add_randomness(self, params: tuple, bounds: tuple, d: int, randomness_var: float, copula: bool) -> tuple:
+        adj_params: tuple = super()._add_randomness(params=params, bounds=bounds, d=d, randomness_var=randomness_var, copula=copula)
         return self._get_params(adj_params, check_params=False)
 
     def _neg_q2(self, dof: float, etas: np.ndarray, deltas: np.ndarray, zetas: np.ndarray) -> float:
