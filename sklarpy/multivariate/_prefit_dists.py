@@ -1566,7 +1566,7 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             True to raise an error if the shape matrix is an invalid covariance matrix.
             I.e. we check if the shape matrix is 2d, square, positive definite and symmetric.
             Default is True.
-        print_progress: bool
+        show_progress: bool
             When fitting to data only.
             Available for 'low-dim mle' and 'em' algorithms.
             Prints the progress of these algorithms.
@@ -1672,3 +1672,4 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         return FittedContinuousMultivariate(self, fit_info)
 
 # TODO: remove kwargs from fit and put them into specific dists
+# TODO: allow user to pass params0 for low dim mle

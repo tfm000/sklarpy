@@ -864,7 +864,7 @@ class PreFitCopula(NotImplementedBase):
         Parameters
         ----------
         data : Union[pd.DataFrame, np.ndarray, None]
-            The multivariate dataset to fit the distribution's parameters to.
+            The multivariate dataset to fit the distribution's parameters too.
             Not required if `copula_params` and `mdists` provided.
         copula_params: Union[Params, tuple, None]
             The parameters of the multivariate distribution used to specify
