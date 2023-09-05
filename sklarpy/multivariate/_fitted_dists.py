@@ -97,10 +97,10 @@ class FittedContinuousMultivariate(Savable, Copyable):
             var2_range: np.ndarray = np.linspace(fitted_bounds[1][0], fitted_bounds[1][1], num_points)
 
         # plotting
-        self.__obj._pdf_cdf_mccdf_plot(func_name, var1_range=var1_range, var2_range=var2_range, params=self.params,
-                                       color=color, alpha=alpha, figsize=figsize, grid=grid, axes_names=axes_names,
-                                       zlim=zlim, num_generate=0, num_points=num_points,
-                                       show_progress=show_progress, show=show, mc_num_generate=mc_num_generate)
+        self.__obj._threeD_plot(func_name, var1_range=var1_range, var2_range=var2_range, params=self.params,
+                                color=color, alpha=alpha, figsize=figsize, grid=grid, axes_names=axes_names,
+                                zlim=zlim, num_generate=0, num_points=num_points,
+                                show_progress=show_progress, show=show, mc_num_generate=mc_num_generate)
 
     def pdf_plot(self, var1_range: np.ndarray = None, var2_range: np.ndarray = None, color: str = 'royalblue', alpha: float = 1.0, figsize: tuple = (8, 8), grid: bool = True,
                  axes_names: tuple = None, zlim: tuple = (None, None), num_points: int = 100,
