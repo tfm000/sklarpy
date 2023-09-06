@@ -273,7 +273,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         return params
 
     def _em(self, data: np.ndarray, min_retries: int, max_retries: int,
-            copula: bool, bounds: tuple, params0: Union[np.ndarray, None],
+            copula: bool, bounds: tuple, params0: Union[tuple, None],
             cov_method: str, miniter: int, maxiter: int, h: float, tol: float,
             q2_options: dict, randomness_var: float,
             convergence_window_length: int, show_progress: bool, **kwargs) \
@@ -306,8 +306,10 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             True if the distribution is a copula distribution.
         bounds: tuple
             The bounds to use in parameter fitting / optimization, as a tuple.
-        params0: Union[np.ndarray, None]
-            An initial estimate of parameter values.
+        params0: Union[tuple, None]
+            An initial estimate of the parameters to use when starting the
+            optimization algorithm. If params0 fixed, function outcome ~
+            deterministic between runs.
         cov_method: str
             The method to use when estimating the sample covariance matrix.
             See CorrelationMatrix.cov for more information.
@@ -580,7 +582,8 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         d: int
             The dimension / number of variables.
         params0: tuple
-            An initial estimate of parameter values, as a tuple.
+            An initial estimate of the parameters to use when starting the
+            optimization algorithm, as a tuple.
         min_eig: float
             The delta / smallest positive eigenvalue to allow when enforcing
             positive definiteness via Rousseeuw and Molenberghs' technique.
@@ -882,7 +885,134 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         return self._NUM_W_PARAMS + vec_num + self._num_shape_scalar_params(
             d=d, copula=copula)
 
-    # def fit(self, data: Union[pd.DataFrame, np.ndarray] = None,
-    #         params: Union[Params, tuple] = None, method: str = 'low-dim mle',
-    #         **kwargs) -> FittedContinuousMultivariate:
-    #     """"""
+    def fit(self, data: Union[pd.DataFrame, np.ndarray] = None,
+            params: Union[Params, tuple] = None, method: str = 'low-dim mle',
+            **kwargs) -> FittedContinuousMultivariate:
+        """Call to fit parameters to a given dataset or to fit the
+         distribution object to a set of specified parameters.
+
+        Parameters
+        ----------
+        data : Union[pd.DataFrame, np.ndarray]
+            Optional. The multivariate dataset to fit the distribution's
+            parameters too. Not required if `params` is provided.
+        params : Union[Params, tuple]
+            Optional. The parameters of the distribution to fit the object
+            too. These can be a Params object of the specific multivariate
+            distribution or a tuple containing these parameters in the correct
+            order.
+        method : str
+            When fitting to data only.
+            The method to use when fitting the distribution to the observed
+            data. Can be either 'low-dim mle' or 'em', corresponding to the
+            Low-Dimensional Maximum Likelihood Estimation and
+            Expectation-Maximization algorithms respectively.
+            Default is 'low-dim mle'.
+        kwargs:
+            See below.
+
+        Keyword Arguments
+        ------------------
+        bounds: tuple
+            When fitting to data only.
+            The bounds to use in parameter fitting / optimization, as a tuple.
+        params0: Union[tuple, None]
+            When fitting to data only.
+            An initial estimate of the parameters to use when starting the
+            optimization algorithm. These can be a Params object of the
+            specific multivariate distribution or a tuple containing these
+            parameters in the correct order.
+            For the 'em' algorithm, if params0 specified by the user, function
+            outcome ~ deterministic between runs and therefore having a
+            min_retries and max_retries greater than 1 has little benefit.
+        cov_method: str
+            When fitting to data only.
+            The method to use when estimating the sample covariance matrix.
+            See CorrelationMatrix.cov for more information.
+            Default value is 'pp_kendall'.
+        maxiter: int
+            When fitting to data only.
+            The maximum number of iterations to perform by the optimization
+            algorithm.
+            Default is 1000 for 'low-dim mle' and 100 for 'em'.
+        tol: float
+            When fitting to data only.
+            The tolerance to use when determine convergence. For the 'em'
+            algorithm, convergence is achieved when the optimization to find
+            lambda, chi and psi (by maximizing Q2) successfully converges + the
+            log-likelihood for the current run is our greatest observation +
+            the change in log-likelihood over a given window length of runs
+            is <= tol.
+            For 'low-dim mle', this is the tol argument to pass to the
+            differential evolution non-convex solver.
+            Default value is 0.5 for 'low-dim mle' and 0.1 for 'em'.
+        show_progress: bool
+            When fitting to data only.
+            True to display the progress of the optimization algorithm.
+            Default value is False.
+
+        min_eig: Union[None, float, int]
+            When fitting to data only.
+            Available for the 'low-dim mle' algorithm.
+            The delta / smallest positive eigenvalue to allow when enforcing
+            positive definiteness via Rousseeuw and Molenberghs' technique.
+            If None, the smallest eigenvalue of the sample covariance matrix is
+            used.
+            Default value is None.
+
+        min_retries: int
+            When fitting to data only.
+            Available for the 'em' algorithm.
+            The minimum number of times to re-run the EM algorithm if
+            convergence is not achieved. If params0 are given, each retry will
+            continue to use this as a starting point. If params0 not given, a
+            new set of random values for each parameter will be generated
+            before each run.
+            Default value is 0.
+        max_retries: int
+            When fitting to data only.
+            Available for the 'em' algorithm.
+            The maximum number of times to re-run the EM algorithm if
+            convergence is not achieved. If params0 are given, each retry will
+            continue to use this as a starting point. If params0 not given, a
+            new set of random values for each parameter will be generated
+            before each run.
+            Default value is 3.
+        miniter: int
+            When fitting to data only.
+            Available for the 'em' algorithm.
+            The minimum number of iterations to perform for each EM run,
+            regardless of whether convergence has been achieved.
+            Default value is 10.
+        h: float
+            When fitting to data only.
+            Available for the 'em' algorithm.
+            The h parameter to use in numerical differentiation.
+            Default value is 10 ** -5.
+        q2_options: dict
+            When fitting to data only.
+            Available for the 'em' algorithm.
+            A dictionary of keyword arguments to pass to scipy's
+            differential_evolution non-convex solver, when maximising Q2.
+        randomness_var: float
+            When fitting to data only.
+            Available for the 'em' algorithm.
+            A scalar value of the variance of random noise to add to
+            parameters.
+            Default value is 0.1.
+        convergence_window_length: int
+            When fitting to data only.
+            Available for the 'em' algorithm.
+            The window length to use when determining convergence. Convergence
+            is achieved when the optimization to find lambda, chi and psi
+            (by maximizing Q2) successfully converges + the log-likelihood for
+            the current run is our greatest observation + the change in
+            log-likelihood over a given window length of runs is <= tol.
+            Default value is 5.
+
+        Returns
+        --------
+        fitted_multivariate: FittedContinuousMultivariate
+            A fitted distribution.
+        """
+        return super().fit(data=data, params=params, method=method, **kwargs)
