@@ -67,14 +67,17 @@ class archimedean_copula_base_gen(PreFitCopula):
         maxiter: int
             When fitting to data only.
             Available for 'mle' algorithm.
-            The maximum number of iterations an optimisation algorithm is
-            allowed to perform.
+            The maximum number of iterations to perform by the differential
+            evolution solver.
             Default value is 1000.
         tol: float
             When fitting to data only.
             Available for 'mle' algorithm.
             The tolerance to use when determing convergence.
             Default value is 0.5.
+        params0: Union[Params, tuple]
+            An initial estimate of the parameters to use when starting the
+            optimization algorithm.
         """
         return super().fit(data=data, copula_params=copula_params,
                            mdists=mdists, **kwargs)
