@@ -58,3 +58,5 @@ class gaussian_kde_copula_gen(PreFitCopula):
             weights of datapoints.
             See scipy.stats.gaussian_kde for options.
         """
+        return super().fit(data=data, copula_params=copula_params,
+                           mdists=mdists, **kwargs)
