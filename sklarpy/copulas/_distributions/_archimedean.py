@@ -76,8 +76,8 @@ class archimedean_copula_base_gen(PreFitCopula):
             The tolerance to use when determing convergence.
             Default value is 0.5.
         """
-        super().fit(data=data, copula_params=copula_params, mdists=mdists,
-                    **kwargs)
+        return super().fit(data=data, copula_params=copula_params,
+                           mdists=mdists, **kwargs)
 
 
 class clayton_copula_gen(archimedean_copula_base_gen):
