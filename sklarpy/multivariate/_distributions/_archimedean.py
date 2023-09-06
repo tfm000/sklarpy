@@ -179,10 +179,10 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
         default_bounds: dict = {'theta': theta_bounds}
         return super()._get_bounds(default_bounds, d, as_tuple, **kwargs)
 
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple,
-                            copula: bool) -> np.ndarray:
+    def _get_params0(self, data: np.ndarray, bounds: tuple, copula: bool,
+                     **kwargs) -> tuple:
         theta0: float = np.random.uniform(*bounds[0])
-        return np.array([theta0], dtype=float)
+        return theta0, data.shape[1]
 
     def _low_dim_theta_to_params(self, theta: np.ndarray, d: int) -> tuple:
         return theta[0], d
@@ -271,8 +271,9 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
             An array of multivariate data to optimize parameters over using
             the low dimension Maximum Likelihood Estimation (low-dim MLE)
             algorithm.
-        theta0: np.ndarray
-            An initial estimate of theta.
+        params0: np.ndarray
+            An initial estimate of the parameters to use when starting the
+            optimization algorithm.
         bounds: tuple
             The bounds to use in parameter fitting / optimization, as a tuple.
         maxiter: int
@@ -348,14 +349,17 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
         maxiter: int
             When fitting to data only.
             Available for 'mle' algorithm.
-            The maximum number of iterations an optimisation algorithm is
-            allowed to perform.
+            The maximum number of iterations to perform by the differential
+            evolution solver.
             Default value is 1000.
         tol: float
             When fitting to data only.
             Available for 'mle' algorithm.
-            The tolerance to use when determing convergence.
+            The tolerance to use when determining convergence.
             Default value is 0.5.
+        params0: Union[Params, tuple]
+            An initial estimate of the parameters to use when starting the
+            optimization algorithm.
 
         Returns
         --------
