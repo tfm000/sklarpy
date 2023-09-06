@@ -379,7 +379,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         x_bar: np.ndarray = data.mean(axis=0, dtype=float)
 
         if params0 is not None:
-            # if theta0 fixed, function outcome ~ deterministic between runs
+            # if params0 fixed, function outcome ~ deterministic between runs
             max_retries = 1
 
         # initializing run
@@ -389,16 +389,11 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             deque(), deque(), deque())
         while rerun:
             # getting initial starting parameters
-            if params0 is None:
-                # generating new theta 0
-                theta0: np.ndarray = self._get_low_dim_theta0(
-                    data=data, bounds=bounds, copula=copula)
-                p0: tuple = self._get_params(
-                    params=self._low_dim_theta_to_params(
-                        theta=theta0, S=shape0, S_det=S_det,
-                        min_eig=min_eig, copula=copula))
-            else:
-                p0: np.ndarray = params0.copy()
+            p0: tuple = self._get_params(
+                self._get_params0(
+                    data=data, bounds=bounds, copula=copula, **kwargs)
+                if params0 is None else params0
+            )
 
             # doing a single expectation-maximisation run
             params, success, k, loglikelihood = self._em_single_run(
@@ -786,19 +781,36 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
                                 'gamma': data_extremes}
         return super()._get_bounds(default_bounds, d, as_tuple, **kwargs)
 
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple, copula: bool
-                            ) -> np.ndarray:
+    def _get_params0(self, data: np.ndarray, bounds: tuple,
+                     copula: bool, **kwargs) -> tuple:
+
+        # getting theta0
         d: int = data.shape[1]
         lamb0: float = np.random.uniform(*bounds[0])
         chi0: float = np.random.uniform(*bounds[1])
         psi0: float = np.random.uniform(*bounds[2])
         gamma0: np.ndarray = np.zeros((d,), dtype=float)
-        if not copula:
+        if copula:
+            theta0: np.ndarray = np.array([lamb0, chi0, psi0, *gamma0],
+                                          dtype=float)
+        else:
             loc0: np.ndarray = data.mean(axis=0, dtype=float).flatten()
-            return np.array([lamb0, chi0, psi0, *loc0, *gamma0], dtype=float)
-        return np.array([lamb0, chi0, psi0, *gamma0], dtype=float)
+            theta0: np.ndarray = np.array([lamb0, chi0, psi0, *loc0, *gamma0],
+                                          dtype=float)
 
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray,
+        # converting to params0
+        S, S_det, min_eig, copula = super(
+        )._get_low_dim_mle_objective_func_args(
+            data=data, copula=copula,
+            cov_method=kwargs.get('cov_method', 'pp_kendall'),
+            min_eig=None)
+
+        # converting to params0
+        return multivariate_gen_hyperbolic_gen._low_dim_theta_to_params(
+            theta=theta0, copula=copula, S=S, S_det=S_det, min_eig=min_eig)
+
+    @staticmethod
+    def _low_dim_theta_to_params(theta: np.ndarray, S: np.ndarray,
                                  S_det: float, min_eig: float, copula: bool
                                  ) -> tuple:
         d: int = S.shape[0]
@@ -813,8 +825,8 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             loc = loc.reshape((d, 1))
 
             # calculating implied shape parameter
-            exp_w: float = self._exp_w(theta[: 3])
-            var_w: float = self._var_w(theta[: 3])
+            exp_w: float = multivariate_gen_hyperbolic_gen._exp_w(theta[: 3])
+            var_w: float = multivariate_gen_hyperbolic_gen._var_w(theta[: 3])
             omega: np.ndarray = (S - var_w * gamma @ gamma.T) / exp_w
 
             # ensuring pd
@@ -826,6 +838,14 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             loc: np.ndarray = np.zeros((d, 1), dtype=float)
             shape: np.ndarray = S
         return lamb, chi, psi, loc, shape, gamma
+
+    def _params_to_low_dim_theta(self, params: tuple, copula: bool
+                                 ) -> np.ndarray:
+        if copula:
+            return np.array([*params[:3], *params[-1].flatten()], dtype=float)
+        return np.array([
+            *params[:3], *params[3].flatten(), *params[-1].flatten()
+        ], dtype=float)
 
     def _fit_given_data_kwargs(self, method: str, data: np.ndarray,
                                **user_kwargs) -> dict:

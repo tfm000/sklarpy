@@ -41,8 +41,8 @@ class multivariate_hyperbolic_base_gen(multivariate_gen_hyperbolic_gen):
         # removing lambda from bounds
         return self._remove_bounds(bounds_dict, ['lamb'], data.shape[1], as_tuple)
 
-    def _add_randomness(self, params: tuple, bounds: tuple, d: int, randomness_var: float, copula) -> tuple:
-        adj_params: tuple = super()._add_randomness(params, bounds, d, randomness_var, copula)
+    def _add_randomness(self, params: tuple, bounds: tuple, d: int, randomness_var: float, copula: bool) -> tuple:
+        adj_params: tuple = super()._add_randomness(params=params, bounds=bounds, d=d, randomness_var=randomness_var, copula=copula)
         return self._get_params(adj_params, check_params=False)
 
     def _neg_q2(self, w_params: np.ndarray, etas: np.ndarray, deltas: np.ndarray, zetas: np.ndarray) -> float:
@@ -56,18 +56,31 @@ class multivariate_hyperbolic_base_gen(multivariate_gen_hyperbolic_gen):
     def _gh_to_params(self, params: tuple) -> tuple:
         return params[1:]
 
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple, copula: bool) -> np.ndarray:
+    def _get_params0(self, data: np.ndarray, bounds: tuple,
+                            copula: bool, **kwargs) -> tuple:
+        # modifying bounds to fit those of the Generalized Hyperbolic
         d: int = (len(bounds) - 2) / 2 if self._ASYMMETRIC else len(bounds) - 2
         d = int(d)
         self._init_lamb(d)
         bounds = ((self._lamb, self._lamb), *bounds)
-        theta0: np.ndarray = super()._get_low_dim_theta0(data=data, bounds=bounds, copula=copula)
-        return theta0[1:]
+
+        params0: tuple = super()._get_params0(data=data, bounds=bounds,
+                                             copula=copula, **kwargs)
+
+        return self._gh_to_params(params0)
 
     def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float, min_eig: float, copula: bool) -> tuple:
         theta = np.array([self._lamb, *theta], dtype=float)
         params: tuple = super()._low_dim_theta_to_params(theta=theta, S=S, S_det=S_det, min_eig=min_eig, copula=copula)
-        return params[1:]
+        return self._gh_to_params(params)
+
+    def _params_to_low_dim_theta(self, params: tuple, copula: bool
+                                 ) -> np.ndarray:
+        params: tuple = self._gh_to_params(params)
+        if copula:
+            return np.array([*params[:2], *params[-1].flatten()], dtype=float)
+        return np.array([*params[:2], *params[2].flatten(),
+                         *params[-1].flatten()], dtype=float)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
         self._check_params(params, **kwargs)

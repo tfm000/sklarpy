@@ -1266,7 +1266,6 @@ class PreFitContinuousMultivariate(NotImplementedBase):
                 bounds_dict.pop(bound)
         return self._bounds_dict_to_tuple(bounds_dict, d, as_tuple)
 
-    @abstractmethod
     def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray,
                                  S_det: float, min_eig: float, copula: bool) \
             -> tuple:
@@ -1281,6 +1280,24 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         --------
         params_tuple: tuple
             The parameters which define the multivariate model, in tuple form.
+        """
+
+    def _params_to_low_dim_theta(self, params: tuple, copula: bool
+                                 ) -> np.ndarray:
+        """Converts parameters into a theta numpy array for use in low-dim mle
+        optimization.
+
+        Parameters
+        ----------
+        params : tuple
+            The parameters which define the multivariate model, in tuple form.
+        copula: bool
+            True if the distribution is a copula distribution. False otherwise.
+
+        Returns
+        -------
+        theta : np.ndarray
+            theta array containing parameter info.
         """
 
     def _low_dim_mle_objective_func(self, theta: np.ndarray, data, *args) \
@@ -1307,10 +1324,9 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         params: tuple = self._low_dim_theta_to_params(theta, *args)
         return - self.loglikelihood(data, params, definiteness=None)
 
-    @abstractmethod
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple,
-                            copula: bool) -> np.ndarray:
-        """Generates an initial estimate of theta to use in low-dimensional MLE
+    def _get_params0(self, data: np.ndarray, bounds: tuple,
+                            copula: bool, **kwargs) -> tuple:
+        """Generates an initial estimate of parameters to use in optimization,
         which satisfies any bounding constraints.
 
         Parameters
@@ -1326,8 +1342,8 @@ class PreFitContinuousMultivariate(NotImplementedBase):
 
         Returns
         -------
-        theta0: np.ndarray
-            An initial estimate of theta.
+        params0: np.ndarray
+            An initial estimate of the parameters.
         """
 
     def _get_low_dim_mle_objective_func_args(self, data: np.ndarray,
@@ -1358,7 +1374,7 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             min_eig: float = eigenvalues.min()
         return S, S_det, min_eig, copula
 
-    def _low_dim_mle(self, data: np.ndarray, theta0: np.ndarray, copula: bool,
+    def _low_dim_mle(self, data: np.ndarray, params0: tuple, copula: bool,
                      bounds: tuple, maxiter: int, tol: float, cov_method: str,
                      min_eig: Union[float, None], show_progress: bool,
                      **kwargs) -> Tuple[tuple, bool]:
@@ -1387,8 +1403,8 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             An array of multivariate data to optimize parameters over using
             the low dimension Maximum Likelihood Estimation (low-dim MLE)
             algorithm.
-        theta0: np.ndarray
-            An initial estimate of theta.
+        params0: np.ndarray
+            An initial estimate of the parameters.
         copula: bool
             True if the distribution is a copula distribution. False otherwise.
         bounds: tuple
@@ -1412,6 +1428,10 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             The parameters optimized to fit the data,
             True if convergence was successful false otherwise.
         """
+        # getting theta0
+        theta0: np.ndarray = self._params_to_low_dim_theta(params=params0,
+                                                           copula=copula)
+
         # getting args to pass to optimizer
         args: tuple = self._get_low_dim_mle_objective_func_args(
             data, copula=copula, cov_method=cov_method,
@@ -1454,10 +1474,10 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         """
         if method == 'low_dim_mle':
             bounds: tuple = self._get_bounds(data, True, **user_kwargs)
-            default_theta0: np.ndarray = self._get_low_dim_theta0(
-                data, bounds, user_kwargs.get('copula', False)
-            )
-            kwargs: dict = {'theta0': default_theta0, 'copula': False,
+            copula: bool = user_kwargs.pop('copula', False)
+            default_params0: tuple = self._get_params0(
+                data=data, bounds=bounds, copula=copula, **user_kwargs)
+            kwargs: dict = {'params0': default_params0, 'copula': copula,
                             'bounds': bounds, 'maxiter': 1000, 'tol': 0.5,
                             'cov_method': 'pp_kendall', 'min_eig': None,
                             'show_progress': False}
@@ -1507,6 +1527,10 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         for kwarg in kwargs_to_skip:
             if kwarg in default_kwargs:
                 kwargs[kwarg] = default_kwargs[kwarg]
+
+        # converting potential params objects into tuples
+        if 'params0' in kwargs and kwargs['params0'] is not None:
+            kwargs['params0'] = self._get_params(kwargs['params0'])
 
         # fitting to data
         return data_fit_func(data=data, **kwargs)

@@ -123,15 +123,26 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
     def _gh_to_params(self, params: tuple) -> tuple:
         return params[1], *params[3:]
 
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple, copula: bool=False) -> np.ndarray:
+    def _get_params0(self, data: np.ndarray, bounds: tuple, copula: bool, **kwargs) -> tuple:
+        # getting theta0
         d: int = data.shape[1]
         dof0: float = np.random.uniform(*bounds[0])
         data_stds: np.ndarray = data.std(axis=0, dtype=float)
         gamma0: np.ndarray = np.random.normal(scale=data_stds, size=(d,))
         if not copula:
             loc0: np.ndarray = data.mean(axis=0, dtype=float).flatten()
-            return np.array([dof0, *loc0, *gamma0], dtype=float)
-        return np.array([dof0, *gamma0], dtype=float)
+            theta0: np.ndarray = np.array([dof0, *loc0, *gamma0], dtype=float)
+        else:
+            theta0: np.ndarray = np.array([dof0, *gamma0], dtype=float)
+
+        # converting to params0
+        S, S_det, min_eig, copula = super(
+        )._get_low_dim_mle_objective_func_args(
+            data=data, copula=copula,
+            cov_method=kwargs.get('cov_method', 'pp_kendall'), min_eig=None)
+
+        return self._low_dim_theta_to_params(theta=theta0, S=S, S_det=S_det,
+                                             min_eig=min_eig, copula=copula)
 
     @staticmethod
     def _exp_w(params: tuple) -> float:
@@ -143,11 +154,19 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
         alpha_beta: float = params[1] / 2
         return (alpha_beta ** 2) / (((alpha_beta - 1)**2) * (alpha_beta-2))
 
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float, min_eig: float, copula: bool = False) -> tuple:
+    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float, min_eig: float, copula: bool) -> tuple:
         dof: float = theta[0]
         theta = np.array([-dof/2, dof, 0.0, *theta[1:]], dtype=float)
         _, dof, _, loc, shape, gamma = super()._low_dim_theta_to_params(theta=theta, S=S, S_det=S_det, min_eig=min_eig, copula=copula)
         return dof, loc, shape, gamma
+
+    def _params_to_low_dim_theta(self, params: tuple, copula: bool
+                                 ) -> np.ndarray:
+        params: tuple = self._gh_to_params(params)
+        if copula:
+            return np.array([params[0], *params[-1].flatten()], dtype=float)
+        return np.array([params[0], *params[1].flatten(),
+                         *params[-1].flatten()], dtype=float)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
         self._check_params(params, **kwargs)

@@ -48,6 +48,15 @@ class multivariate_sym_hyperbolic_base_gen(multivariate_hyperbolic_base_gen):
         d: int = data.shape[1]
         return theta0[:-d]
 
+    def _get_params0(self, data: np.ndarray, bounds: tuple,
+                            copula: bool, **kwargs) -> tuple:
+        # modifying bounds to fit those of the non-symmetric hyperbolics
+        d: int = data.shape[1]
+        bounds = (*bounds, *((0, 0) for i in range(d)))
+
+        return super()._get_params0(data=data, bounds=bounds, copula=copula,
+                                    **kwargs)
+
     def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float, min_eig: float, copula: bool) -> tuple:
         d: int = S.shape[0]
 
@@ -66,6 +75,13 @@ class multivariate_sym_hyperbolic_base_gen(multivariate_hyperbolic_base_gen):
             shape: np.ndarray = S
 
         return chi, psi, loc, shape
+
+    def _params_to_low_dim_theta(self, params: tuple, copula: bool
+                                 ) -> np.ndarray:
+        params: tuple = self._gh_to_params(params)
+        if copula:
+            return np.array([*params[:2]], dtype=float)
+        return np.array([*params[:2], *params[2].flatten()], dtype=float)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
         self._check_params(params, **kwargs)
