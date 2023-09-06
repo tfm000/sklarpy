@@ -13,7 +13,7 @@ __all__ = ['multivariate_normal_gen']
 
 
 class multivariate_normal_gen(PreFitContinuousMultivariate):
-    _DATA_FIT_METHODS = (*PreFitContinuousMultivariate._DATA_FIT_METHODS, 'mle')
+    _DATA_FIT_METHODS = ('mle', )
 
     def _check_params(self, params: tuple, **kwargs) -> None:
         # checking correct number of params passed
@@ -47,15 +47,6 @@ class multivariate_normal_gen(PreFitContinuousMultivariate):
             loc: np.ndarray = data.mean(axis=0, dtype=float)
             shape: np.ndarray = CorrelationMatrix(data).cov(method=cov_method, **kwargs)
         return (loc, shape), True
-
-    def _low_dim_theta_to_params(self, **kwargs) -> tuple:
-        pass
-
-    def _get_low_dim_theta0(self, **kwargs) -> np.ndarray:
-        pass
-
-    def _low_dim_mle(self, data: np.ndarray, cov_method: str, copula: bool, **kwargs) -> Tuple[tuple, bool]:
-        return self._mle(data=data, cov_method=cov_method, copula=copula, **kwargs)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
         self._check_params(params, **kwargs)
