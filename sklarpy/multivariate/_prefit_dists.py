@@ -19,7 +19,7 @@ __all__ = ['PreFitContinuousMultivariate']
 
 class PreFitContinuousMultivariate(NotImplementedBase):
     """A pre-fit continuous multivariate model"""
-    _DATA_FIT_METHODS: Tuple[str] = ('low_dim_mle', )
+    _DATA_FIT_METHODS: Tuple[str] = ('mle', )
 
     def __init__(self, name: str, params_obj: Params, num_params: int,
                  max_num_variables: int):
@@ -1266,7 +1266,6 @@ class PreFitContinuousMultivariate(NotImplementedBase):
                 bounds_dict.pop(bound)
         return self._bounds_dict_to_tuple(bounds_dict, d, as_tuple)
 
-    ###########################################################################
     def _theta_to_params(self, theta: np.ndarray, **kwargs) -> tuple:
         """Converts an array of optimizer outputs into distribution parameters.
 
@@ -1348,12 +1347,16 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         """Performs Maximum Likelihood Estimation (MLE) to fit / estimate the
         parameters of the distribution from the data.
 
+        We reduce the dimension of the problem when possible.
+
+        We use scipy's implementation of differential evolution as our
+        non-convex solver.
+
         Parameters
         ----------
         data: np.ndarray
             An array of multivariate data to optimize parameters over using
-            the low dimension Maximum Likelihood Estimation (low-dim MLE)
-            algorithm.
+            Maximum Likelihood Estimation (MLE).
         params0: np.ndarray
             An initial estimate of the parameters to use when starting the
             optimization algorithm.
@@ -1402,66 +1405,6 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             print(f"MLE Optimisation Complete. Converged= {converged}"
                   f", f(x)= {mle_res['fun']}")
         return params, converged
-    ###########################################################################
-
-
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray,
-                                 S_det: float, min_eig: float, copula: bool) \
-            -> tuple:
-        """Converts an array of optimizer outputs into distribution parameters.
-
-        Parameters
-        -----------
-        theta: np.ndarray
-            An array of scalar values representing the distribution parameters.
-
-        Returns
-        --------
-        params_tuple: tuple
-            The parameters which define the multivariate model, in tuple form.
-        """
-
-    def _params_to_low_dim_theta(self, params: tuple, copula: bool
-                                 ) -> np.ndarray:
-        """Converts parameters into a theta numpy array for use in low-dim mle
-        optimization.
-
-        Parameters
-        ----------
-        params : tuple
-            The parameters which define the multivariate model, in tuple form.
-        copula: bool
-            True if the distribution is a copula distribution. False otherwise.
-
-        Returns
-        -------
-        theta : np.ndarray
-            theta array containing parameter info.
-        """
-
-    def _low_dim_mle_objective_func(self, theta: np.ndarray, data, *args) \
-            -> float:
-        """The objective function to optimize using the low dimension Maximum
-        Likelihood Estimation (low-dim MLE) algorithm.
-
-        Parameters
-        -----------
-        theta: np.ndarray
-            An array of scalar values representing the distribution parameters.
-            Can be transformed into a params tuple using
-            _low_dim_theta_to_params
-        data: np.ndarray
-            An array of multivariate data to optimize parameters over using
-            the low dimension Maximum Likelihood Estimation (low-dim MLE)
-            algorithm.
-
-        Returns
-        -------
-        neg_loglikelihood: float
-            The negative log-likelihood value associated with the theta array.
-        """
-        params: tuple = self._low_dim_theta_to_params(theta, *args)
-        return - self.loglikelihood(data, params, definiteness=None)
 
     def _get_params0(self, data: np.ndarray, bounds: tuple, **kwargs) -> tuple:
         """Generates an initial estimate of parameters to use in optimization,
@@ -1470,157 +1413,17 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         Parameters
         ----------
         data: np.ndarray
-            An array of multivariate data to optimize parameters over using
-            the low dimension Maximum Likelihood Estimation (low-dim MLE)
-            algorithm.
+            An array of multivariate data to optimize parameters over.
         bounds: tuple
             The bounds to use in parameter fitting / optimization, as a tuple.
+        kwargs:
+            Model specific keyword arguments.
 
         Returns
         -------
         params0: np.ndarray
             An initial estimate of the parameters.
         """
-
-    def _get_low_dim_mle_objective_func_args(self, data: np.ndarray,
-                                             copula: bool, cov_method: str,
-                                             min_eig: float, **kwargs) \
-            -> tuple:
-        """Returns any additional arguments (besides theta and data) required
-        for the low-dim mle objective function.
-
-        Parameters
-        ----------
-        data: np.ndarray
-            An array of multivariate data to optimize parameters over using
-            the low dimension Maximum Likelihood Estimation (low-dim MLE)
-            algorithm.
-
-        Returns
-        -------
-        args: tuple
-            Additional arguments required for the low-dim mle objective
-            function.
-        """
-        S: np.ndarray = CorrelationMatrix(data).corr(method=cov_method) \
-            if copula else CorrelationMatrix(data).cov(method=cov_method)
-        S_det: float = np.linalg.det(S)
-        if min_eig is None:
-            eigenvalues: np.ndarray = np.linalg.eigvals(S)
-            min_eig: float = eigenvalues.min()
-        return S, S_det, min_eig, copula
-
-    def _low_dim_mle(self, data: np.ndarray, params0: tuple, copula: bool,
-                     bounds: tuple, maxiter: int, tol: float, cov_method: str,
-                     min_eig: Union[float, None], show_progress: bool,
-                     **kwargs) -> Tuple[tuple, bool]:
-        """Performs low-dim MLE to fit / estimate the parameters of the
-        distribution from the data.
-
-        Low-dim MLE works when we have a relationship between the shape matrix
-        and the sample covariance matrix, such is the case for all
-        Normal-Mixture distributions. In these situations, we can estimate the
-        sample covariance matrix separately and then remove the shape matrix
-        from the optimization problem, as it can be derived from an equation
-        of the sample covariance matrix and the remaining parameters. This
-        makes estimation of parameters in high dimensions more tractable.
-
-        We use scipy's implementation of differential evolution as our
-        non-convex solver.
-
-        See also
-        --------
-        scipy.optimize.differential_evolution
-        CorrelationMatrix.cov
-
-        Parameters
-        ----------
-        data: np.ndarray
-            An array of multivariate data to optimize parameters over using
-            the low dimension Maximum Likelihood Estimation (low-dim MLE)
-            algorithm.
-        params0: np.ndarray
-            An initial estimate of the parameters to use when starting the
-            optimization algorithm.
-        copula: bool
-            True if the distribution is a copula distribution. False otherwise.
-        bounds: tuple
-            The bounds to use in parameter fitting / optimization, as a tuple.
-        maxiter: int
-            The maximum number of iterations to perform by the differential
-            evolution solver.
-        tol: float
-            The tolerance to use when determining convergence, by the
-            differential evolution solver.
-        cov_method: str
-            The method to use when estimating the sample covariance matrix.
-            See CorrelationMatrix.cov for more information.
-        min_eig: Union[int, float]
-            The delta / smallest positive eigenvalue to allow when enforcing
-            positive definiteness via Rousseeuw and Molenberghs' technique.
-
-        Returns
-        -------
-        res: Tuple[tuple, bool]
-            The parameters optimized to fit the data,
-            True if convergence was successful false otherwise.
-        """
-        # getting theta0
-        theta0: np.ndarray = self._params_to_low_dim_theta(params=params0,
-                                                           copula=copula)
-
-        # getting args to pass to optimizer
-        args: tuple = self._get_low_dim_mle_objective_func_args(
-            data, copula=copula, cov_method=cov_method,
-            min_eig=min_eig, **kwargs)
-
-        # running optimization
-        mle_res = differential_evolution(
-            self._low_dim_mle_objective_func, bounds, args=(data, *args),
-            maxiter=maxiter, tol=tol, x0=theta0, disp=show_progress)
-        theta: np.ndarray = mle_res['x']
-        params: tuple = self._low_dim_theta_to_params(theta, *args)
-        converged: bool = mle_res['success']
-
-        if show_progress:
-            print(f"Low-Dim MLE Optimisation Complete. Converged= {converged}"
-                  f", f(x)= {mle_res['fun']}")
-        return params, converged
-
-    # @abstractmethod
-    # def _fit_given_data_kwargs(self, method: str, data: np.ndarray,
-    #                            **user_kwargs) -> dict:
-    #     """Returns the user specified kwargs, combined with any required
-    #     default arguments.
-    #
-    #     Parameters
-    #     ----------
-    #     method : str
-    #         The optimization method to use when fitting the distribution to
-    #         the observed data.
-    #     data : np.ndarray
-    #         The multivariate dataset to fit the distribution's parameters too.
-    #     user_kwargs:
-    #         Method specific optional arguments.
-    #
-    #     Returns
-    #     -------
-    #     kwargs : dict
-    #         User specified kwargs, combined with any required default
-    #         arguments.
-    #     """
-    #     if method == 'low_dim_mle':
-    #         bounds: tuple = self._get_bounds(data, True, **user_kwargs)
-    #         copula: bool = user_kwargs.pop('copula', False)
-    #         default_params0: tuple = self._get_params0(
-    #             data=data, bounds=bounds, copula=copula, **user_kwargs)
-    #         kwargs: dict = {'params0': default_params0, 'copula': copula,
-    #                         'bounds': bounds, 'maxiter': 1000, 'tol': 0.5,
-    #                         'cov_method': 'pp_kendall', 'min_eig': None,
-    #                         'show_progress': False}
-    #     else:
-    #         raise ValueError(f'{method} is not a valid method.')
-    #     return kwargs
 
     @abstractmethod
     def _fit_given_data_kwargs(self, method: str, data: np.ndarray,
@@ -1721,7 +1524,7 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             raise ValueError("Incorrect number of params given by user")
 
     def fit(self, data: Union[pd.DataFrame, np.ndarray] = None,
-            params: Union[Params, tuple] = None, method: str = 'low-dim mle',
+            params: Union[Params, tuple] = None, method: str = 'mle',
             **kwargs) -> FittedContinuousMultivariate:
         """Call to fit parameters to a given dataset or to fit the
         distribution object to a set of specified parameters.
@@ -1749,7 +1552,7 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         cov_method: str
             When fitting to data only.
             The method to use when fitting a covariance matrix to the observed data.
-            The covariance matrix is required in mle, low-dim mle and em algorithms for all non-archimedean distributions.
+            The covariance matrix is required in mle and em algorithms for all non-archimedean distributions.
             See SklarPy's CorrelationMatrix documentation for more information on implemented methods.
             Default is `laloux_pp_kendall`.
         bounds: dict
@@ -1870,4 +1673,3 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         return FittedContinuousMultivariate(self, fit_info)
 
 # TODO: remove kwargs from fit and put them into specific dists
-# TODO: allow user to pass params0 for low dim mle

@@ -275,9 +275,9 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
     def _em(self, data: np.ndarray, min_retries: int, max_retries: int,
             copula: bool, bounds: tuple, params0: Union[tuple, None],
             cov_method: str, miniter: int, maxiter: int, h: float, tol: float,
-            q2_options: dict, randomness_var: float,
-            convergence_window_length: int, show_progress: bool, **kwargs) \
-            -> Tuple[tuple, bool]:
+            min_eig: Union[float, None], q2_options: dict,
+            randomness_var: float, convergence_window_length: int,
+            show_progress: bool, **kwargs) -> Tuple[tuple, bool]:
         """Performs a modified version of the Expectation-Maximization (EM)
         algorithm outlined by McNeil, Frey and Embrechts.
 
@@ -329,6 +329,9 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             log-likelihood for the current run is our greatest observation +
             the change in log-likelihood over a given window length of runs
             is <= tol.
+        min_eig: Union[float, None]
+            The delta / smallest positive eigenvalue to allow when enforcing
+            positive definiteness via Rousseeuw and Molenberghs' technique.
         q2_options: dict
             A dictionary of keyword arguments to pass to scipy's
             differential_evolution non-convex solver, when maximising Q2.
@@ -377,7 +380,8 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         S_det: float = shape0_eigenvalues.prod()
 
         # other constants
-        min_eig: float = shape0_eigenvalues.min()  # used to shape matrix pd
+        min_eig: float = shape0_eigenvalues.min()  if min_eig is None \
+            else min_eig  # used to shape matrix pd
         x_bar: np.ndarray = data.mean(axis=0, dtype=float)
 
         if params0 is not None:
@@ -393,9 +397,9 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             # getting initial starting parameters
             p0: tuple = self._get_params(
                 self._get_params0(
-                    data=data, bounds=bounds, copula=copula, **kwargs)
-                if params0 is None else params0
-            )
+                    data=data, bounds=bounds, copula=copula,
+                    cov_method=cov_method, min_eig=min_eig, **kwargs)
+                if params0 is None else params0)
 
             # doing a single expectation-maximisation run
             params, success, k, loglikelihood = self._em_single_run(
@@ -781,7 +785,6 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
                                 'psi': (0.01, 10.0), 'gamma': data_extremes}
         return super()._get_bounds(default_bounds, d, as_tuple, **kwargs)
 
-    ###########################################################################
     def _theta_to_params(self, theta: np.ndarray, mean: np.ndarray,
                          S: np.ndarray, S_det: float, min_eig: float,
                          copula: bool, **kwargs) -> tuple:
@@ -844,45 +847,6 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             data=data, cov_method=cov_method, min_eig=min_eig,
             copula=copula, **kwargs)
         return self._theta_to_params(theta0, **mle_kwargs)
-    ###########################################################################
-
-    @staticmethod
-    def _low_dim_theta_to_params(theta: np.ndarray, S: np.ndarray,
-                                 S_det: float, min_eig: float, copula: bool
-                                 ) -> tuple:
-        d: int = S.shape[0]
-
-        lamb, chi, psi = theta[:3]
-        gamma: np.ndarray = theta[-d:].copy()
-        gamma = gamma.reshape((d, 1))
-
-        if not copula:
-            # getting location vector from theta
-            loc: np.ndarray = theta[3: d + 3].copy()
-            loc = loc.reshape((d, 1))
-
-            # calculating implied shape parameter
-            exp_w: float = multivariate_gen_hyperbolic_gen._exp_w(theta[: 3])
-            var_w: float = multivariate_gen_hyperbolic_gen._var_w(theta[: 3])
-            omega: np.ndarray = (S - var_w * gamma @ gamma.T) / exp_w
-
-            # ensuring pd
-            omega, _, eigenvalues = CorrelationMatrix._rm_pd(omega, min_eig)
-
-            # solving identifiability problem
-            shape: np.ndarray = omega * ((S_det / eigenvalues.prod()) ** (1/d))
-        else:
-            loc: np.ndarray = np.zeros((d, 1), dtype=float)
-            shape: np.ndarray = S
-        return lamb, chi, psi, loc, shape, gamma
-
-    def _params_to_low_dim_theta(self, params: tuple, copula: bool
-                                 ) -> np.ndarray:
-        if copula:
-            return np.array([*params[:3], *params[-1].flatten()], dtype=float)
-        return np.array([
-            *params[:3], *params[3].flatten(), *params[-1].flatten()
-        ], dtype=float)
 
     def _fit_given_data_kwargs(self, method: str, data: np.ndarray,
                                **user_kwargs) -> dict:
@@ -898,7 +862,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
                 'min_retries': 0, 'max_retries': 3, 'copula': False,
                 'bounds': bounds, 'params0': default_param0,
                 'cov_method': 'laloux_pp_kendall', 'miniter': 10,
-                'maxiter': 100, 'h': 10**-5, 'tol': 0.1,
+                'maxiter': 100, 'h': 10**-5, 'tol': 0.1, 'min_eig': None,
                 'q2_options': q2_options, 'randomness_var': 0.1,
                 'convergence_window_length': 5, 'show_progress': False}
         else:
@@ -922,8 +886,8 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
     def fit(self, data: Union[pd.DataFrame, np.ndarray] = None,
             params: Union[Params, tuple] = None, method: str = 'mle',
             **kwargs) -> FittedContinuousMultivariate:
-        """Call to fit parameters to a given dataset or to fit the
-         distribution object to a set of specified parameters.
+        """Call to fit parameters to a given dataset or to fit the distribution
+        object to a set of specified parameters.
 
         Parameters
         ----------
@@ -938,10 +902,10 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         method : str
             When fitting to data only.
             The method to use when fitting the distribution to the observed
-            data. Can be either 'low-dim mle' or 'em', corresponding to the
-            Low-Dimensional Maximum Likelihood Estimation and
-            Expectation-Maximization algorithms respectively.
-            Default is 'low-dim mle'.
+            data. Can be either 'mle' or 'em', corresponding to the Maximum
+            Likelihood Estimation and Expectation-Maximization algorithms
+            respectively.
+            Default is 'mle'.
         kwargs:
             See below.
 
@@ -963,12 +927,13 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             When fitting to data only.
             The method to use when estimating the sample covariance matrix.
             See CorrelationMatrix.cov for more information.
-            Default value is 'pp_kendall'.
+            Default value is 'pp_kendall' for 'mle' and 'laloux_pp_kendall'
+            for 'em'.
         maxiter: int
             When fitting to data only.
             The maximum number of iterations to perform by the optimization
             algorithm.
-            Default is 1000 for 'low-dim mle' and 100 for 'em'.
+            Default is 1000 for 'mle' and 100 for 'em'.
         tol: float
             When fitting to data only.
             The tolerance to use when determine convergence. For the 'em'
@@ -977,22 +942,20 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             log-likelihood for the current run is our greatest observation +
             the change in log-likelihood over a given window length of runs
             is <= tol.
-            For 'low-dim mle', this is the tol argument to pass to the
+            For 'mle', this is the tol argument to pass to the
             differential evolution non-convex solver.
-            Default value is 0.5 for 'low-dim mle' and 0.1 for 'em'.
-        show_progress: bool
-            When fitting to data only.
-            True to display the progress of the optimization algorithm.
-            Default value is False.
-
+            Default value is 0.5 for 'mle' and 0.1 for 'em'.
         min_eig: Union[None, float, int]
             When fitting to data only.
-            Available for the 'low-dim mle' algorithm.
             The delta / smallest positive eigenvalue to allow when enforcing
             positive definiteness via Rousseeuw and Molenberghs' technique.
             If None, the smallest eigenvalue of the sample covariance matrix is
             used.
             Default value is None.
+        show_progress: bool
+            When fitting to data only.
+            True to display the progress of the optimization algorithm.
+            Default value is False.
 
         min_retries: int
             When fitting to data only.
