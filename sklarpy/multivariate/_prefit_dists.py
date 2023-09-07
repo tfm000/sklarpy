@@ -1404,7 +1404,8 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             the low dimension Maximum Likelihood Estimation (low-dim MLE)
             algorithm.
         params0: np.ndarray
-            An initial estimate of the parameters.
+            An initial estimate of the parameters to use when starting the
+            optimization algorithm.
         copula: bool
             True if the distribution is a copula distribution. False otherwise.
         bounds: tuple
@@ -1575,6 +1576,7 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         Keyword arguments
         ------------------
         cov_method: str
+            When fitting to data only.
             The method to use when fitting a covariance matrix to the observed data.
             The covariance matrix is required in mle, low-dim mle and em algorithms for all non-archimedean distributions.
             See SklarPy's CorrelationMatrix documentation for more information on implemented methods.
@@ -1597,8 +1599,8 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             Default is False.
         maxiter: int
             When fitting to data only.
-            The maximum number of iterations an optimisation algorithm is allowed to perform.
-            Default value differs depending on the optimisation algorithm / method selected.
+            The maximum number of iterations an optimization algorithm is allowed to perform.
+            Default value differs depending on the optimization algorithm / method selected.
         h: float
             When fitting to data only.
             The h parameter to use in numerical differentiation in the 'em' algorithm.
@@ -1612,6 +1614,9 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             Used when optimising the q2 function using scipy's differential_evolution as a part of the 'em' algorithm.
             keys must be arg / kwarg names of differerntial_evolution algorithm and values their values.
             bounds of the 'lamb', 'chi' and 'psi' parameters must not be parsed here - see the 'bounds' kwarg for this.
+        params0: Union[Params, tuple]
+            An initial estimate of the parameters to use when starting the
+            optimization algorithm.
 
         Returns
         --------
