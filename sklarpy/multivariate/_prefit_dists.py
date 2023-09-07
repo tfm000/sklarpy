@@ -1266,6 +1266,145 @@ class PreFitContinuousMultivariate(NotImplementedBase):
                 bounds_dict.pop(bound)
         return self._bounds_dict_to_tuple(bounds_dict, d, as_tuple)
 
+    ###########################################################################
+    def _theta_to_params(self, theta: np.ndarray, **kwargs) -> tuple:
+        """Converts an array of optimizer outputs into distribution parameters.
+
+        Parameters
+        -----------
+        theta: np.ndarray
+            An array of scalar values representing the distribution parameters.
+        kwargs:
+            model specific keyword arguments.
+
+        Returns
+        --------
+        params_tuple: tuple
+            The parameters which define the multivariate model, in tuple form.
+        """
+
+    def _params_to_theta(self, params: tuple, **kwargs) -> np.ndarray:
+        """Converts parameters into a theta numpy array for use in
+        optimization.
+
+        Parameters
+        ----------
+        params : tuple
+            The parameters which define the multivariate model, in tuple form.
+        copula: bool
+            True if the distribution is a copula distribution. False otherwise.
+        kwargs:
+            model specific keyword arguments.
+
+        Returns
+        -------
+        theta : np.ndarray
+            theta array containing parameter info.
+        """
+
+    def _get_mle_objective_func_kwargs(self, data: np.ndarray, **kwargs,
+                                     ) -> dict:
+        """Returns any additional arguments (besides theta and data) required
+        for the mle objective function.
+
+        Parameters
+        ----------
+        data: np.ndarray
+            An array of multivariate data to optimize parameters over.
+        kwargs:
+            model specific keyword arguments.
+
+        Returns
+        -------
+        kwargs: dict
+            Additional arguments required for the mle objective function.
+        """
+
+    def _mle_objective_func(self, theta: np.ndarray, data: np.ndarray,
+                            kwargs: dict) -> float:
+        """The objective function to optimize when performing Maximum
+        Likelihood Estimation (MLE).
+
+        Parameters
+        ----------
+        theta: np.ndarray
+            An array of scalar values representing the distribution parameters.
+        data: np.ndarray
+            An array of multivariate data to optimize parameters over.
+        kwargs: dict
+            model specific keyword arguments, as a dictionary.
+
+        Returns
+        -------
+        neg_loglikelihood: float
+            The negative log-likelihood value associated with the theta array.
+        """
+        params: tuple = self._theta_to_params(theta=theta, **kwargs)
+        return -self.loglikelihood(data=data, params=params, definiteness=None)
+
+    def _mle(self, data: np.ndarray, params0: np.ndarray, bounds: tuple,
+             maxiter: int, tol: float, show_progress: bool, **kwargs
+             ) -> Tuple[tuple, bool]:
+        """Performs Maximum Likelihood Estimation (MLE) to fit / estimate the
+        parameters of the distribution from the data.
+
+        Parameters
+        ----------
+        data: np.ndarray
+            An array of multivariate data to optimize parameters over using
+            the low dimension Maximum Likelihood Estimation (low-dim MLE)
+            algorithm.
+        params0: np.ndarray
+            An initial estimate of the parameters to use when starting the
+            optimization algorithm.
+        bounds: tuple
+            The bounds to use in parameter fitting / optimization, as a tuple.
+        maxiter: int
+            The maximum number of iterations to perform by the differential
+            evolution solver.
+        tol: float
+            The tolerance to use when determining convergence, by the
+            differential evolution solver.
+        show_progress: bool
+            True to display the progress of the differential evolution
+            optimizer calculations.
+        kwargs:
+            Model specific keyword arguments.
+
+        See Also
+        --------
+        scipy.optimize.differential_evolution
+
+        Returns
+        -------
+        res: Tuple[tuple, bool]
+            The parameters optimized to fit the data,
+            True if convergence was successful false otherwise.
+        """
+        # getting theta0
+        theta0: np.ndarray = self._params_to_theta(params=params0, **kwargs)
+
+        # getting args to pass to the optimizer
+        mle_kwargs: dict = self._get_mle_objective_func_kwargs(data=data,
+                                                               **kwargs)
+
+        # running optimization
+        mle_res = differential_evolution(
+            self._mle_objective_func, bounds, args=(data, mle_kwargs),
+            maxiter=maxiter, tol=tol, x0=theta0, disp=show_progress)
+
+        # extracting params from results
+        theta: np.ndarray = mle_res['x']
+        params: tuple = self._theta_to_params(theta=theta, **mle_kwargs)
+        converged: bool = mle_res['success']
+
+        if show_progress:
+            print(f"MLE Optimisation Complete. Converged= {converged}"
+                  f", f(x)= {mle_res['fun']}")
+        return params, converged
+    ###########################################################################
+
+
     def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray,
                                  S_det: float, min_eig: float, copula: bool) \
             -> tuple:
@@ -1324,8 +1463,7 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         params: tuple = self._low_dim_theta_to_params(theta, *args)
         return - self.loglikelihood(data, params, definiteness=None)
 
-    def _get_params0(self, data: np.ndarray, bounds: tuple,
-                            copula: bool, **kwargs) -> tuple:
+    def _get_params0(self, data: np.ndarray, bounds: tuple, **kwargs) -> tuple:
         """Generates an initial estimate of parameters to use in optimization,
         which satisfies any bounding constraints.
 
@@ -1337,8 +1475,6 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             algorithm.
         bounds: tuple
             The bounds to use in parameter fitting / optimization, as a tuple.
-        copula: bool
-            True if the distribution is a copula distribution. False otherwise.
 
         Returns
         -------
@@ -1451,6 +1587,41 @@ class PreFitContinuousMultivariate(NotImplementedBase):
                   f", f(x)= {mle_res['fun']}")
         return params, converged
 
+    # @abstractmethod
+    # def _fit_given_data_kwargs(self, method: str, data: np.ndarray,
+    #                            **user_kwargs) -> dict:
+    #     """Returns the user specified kwargs, combined with any required
+    #     default arguments.
+    #
+    #     Parameters
+    #     ----------
+    #     method : str
+    #         The optimization method to use when fitting the distribution to
+    #         the observed data.
+    #     data : np.ndarray
+    #         The multivariate dataset to fit the distribution's parameters too.
+    #     user_kwargs:
+    #         Method specific optional arguments.
+    #
+    #     Returns
+    #     -------
+    #     kwargs : dict
+    #         User specified kwargs, combined with any required default
+    #         arguments.
+    #     """
+    #     if method == 'low_dim_mle':
+    #         bounds: tuple = self._get_bounds(data, True, **user_kwargs)
+    #         copula: bool = user_kwargs.pop('copula', False)
+    #         default_params0: tuple = self._get_params0(
+    #             data=data, bounds=bounds, copula=copula, **user_kwargs)
+    #         kwargs: dict = {'params0': default_params0, 'copula': copula,
+    #                         'bounds': bounds, 'maxiter': 1000, 'tol': 0.5,
+    #                         'cov_method': 'pp_kendall', 'min_eig': None,
+    #                         'show_progress': False}
+    #     else:
+    #         raise ValueError(f'{method} is not a valid method.')
+    #     return kwargs
+
     @abstractmethod
     def _fit_given_data_kwargs(self, method: str, data: np.ndarray,
                                **user_kwargs) -> dict:
@@ -1473,15 +1644,15 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             User specified kwargs, combined with any required default
             arguments.
         """
-        if method == 'low_dim_mle':
+        if method == 'mle':
             bounds: tuple = self._get_bounds(data, True, **user_kwargs)
             copula: bool = user_kwargs.pop('copula', False)
-            default_params0: tuple = self._get_params0(
-                data=data, bounds=bounds, copula=copula, **user_kwargs)
-            kwargs: dict = {'params0': default_params0, 'copula': copula,
-                            'bounds': bounds, 'maxiter': 1000, 'tol': 0.5,
+            kwargs: dict = {'copula': copula, 'bounds': bounds,
+                            'maxiter': 1000, 'tol': 0.5,
                             'cov_method': 'pp_kendall', 'min_eig': None,
                             'show_progress': False}
+            kwargs['params0'] = self._get_params0(
+                data=data, **{**kwargs, **user_kwargs})
         else:
             raise ValueError(f'{method} is not a valid method.')
         return kwargs
@@ -1624,9 +1795,7 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             A fitted distribution.
         """
         default_kwargs: dict = {'raise_cov_error': True}
-        for arg in default_kwargs:
-            if arg not in kwargs:
-                kwargs[arg] = default_kwargs[arg]
+        kwargs = {**default_kwargs, **kwargs}
 
         fit_info: dict = {}
         if (data is None) and (params is None):

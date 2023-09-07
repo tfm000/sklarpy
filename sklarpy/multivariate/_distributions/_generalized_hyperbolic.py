@@ -17,7 +17,7 @@ __all__ = ['multivariate_gen_hyperbolic_gen']
 class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
     """Multivariate Generalized Hyperbolic model."""
     _ASYMMETRIC: bool = True
-    _DATA_FIT_METHODS = (*PreFitContinuousMultivariate._DATA_FIT_METHODS, 'em')
+    _DATA_FIT_METHODS = ('mle', 'em')
     _NUM_W_PARAMS: int = 3
 
     def _check_w_params(self, params: tuple) -> None:
@@ -774,43 +774,77 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
                     ) -> Union[dict, tuple]:
         # calculating default bounds
         d: int = data.shape[1]
-        data_bounds: np.ndarray = np.array([
-            data.min(axis=0), data.max(axis=0)], dtype=float).T
         data_abs_max: np.ndarray = abs(data).max(axis=0)
-        data_extremes: np.ndarray = np.array([
-            -data_abs_max, data_abs_max], dtype=float).T
+        data_extremes: np.ndarray = np.array([-data_abs_max, data_abs_max],
+                                             dtype=float).T
         default_bounds: dict = {'lamb': (-10.0, 10.0), 'chi': (0.01, 10.0),
-                                'psi': (0.01, 10.0), 'loc': data_bounds,
-                                'gamma': data_extremes}
+                                'psi': (0.01, 10.0), 'gamma': data_extremes}
         return super()._get_bounds(default_bounds, d, as_tuple, **kwargs)
 
-    def _get_params0(self, data: np.ndarray, bounds: tuple,
-                     copula: bool, **kwargs) -> tuple:
+    ###########################################################################
+    def _theta_to_params(self, theta: np.ndarray, mean: np.ndarray,
+                         S: np.ndarray, S_det: float, min_eig: float,
+                         copula: bool, **kwargs) -> tuple:
+        # extracting lambda, chi, psi and gamma parameters from theta
+        d: int = theta.size - 3
 
+        lamb, chi, psi = theta[:3]
+        gamma: np.ndarray = theta[3:].copy().reshape((d, 1))
+
+        if copula:
+            loc: np.ndarray = np.zeros((d, 1), dtype=float)
+            shape: np.ndarray = S
+        else:
+            # getting central moments of W
+            exp_w: float = self._exp_w(theta[:3])
+            var_w: float = self._var_w(theta[:3])
+
+            # calculating implied location parameter
+            loc: np.ndarray = mean - (exp_w * gamma)
+
+            # calculating implied shape parameter
+            omega: np.ndarray = (S - var_w * gamma @ gamma.T) / exp_w
+            omega, _, eigenvalues = CorrelationMatrix._rm_pd(omega, min_eig)
+            shape: np.ndarray = omega * ((S_det / eigenvalues.prod()) ** (1/d))
+
+        return self._gh_to_params(params=(lamb, chi, psi, loc, shape, gamma))
+
+    def _params_to_theta(self, params: tuple, **kwargs) -> np.ndarray:
+        return np.array([*params[:3], *params[-1].flatten()], dtype=float)
+
+    def _get_mle_objective_func_kwargs(self, data: np.ndarray, cov_method: str,
+                                     min_eig: float, copula: bool, **kwargs
+                                     ) -> dict:
+        # for GH dists, we return the args to pass to _theta_to_params
+        kwargs: dict = {'copula': copula}
+        d: int = data.shape[1]
+        kwargs['mean'] = data.mean(axis=0).reshape((d, 1))
+        S: np.ndarray = CorrelationMatrix(data).cov(method=cov_method, **kwargs)
+        kwargs['S'] = S
+        kwargs['S_det'] = np.linalg.det(S)
+        if min_eig is None:
+            eigenvalues: np.ndarray = np.linalg.eigvals(S)
+            min_eig: float = eigenvalues.min()
+        kwargs['min_eig'] = min_eig
+        return kwargs
+
+    def _get_params0(self, data: np.ndarray, bounds: tuple, cov_method: str,
+                     min_eig: float, copula: bool, **kwargs) -> tuple:
         # getting theta0
         d: int = data.shape[1]
         lamb0: float = np.random.uniform(*bounds[0])
         chi0: float = np.random.uniform(*bounds[1])
         psi0: float = np.random.uniform(*bounds[2])
         gamma0: np.ndarray = np.zeros((d,), dtype=float)
-        if copula:
-            theta0: np.ndarray = np.array([lamb0, chi0, psi0, *gamma0],
-                                          dtype=float)
-        else:
-            loc0: np.ndarray = data.mean(axis=0, dtype=float).flatten()
-            theta0: np.ndarray = np.array([lamb0, chi0, psi0, *loc0, *gamma0],
-                                          dtype=float)
+        theta0: float = self._params_to_theta(
+            params=(lamb0, chi0, psi0, gamma0), **kwargs)
 
         # converting to params0
-        S, S_det, min_eig, copula = super(
-        )._get_low_dim_mle_objective_func_args(
-            data=data, copula=copula,
-            cov_method=kwargs.get('cov_method', 'pp_kendall'),
-            min_eig=None)
-
-        # converting to params0
-        return multivariate_gen_hyperbolic_gen._low_dim_theta_to_params(
-            theta=theta0, copula=copula, S=S, S_det=S_det, min_eig=min_eig)
+        mle_kwargs: dict = self._get_mle_objective_func_kwargs(
+            data=data, cov_method=cov_method, min_eig=min_eig,
+            copula=copula, **kwargs)
+        return self._theta_to_params(theta0, **mle_kwargs)
+    ###########################################################################
 
     @staticmethod
     def _low_dim_theta_to_params(theta: np.ndarray, S: np.ndarray,
@@ -886,7 +920,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             d=d, copula=copula)
 
     def fit(self, data: Union[pd.DataFrame, np.ndarray] = None,
-            params: Union[Params, tuple] = None, method: str = 'low-dim mle',
+            params: Union[Params, tuple] = None, method: str = 'mle',
             **kwargs) -> FittedContinuousMultivariate:
         """Call to fit parameters to a given dataset or to fit the
          distribution object to a set of specified parameters.
