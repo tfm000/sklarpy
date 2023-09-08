@@ -394,7 +394,7 @@ class multivariate_clayton_gen(multivariate_archimedean_base_gen):
 
 class multivariate_gumbel_gen(multivariate_archimedean_base_gen):
     """Multivariate distribution for the multivariate Gumbel copula model."""
-    _DEFAULT_STRICT_BOUNDS = (1.0, 100.0)
+    _DEFAULT_STRICT_BOUNDS = (1.001, 100.0)
     _DEFAULT_BOUNDS = _DEFAULT_STRICT_BOUNDS
     _N_PARAMS = 2
 
@@ -410,10 +410,38 @@ class multivariate_gumbel_gen(multivariate_archimedean_base_gen):
         return np.exp(-np.power(t, 1/theta))
 
     def _v_rvs(self, size: int, params: tuple) -> np.ndarray:
+        # For the special case of the Gumbel copula,
+        # we have V ~ St(1 / theta, 1, c, 0)
         theta: float = params[0]
+        alpha: float = 1 / theta
+        beta: float = 1.0
         c: float = np.power(np.cos(np.pi/(2*theta)), theta)
-        return scipy.stats.levy_stable.rvs(1/theta, 1.0, c, 0.0,
-                                           size=(size, 1))
+        mu: float = 0.0
+
+        # simulating X ~ St(alpha, beta, 1, 0) rvs
+        u: np.ndarray = np.random.uniform(-0.5*np.pi, 0.5*np.pi, size)
+        w: np.ndarray = scipy.stats.expon.rvs(size=size)
+        zeta: float = -beta * np.tan(np.pi * alpha * 0.5)
+        if alpha != 1.0:
+            xi: float = np.arctan(-zeta) / alpha
+            x: np.ndarray = (((1 + (zeta ** 2)) ** (0.5 / alpha))
+                             * np.sin(alpha * (u + xi))
+                             * np.power(
+                        np.cos(u - (alpha * (u + xi)))/w, (1 - alpha) / alpha)
+                             ) / np.power(np.cos(u), 1 / alpha)
+
+        else:
+            xi: float = np.pi * 0.5
+            x: np.ndarray = ((((np.pi / 2) + (beta * u)) * np.tan(u))
+                             - (beta
+                                * np.log(
+                                ((np.pi / 2) * w * np.cos(u))
+                                / ((np.pi /2) + (beta * u)))
+                                )) / xi
+            mu += (2 / np.pi) * beta * c * np.log(c)
+
+        # simulating Y ~S t(alpha, beta, c, mu) rvs
+        return ((c * x) + mu).reshape((size, 1))
 
     def _inverse_kendall_tau_calc(self, kendall_tau: float) -> float:
         return 1 / (1 - kendall_tau)
