@@ -956,6 +956,8 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             When fitting to data only.
             True to display the progress of the optimization algorithm.
             Default value is False.
+        kwargs:
+            Any additional keyword arguments to pass to CorrelationMatrix.cov
 
         min_retries: int
             When fitting to data only.

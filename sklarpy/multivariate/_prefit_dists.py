@@ -1359,7 +1359,9 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             Maximum Likelihood Estimation (MLE).
         params0: np.ndarray
             An initial estimate of the parameters to use when starting the
-            optimization algorithm.
+            optimization algorithm. These can be a Params object of the
+            specific multivariate distribution or a tuple containing these
+            parameters in the correct order.
         bounds: tuple
             The bounds to use in parameter fitting / optimization, as a tuple.
         maxiter: int

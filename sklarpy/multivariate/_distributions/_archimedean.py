@@ -184,12 +184,15 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
         theta0: float = np.random.uniform(*bounds[0])
         return theta0, data.shape[1]
 
-    def _low_dim_theta_to_params(self, theta: np.ndarray, d: int) -> tuple:
+    def _theta_to_params(self, theta: np.ndarray, d: int, **kwargs) -> tuple:
         return theta[0], d
 
-    def _get_low_dim_mle_objective_func_args(self, data: np.ndarray,
-                                             **kwargs) -> tuple:
-        return data.shape[1],
+    def _params_to_theta(self, params: tuple, **kwargs) -> np.ndarray:
+        return np.array([params[0]], dtype=float)
+
+    def _get_mle_objective_func_kwargs(self, data: np.ndarray, **kwargs,
+                                     ) -> dict:
+        return {'d': data.shape[1]}
 
     def _inverse_kendall_tau_calc(self, kendall_tau: float) -> float:
         """Estimates the theta parameter analytically, by using the
@@ -254,49 +257,12 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
                            f"range.")
         return (theta, d), ~np.isinf(theta)
 
-    def _mle(self, data: np.ndarray, **kwargs) -> tuple:
-        """Performs MLE to fit / estimate the parameters of the
-        Archimedean distribution from the data.
-
-        We use scipy's implementation of differential evolution as our
-        non-convex solver.
-
-        See also
-        --------
-        scipy.optimize.differential_evolution
-
-        Parameters
-        ----------
-        data: np.ndarray
-            An array of multivariate data to optimize parameters over using
-            the low dimension Maximum Likelihood Estimation (low-dim MLE)
-            algorithm.
-        params0: np.ndarray
-            An initial estimate of the parameters to use when starting the
-            optimization algorithm.
-        bounds: tuple
-            The bounds to use in parameter fitting / optimization, as a tuple.
-        maxiter: int
-            The maximum number of iterations to perform by the differential
-            evolution solver.
-        tol: float
-            The tolerance to use when determining convergence, by the
-            differential evolution solver.
-
-        Returns
-        -------
-        res: Tuple[tuple, bool]
-            The parameters optimized to fit the data,
-            True if convergence was successful false otherwise.
-        """
-        return super()._low_dim_mle(data, **kwargs)
-
     def _fit_given_data_kwargs(self, method: str, data: np.ndarray,
                                **user_kwargs) -> dict:
-        if method == 'mle':
-            return super()._fit_given_data_kwargs('low_dim_mle', data,
-                                                  **user_kwargs)
-        return {'copula': True}
+        if method == 'inverse_kendall_tau':
+            return {'copula': True}
+        return super()._fit_given_data_kwargs(method=method, data=data,
+                                              **user_kwargs)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) \
             -> Tuple[dict, int]:
@@ -359,7 +325,9 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
             Default value is 0.5.
         params0: Union[Params, tuple]
             An initial estimate of the parameters to use when starting the
-            optimization algorithm.
+            optimization algorithm. These can be a Params object of the
+            specific multivariate distribution or a tuple containing these
+            parameters in the correct order.
 
         Returns
         --------
@@ -431,7 +399,7 @@ class multivariate_gumbel_gen(multivariate_archimedean_base_gen):
     _N_PARAMS = 2
 
     def _param_range(self, d: int) -> Tuple[Tuple[float, float], list]:
-        return (1.0, np.inf), []
+        return (self._DEFAULT_BOUNDS[0], np.inf), []
 
     def _generator(self, u: np.ndarray, params: tuple) -> np.ndarray:
         theta: float = params[0]
