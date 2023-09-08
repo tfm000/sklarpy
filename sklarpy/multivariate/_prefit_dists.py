@@ -1456,6 +1456,7 @@ class PreFitContinuousMultivariate(NotImplementedBase):
                             'show_progress': False}
             kwargs['params0'] = self._get_params0(
                 data=data, **{**kwargs, **user_kwargs})
+
         else:
             raise ValueError(f'{method} is not a valid method.')
         return kwargs

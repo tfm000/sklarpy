@@ -38,38 +38,19 @@ class multivariate_sym_gen_hyperbolic_gen(multivariate_gen_hyperbolic_gen):
         # removing gamma from bounds
         return self._remove_bounds(bounds_dict, ['gamma'], data.shape[1], as_tuple)
 
-    def _get_params0(self, data: np.ndarray, bounds: tuple, copula: bool,
-                     **kwargs) -> tuple:
+    def _theta_to_params(self, theta: np.ndarray, mean: np.ndarray,
+                         S: np.ndarray, S_det: float, min_eig: float,
+                         copula: bool, **kwargs) -> tuple:
 
-        params0: tuple = super()._get_params0(data=data, bounds=bounds,
-                                              copula=copula, **kwargs)
-        return self._gh_to_params(params0)
+        # modifying theta to fit that of the Generalized Hyperbolic
+        d: int = mean.size
+        theta: np.ndarray = np.array([*theta, *np.zeros((d,))], dtype=float)
+        return super()._theta_to_params(theta=theta, mean=mean, S=S,
+                                        S_det=S_det, min_eig=min_eig,
+                                        copula=copula, **kwargs)
 
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float, min_eig: float, copula: bool) -> tuple:
-        d: int = S.shape[0]
-
-        lamb, chi, psi = theta[:3]
-
-        if not copula:
-            # getting location vector from theta
-            loc: np.ndarray = theta[3:].copy()
-            loc = loc.reshape((d, 1))
-
-            # calculating implied shape parameter
-            exp_w: float = self._exp_w_a(theta[: 3], 1)
-            shape: np.ndarray = S / exp_w
-        else:
-            loc: np.ndarray = np.zeros((d, 1), dtype=float)
-            shape: np.ndarray = S
-
-        return lamb, chi, psi, loc, shape
-
-    def _params_to_low_dim_theta(self, params: tuple, copula: bool
-                                 ) -> np.ndarray:
-        d: int = params[-1].size
-        theta0: np.ndarray = super()._params_to_low_dim_theta(params=params,
-                                                              copula=copula)
-        return theta0[:-d]
+    def _params_to_theta(self, params: tuple, **kwargs) -> np.ndarray:
+        return np.array([*params[:3]], dtype=float)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
         self._check_params(params)

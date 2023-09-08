@@ -43,45 +43,19 @@ class multivariate_sym_hyperbolic_base_gen(multivariate_hyperbolic_base_gen):
     def _gh_to_params(self, params: tuple) -> tuple:
         return params[1:5]
 
-    def _get_low_dim_theta0(self, data: np.ndarray, bounds: tuple, copula: bool) -> np.ndarray:
-        theta0: np.ndarray = super()._get_low_dim_theta0(data, bounds, copula)
-        d: int = data.shape[1]
-        return theta0[:-d]
+    def _theta_to_params(self, theta: np.ndarray, mean: np.ndarray,
+                         S: np.ndarray, S_det: float, min_eig: float,
+                         copula: bool, **kwargs) -> tuple:
 
-    def _get_params0(self, data: np.ndarray, bounds: tuple,
-                            copula: bool, **kwargs) -> tuple:
-        # modifying bounds to fit those of the non-symmetric hyperbolics
-        d: int = data.shape[1]
-        bounds = (*bounds, *((0, 0) for i in range(d)))
+        # modifying theta to fit that of the Generalized Hyperbolic
+        d: int = mean.size
+        theta: np.ndarray = np.array([*theta, *np.zeros((d,))], dtype=float)
+        return super()._theta_to_params(theta=theta, mean=mean, S=S,
+                                        S_det=S_det, min_eig=min_eig,
+                                        copula=copula, **kwargs)
 
-        return super()._get_params0(data=data, bounds=bounds, copula=copula,
-                                    **kwargs)
-
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray, S_det: float, min_eig: float, copula: bool) -> tuple:
-        d: int = S.shape[0]
-
-        chi, psi = theta[:2]
-
-        if not copula:
-            # getting location vector from theta
-            loc: np.ndarray = theta[2:].copy()
-            loc = loc.reshape((d, 1))
-
-            # calculating implied shape parameter
-            exp_w: float = self._exp_w_a((self._lamb, chi, psi), 1)
-            shape: np.ndarray = S / exp_w
-        else:
-            loc: np.ndarray = np.zeros((d, 1), dtype=float)
-            shape: np.ndarray = S
-
-        return chi, psi, loc, shape
-
-    def _params_to_low_dim_theta(self, params: tuple, copula: bool
-                                 ) -> np.ndarray:
-        params: tuple = self._gh_to_params(params)
-        if copula:
-            return np.array([*params[:2]], dtype=float)
-        return np.array([*params[:2], *params[2].flatten()], dtype=float)
+    def _params_to_theta(self, params: tuple, **kwargs) -> np.ndarray:
+        return np.array([*params[1:3]], dtype=float)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs) -> Tuple[dict, int]:
         self._check_params(params, **kwargs)

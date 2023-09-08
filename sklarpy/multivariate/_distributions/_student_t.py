@@ -76,75 +76,43 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
 
     def _get_bounds(self, data: np.ndarray, as_tuple: bool, **kwargs
                     ) -> Union[dict, tuple]:
-        d: int = data.shape[1]
-        data_bounds: np.ndarray = np.array([
-            data.min(axis=0), data.max(axis=0)
-        ], dtype=float).T
-        default_bounds: dict = {'dof': (2.01, 100.0), 'loc': data_bounds}
-        return super()._get_bounds(default_bounds, d, as_tuple, **kwargs)
+        default_bounds: dict = {'dof': (2.01, 100.0)}
+        return super()._get_bounds(default_bounds, data.shape[1], as_tuple,
+                                   **kwargs)
 
-    def _get_params0(self, data: np.ndarray, bounds: tuple, copula: bool,
-                     **kwargs) -> tuple:
-        # getting theta0
-        dof0: float = np.random.uniform(*bounds[0])
-        if not copula:
-            loc0: np.ndarray = data.mean(axis=0, dtype=float).flatten()
-            theta0: np.ndarray = np.array([dof0, *loc0.flatten()], dtype=float)
-            S: np.ndarray = CorrelationMatrix(data).cov(
-                method=kwargs.get('cov_method', 'pp_kendall'))
-        else:
-            theta0: np.ndarray = np.array([dof0], dtype=float)
-            loc = None
-            S: np.ndarray = CorrelationMatrix(data).corr(
-                method=kwargs.get('cov_method', 'pp_kendall'))
-
-        return self._low_dim_theta_to_params(theta=theta0, S=S, loc=loc,
-                                             copula=copula)
-
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray,
-                                 loc: np.ndarray, copula: bool) -> tuple:
-        d: int = S.shape[0]
-
+    def _theta_to_params(self, theta: np.ndarray, mean: np.ndarray,
+                         S: np.ndarray, copula: bool, **kwargs) -> tuple:
         dof: float = float(theta[0])
-        if not copula:
-            if loc is None:
-                loc: np.ndarray = theta[1:d+1]
-            loc = loc.reshape((d, 1))
-
-            # calculating implied shape parameter
-            shape: np.ndarray = self.__cov_to_shape(S, dof)
-        else:
-            loc: np.ndarray = np.zeros((d, 1), dtype=float)
+        if copula:
+            loc: np.ndarray = np.zeros((S.shape[0], 1), dtype=float)
             shape: np.ndarray = S
+        else:
+            loc: np.ndarray = mean
+            shape: np.ndarray = self.__cov_to_shape(S, dof)
         return dof, loc, shape
 
-    def _dof_low_dim_mle(self, data: np.ndarray, **kwargs) -> tuple:
-        """Performs a further modification to the low-dim MLE algorithm.
+    def _params_to_theta(self, params: tuple, **kwargs) -> np.ndarray:
+        return np.array([params[0]], dtype=float)
 
-        Here,we also use the fact that as a symmetrical distribution, the
-        sample mean is an estimator for the location vector, which we use to
-        reduce the dimensionality of the optimization further.
-        """
-        kwargs['params0'] = kwargs['params0'][0],
-        kwargs['bounds'] = kwargs['bounds'][0],
-        return super()._low_dim_mle(data, **kwargs)
-
-    def _get_low_dim_mle_objective_func_args(self, data: np.ndarray,
-                                             copula: bool, cov_method: str,
-                                             **kwargs) -> tuple:
-        S, _, _, _ = super()._get_low_dim_mle_objective_func_args(
-            data=data, copula=copula, cov_method=cov_method, **kwargs)
-        loc: np.ndarray = data.mean(axis=0, dtype=float).flatten() \
-            if kwargs['method'] == 'dof_low_dim_mle' else None
-        return S, loc, copula
-
-    def _fit_given_data_kwargs(self, method: str, data: np.ndarray,
-                               **user_kwargs) -> dict:
-        kwargs: dict = super()._fit_given_data_kwargs('low_dim_mle', data,
-                                                      **user_kwargs)
-        kwargs['method'] = method
-        kwargs['tol'] = 0.01
+    def _get_mle_objective_func_kwargs(self, data: np.ndarray, cov_method: str,
+                                       copula: bool, **kwargs) -> dict:
+        # for Student-T dists, we return the args to pass to _theta_to_params
+        kwargs: dict = {'copula': copula}
+        d: int = data.shape[1]
+        kwargs['mean'] = data.mean(axis=0).reshape((d, 1))
+        kwargs['S'] = CorrelationMatrix(data).cov(method=cov_method, **kwargs)
         return kwargs
+
+    def _get_params0(self, data: np.ndarray, bounds: tuple, cov_method: str,
+                     copula: bool, **kwargs) -> tuple:
+        # getting theta0
+        dof0: float = np.random.uniform(*bounds[0])
+        theta0: np.ndarray = np.array([dof0], dtype=float)
+
+        # converting to params0
+        mle_kwargs: dict = self._get_mle_objective_func_kwargs(
+            data=data, cov_method=cov_method, copula=copula, **kwargs)
+        return self._theta_to_params(theta0, **mle_kwargs)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs
                                 ) -> Tuple[dict, int]:

@@ -72,34 +72,29 @@ class multivariate_hyperbolic_base_gen(multivariate_gen_hyperbolic_gen):
     def _gh_to_params(self, params: tuple) -> tuple:
         return params[1:]
 
-    def _get_params0(self, data: np.ndarray, bounds: tuple,
-                            copula: bool, **kwargs) -> tuple:
+    def _theta_to_params(self, theta: np.ndarray, mean: np.ndarray,
+                         S: np.ndarray, S_det: float, min_eig: float,
+                         copula: bool, **kwargs) -> tuple:
+        # modifying theta to fit that of the Generalized Hyperbolic
+        theta = np.array([self._lamb, *theta], dtype=float)
+        return super()._theta_to_params(theta=theta, mean=mean, S=S,
+                                        S_det=S_det, min_eig=min_eig,
+                                        copula=copula, **kwargs)
+
+    def _params_to_theta(self, params: tuple, **kwargs) -> np.ndarray:
+        return np.array([*params[1:3], *params[-1].flatten()], dtype=float)
+
+    def _get_params0(self, data: np.ndarray, bounds: tuple, cov_method: str,
+                     min_eig, copula: bool, **kwargs) -> tuple:
         # modifying bounds to fit those of the Generalized Hyperbolic
         d: int = (len(bounds) - 2) / 2 if self._ASYMMETRIC else len(bounds) - 2
         d = int(d)
         self._init_lamb(d)
         bounds = ((self._lamb, self._lamb), *bounds)
 
-        params0: tuple = super()._get_params0(data=data, bounds=bounds,
-                                             copula=copula, **kwargs)
-
-        return self._gh_to_params(params0)
-
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray,
-                                 S_det: float, min_eig: float, copula: bool
-                                 ) -> tuple:
-        theta = np.array([self._lamb, *theta], dtype=float)
-        params: tuple = super()._low_dim_theta_to_params(
-            theta=theta, S=S, S_det=S_det, min_eig=min_eig, copula=copula)
-        return self._gh_to_params(params)
-
-    def _params_to_low_dim_theta(self, params: tuple, copula: bool
-                                 ) -> np.ndarray:
-        params: tuple = self._gh_to_params(params)
-        if copula:
-            return np.array([*params[:2], *params[-1].flatten()], dtype=float)
-        return np.array([*params[:2], *params[2].flatten(),
-                         *params[-1].flatten()], dtype=float)
+        return super()._get_params0(data=data, bounds=bounds,
+                                    cov_method=cov_method, min_eig=min_eig,
+                                    copula=copula, **kwargs)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs
                                 ) -> Tuple[dict, int]:

@@ -90,6 +90,16 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
             bounds['dof'] = bounds.pop('chi')
         return bounds
 
+    @staticmethod
+    def _exp_w(params: tuple) -> float:
+        alpha_beta: float = params[1] / 2
+        return alpha_beta / (alpha_beta - 1)
+
+    @staticmethod
+    def _var_w(params: tuple) -> float:
+        alpha_beta: float = params[1] / 2
+        return (alpha_beta ** 2) / (((alpha_beta - 1) ** 2) * (alpha_beta - 2))
+
     def _etas_deltas_zetas(self, data: np.ndarray, params: tuple, h: float
                            ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         _, dof, _, loc, shape, gamma = params
@@ -146,54 +156,29 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
     def _gh_to_params(self, params: tuple) -> tuple:
         return params[1], *params[3:]
 
-    def _get_params0(self, data: np.ndarray, bounds: tuple, copula: bool,
-                     **kwargs) -> tuple:
-        # getting theta0
-        d: int = data.shape[1]
-        dof0: float = np.random.uniform(*bounds[0])
-        data_stds: np.ndarray = data.std(axis=0, dtype=float)
-        gamma0: np.ndarray = np.random.normal(scale=data_stds, size=(d,))
-        if not copula:
-            loc0: np.ndarray = data.mean(axis=0, dtype=float).flatten()
-            theta0: np.ndarray = np.array([dof0, *loc0, *gamma0], dtype=float)
-        else:
-            theta0: np.ndarray = np.array([dof0, *gamma0], dtype=float)
-
-        # converting to params0
-        S, S_det, min_eig, copula = super(
-        )._get_low_dim_mle_objective_func_args(
-            data=data, copula=copula,
-            cov_method=kwargs.get('cov_method', 'pp_kendall'), min_eig=None)
-
-        return self._low_dim_theta_to_params(theta=theta0, S=S, S_det=S_det,
-                                             min_eig=min_eig, copula=copula)
-
-    @staticmethod
-    def _exp_w(params: tuple) -> float:
-        alpha_beta: float = params[1] / 2
-        return alpha_beta / (alpha_beta - 1)
-
-    @staticmethod
-    def _var_w(params: tuple) -> float:
-        alpha_beta: float = params[1] / 2
-        return (alpha_beta ** 2) / (((alpha_beta - 1)**2) * (alpha_beta-2))
-
-    def _low_dim_theta_to_params(self, theta: np.ndarray, S: np.ndarray,
-                                 S_det: float, min_eig: float, copula: bool
-                                 ) -> tuple:
+    def _theta_to_params(self, theta: np.ndarray, mean: np.ndarray,
+                         S: np.ndarray, S_det: float, min_eig: float,
+                         copula: bool, **kwargs) -> tuple:
+        # modifying theta to fit that of the Generalized Hyperbolic
         dof: float = theta[0]
-        theta = np.array([-dof/2, dof, 0.0, *theta[1:]], dtype=float)
-        _, dof, _, loc, shape, gamma = super()._low_dim_theta_to_params(
-            theta=theta, S=S, S_det=S_det, min_eig=min_eig, copula=copula)
-        return dof, loc, shape, gamma
+        theta = np.array([-dof / 2, dof, 0, *theta[1:]])
+        return super()._theta_to_params(theta=theta, mean=mean, S=S,
+                                        S_det=S_det, min_eig=min_eig,
+                                        copula=copula, **kwargs)
+    def _params_to_theta(self, params: tuple, **kwargs) -> np.ndarray:
+        return np.array([params[1], *params[-1].flatten()], dtype=float)
 
-    def _params_to_low_dim_theta(self, params: tuple, copula: bool
-                                 ) -> np.ndarray:
-        params: tuple = self._gh_to_params(params)
-        if copula:
-            return np.array([params[0], *params[-1].flatten()], dtype=float)
-        return np.array([params[0], *params[1].flatten(),
-                         *params[-1].flatten()], dtype=float)
+    def _get_params0(self, data: np.ndarray, bounds: tuple, cov_method: str,
+                     min_eig, copula: bool, **kwargs) -> tuple:
+        # modifying bounds to fit those of the Generalized Hyperbolic
+        bounds = ((0, 0), bounds[0], (0, 0), *bounds[1:])
+        params0: tuple = super()._get_params0(
+            data=data, bounds=bounds, cov_method=cov_method,
+            min_eig=min_eig, copula=copula, **kwargs)
+
+        d: int = data.shape[1]
+        data_stds: np.ndarray = data.std(axis=0, dtype=float)
+        return (*params0[:-1], np.random.normal(scale=data_stds, size=(d,)))
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs
                                 ) -> Tuple[dict, int]:

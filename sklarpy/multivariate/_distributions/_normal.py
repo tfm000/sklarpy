@@ -14,7 +14,6 @@ __all__ = ['multivariate_normal_gen']
 
 class multivariate_normal_gen(PreFitContinuousMultivariate):
     """Multivariate Normal / Gaussian model."""
-    _DATA_FIT_METHODS = ('mle', )
 
     def _check_params(self, params: tuple, **kwargs) -> None:
         # checking correct number of params passed
@@ -129,6 +128,7 @@ class multivariate_normal_gen(PreFitContinuousMultivariate):
         fitted_multivariate: FittedContinuousMultivariate
             A fitted multivariate Normal / Gaussian distribution.
         """
+        kwargs.pop('method', 'mle')
         return super().fit(data=data, params=params, method='mle', **kwargs)
 
     def num_scalar_params(self, d: int, copula: bool = False, **kwargs) -> int:
