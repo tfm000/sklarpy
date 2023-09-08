@@ -498,7 +498,7 @@ class bivariate_frank_gen(multivariate_archimedean_base_gen):
         theta: float = params[0]
         rvs: np.ndarray = np.random.uniform(size=(size, 2))
         rvs[:, 1] = - (theta**-1) * np.log(
-            1 + (((1 - np.exp(theta**-1)) * rvs[:, 1])
+            1 + (((1 - np.exp(-theta)) * rvs[:, 1])
                  / (
                          (rvs[:, 1] * (np.exp(-theta*rvs[:, 0]) - 1))
                          - np.exp(-theta*rvs[:, 0]))
@@ -539,20 +539,6 @@ class bivariate_frank_gen(multivariate_archimedean_base_gen):
 
         return scipy.optimize.brentq(self.__root_to_solve, left, right,
                                      args=(kendall_tau,))
-
-    def _logpdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
-        theta: float = params[0]
-        if theta <= 0:
-            # logpdf is undefined for theta <= 0
-            self._not_implemented('logpdf')
-
-        log_numerator: np.ndarray = np.log(theta) + np.log(np.exp(theta) - 1) \
-                                    + (theta * (x.sum(axis=1) + 1))
-        log_denominator: np.ndarray = 2 * np.log(
-            np.exp(theta * x.sum(axis=1)) - np.exp(theta * (x[:, 0] + 1))
-            - np.exp(theta * (x[:, 1] + 1)) + np.exp(theta)
-        )
-        return log_numerator - log_denominator
 
     def _pdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
         theta: float = params[0]
