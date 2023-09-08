@@ -1520,6 +1520,12 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         ----------
         params: tuple
             The parameters which define the multivariate model, in tuple form.
+
+        Returns
+        -------
+        params_dict, d: Tuple[dict, int]
+            Dictionary containing model parameters in the correct order,
+            Number of variables model has been fitted too.
         """
         if len(params) != self.num_params:
             raise ValueError("Incorrect number of params given by user")
