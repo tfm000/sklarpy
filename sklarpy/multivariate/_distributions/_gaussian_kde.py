@@ -117,6 +117,7 @@ class multivariate_gaussian_kde_gen(PreFitContinuousMultivariate):
         fitted_multivariate: FittedContinuousMultivariate
             A fitted distribution.
         """
+        kwargs.pop('method', '')
         return super().fit(data=data, params=params, method='gaussian_kde_fit',
                            **kwargs)
 
