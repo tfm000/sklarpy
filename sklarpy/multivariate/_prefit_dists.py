@@ -1451,6 +1451,7 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         """
         if method == 'mle':
             bounds: tuple = self._get_bounds(data, True, **user_kwargs)
+            user_kwargs.pop('bounds', None)
             copula: bool = user_kwargs.pop('copula', False)
             kwargs: dict = {'copula': copula, 'bounds': bounds,
                             'maxiter': 1000, 'tol': 0.5,
