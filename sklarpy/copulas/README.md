@@ -8,7 +8,7 @@ Examples of how to use these models can be found in the `examples` folder.
 
  | Family         | Name                              | Dimensions   | SklarPy Model                  |
 |----------------|-----------------------------------|--------------|--------------------------------|
-| Normal Mixture | Gaussian Copula                   | Multivariate | gaussian_copula                | 
+| Normal Mixture | Normal / Gaussian                 | Multivariate | gaussian_copula                | 
 | Normal Mixture | Student-T                         | Multivariate | student_t_copula               |
 | Normal Mixture | Skewed-T                          | Multivariate | skewed_t_copula                |
 | Normal Mixture | Generalized Hyperbolic            | Multivariate | gen_hyperbolic_copula          |
