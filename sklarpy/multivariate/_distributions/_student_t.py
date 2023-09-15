@@ -8,13 +8,13 @@ from typing import Tuple, Union
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
 from sklarpy._other import Params
-from sklarpy._utils import dataframe_or_array
 from sklarpy.misc import CorrelationMatrix
 
 __all__ = ['multivariate_student_t_gen']
 
 
 class multivariate_student_t_gen(PreFitContinuousMultivariate):
+    """Multivariate Student-T model"""
 
     def __cov_to_shape(self, A: np.ndarray, dof: float, reverse: bool = False
                        ) -> np.ndarray:
@@ -99,8 +99,14 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
         # for Student-T dists, we return the args to pass to _theta_to_params
         kwargs: dict = {'copula': copula}
         d: int = data.shape[1]
-        kwargs['mean'] = data.mean(axis=0).reshape((d, 1))
-        kwargs['S'] = CorrelationMatrix(data).cov(method=cov_method, **kwargs)
+        if copula:
+            kwargs['mean'] = np.zeros((d, 1))
+            kwargs['S'] = CorrelationMatrix(data).corr(method=cov_method,
+                                                       **kwargs)
+        else:
+            kwargs['mean'] = data.mean(axis=0).reshape((d, 1))
+            kwargs['S'] = CorrelationMatrix(data).cov(method=cov_method,
+                                                      **kwargs)
         return kwargs
 
     def _get_params0(self, data: np.ndarray, bounds: tuple, cov_method: str,
@@ -119,12 +125,6 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
         self._check_params(params, **kwargs)
         return ({'dof': params[0], 'loc': params[1], 'shape': params[2]},
                 params[1].size)
-
-    def fit(self, data: dataframe_or_array = None,
-            params: Union[Params, tuple] = None,
-            method: str = 'dof-low-dim mle', **kwargs
-            ) -> FittedContinuousMultivariate:
-        return super().fit(data=data, params=params, method=method, **kwargs)
 
     def num_scalar_params(self, d: int, copula: bool = False, **kwargs) -> int:
         vec_num: int = 0 if copula else d

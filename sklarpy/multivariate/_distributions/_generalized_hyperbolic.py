@@ -821,8 +821,15 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         # for GH dists, we return the args to pass to _theta_to_params
         kwargs: dict = {'copula': copula}
         d: int = data.shape[1]
-        kwargs['mean'] = data.mean(axis=0).reshape((d, 1))
-        S: np.ndarray = CorrelationMatrix(data).cov(method=cov_method, **kwargs)
+
+        if copula:
+            kwargs['mean'] = np.zeros((d, 1))
+            S: np.ndarray = CorrelationMatrix(data).corr(method=cov_method,
+                                                        **kwargs)
+        else:
+            kwargs['mean'] = data.mean(axis=0).reshape((d, 1))
+            S: np.ndarray = CorrelationMatrix(data).cov(method=cov_method,
+                                                        **kwargs)
         kwargs['S'] = S
         kwargs['S_det'] = np.linalg.det(S)
         if min_eig is None:
