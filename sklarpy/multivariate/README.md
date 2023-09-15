@@ -1,12 +1,26 @@
-contains multivariate distributions and objects used to fit them
+# <u> Multivariate </u>
 
-to implement:
-- gaussian
-- generalised hyperbolic and normal mixture special cases
+This directory contains code for all multivariate models implemented in Sklary.
 
-need to be able to
-- fit/provide parameter estimates, potentially via different methods. allow them to be modified to fit to copulas
-- provide pdf, cdf, mc_cdf values
-- generate rvs
-- plots. when bivariate, allow pdf, cdf and mc_cdf plots. when multivariate n>=2, allow pairwise plots, like with copulas
-- 
+Examples of how to use these models can be found in the `examples` folder.
+
+## <u> SklarPy Multivariate Models </u>
+
+ | Family         | Name                              | Dimensions   | SklarPy Model                        |
+|----------------|-----------------------------------|--------------|--------------------------------------|
+| Normal Mixture | Normal / Gaussian                 | Multivariate | multivariate_normal                  | 
+| Normal Mixture | Student-T                         | Multivariate | multivariate_student_t               |
+| Normal Mixture | Skewed-T                          | Multivariate | multivariate_skewed_t                |
+| Normal Mixture | Generalized Hyperbolic            | Multivariate | multivariate_gen_hyperbolic          |
+| Normal Mixture | Symmetric Generalized Hyperbolic  | Multivariate | multivariate_sym_gen_hyperbolic      |
+| Normal Mixture | Hyperbolic                        | Multivariate | multivariate_hyperbolic              |
+| Normal Mixture | Symmetric Hyperbolic              | Multivariate | multivariate_sym_hyperbolic          |
+| Normal Mixture | Normal-Inverse Gaussian (NIG)     | Multivariate | multivariate_nig                     |
+| Normal Mixture | Symmetric Normal-Inverse Gaussian | Multivariate | multivariate_sym_nig                 |
+| Normal Mixture | Marginal Hyperbolic               | Multivariate | multivariate_marginal_hyperbolic     |
+| Normal Mixture | Symmetric Marginal Hyperbolic     | Multivariate | multivariate_sym_marginal_hyperbolic |
+| Numerical      | Gaussian KDE                      | Multivariate | multivariate_gaussian_kde            |
+
+### Implementation Status
+- [x] Normal Mixture 
+- [x] Numerical
