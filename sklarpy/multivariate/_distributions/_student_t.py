@@ -1,5 +1,6 @@
 # Contains code for the multivariate Student-T distribution
 import numpy as np
+import pandas as pd
 import scipy.stats
 import scipy.integrate
 import scipy.optimize
@@ -129,3 +130,57 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
     def num_scalar_params(self, d: int, copula: bool = False, **kwargs) -> int:
         vec_num: int = 0 if copula else d
         return 1 + vec_num + self._num_shape_scalar_params(d=d, copula=copula)
+
+    def fit(self, data: Union[pd.DataFrame, np.ndarray] = None,
+            params: Union[Params, tuple] = None,
+            **kwargs) -> FittedContinuousMultivariate:
+        """Call to fit parameters to a given dataset or to fit the
+        distribution object to a set of specified parameters.
+
+        For the multivariate Student-T distribution, we use the
+        Maximum-Likelihood Estimation to fit our parameters.
+
+        Parameters
+        ----------
+        data : Union[pd.DataFrame, np.ndarray]
+            Optional. The multivariate dataset to fit the distribution's
+            parameters too. Not required if `params` is provided.
+        params : Union[Params, tuple]
+            Optional. The parameters of the distribution to fit the object
+            too. These can be a Params object of the specific multivariate
+            distribution or a tuple containing these parameters in the correct
+            order.
+        kwargs:
+            See below.
+
+        Keyword arguments
+        ------------------
+        cov_method: str
+            When fitting to data only.
+            The method to use when estimating the sample covariance matrix.
+            See CorrelationMatrix.cov for more information.
+            Default value is 'laloux_pp_kendall'.
+        bounds: tuple
+            When fitting to data only.
+            The bounds to use in parameter fitting / optimization, as a tuple.
+            If not specified, the bounds of the degrees of freedom parameter
+            are set to be (2.01, 100.0).
+        params0: Union[tuple, None]
+            When fitting to data only.
+            An initial estimate of the parameters to use when starting the
+            optimization algorithm. These can be a Params object of the
+            specific multivariate distribution or a tuple containing these
+            parameters in the correct order.
+            For the 'em' algorithm, if params0 specified by the user, function
+            outcome ~ deterministic between runs and therefore having a
+            min_retries and max_retries greater than 1 has little benefit.
+        kwargs:
+            kwargs for CorrelationMatrix.cov
+
+        Returns
+        --------
+        fitted_multivariate: FittedContinuousMultivariate
+            A fitted multivariate Student-T distribution.
+        """
+        kwargs.pop('method', 'mle')
+        return super().fit(data=data, params=params, method='mle', **kwargs)
