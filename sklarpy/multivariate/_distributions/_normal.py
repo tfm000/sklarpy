@@ -1,5 +1,6 @@
 # Contains code for the multivariate normal distribution
 import numpy as np
+import pandas as pd
 import scipy.stats
 from typing import Tuple, Union
 
@@ -7,7 +8,6 @@ from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.misc import CorrelationMatrix
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
 from sklarpy._other import Params
-from sklarpy._utils import dataframe_or_array
 
 __all__ = ['multivariate_normal_gen']
 
@@ -91,7 +91,7 @@ class multivariate_normal_gen(PreFitContinuousMultivariate):
         self._check_params(params, **kwargs)
         return {'loc': params[0], 'shape': params[1]}, params[0].size
 
-    def fit(self, data: dataframe_or_array = None,
+    def fit(self, data: Union[pd.DataFrame, np.ndarray] = None,
             params: Union[Params, tuple] = None, **kwargs
             ) -> FittedContinuousMultivariate:
         """Call to fit parameters to a given dataset or to fit the
