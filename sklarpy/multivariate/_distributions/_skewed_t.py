@@ -16,6 +16,7 @@ __all__ = ['multivariate_skewed_t_gen']
 
 
 class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
+    """Multivariate Skewed-T model."""
     _NUM_W_PARAMS: int = 1
 
     def _get_params(self, params: Union[Params, tuple], **kwargs) -> tuple:
@@ -165,6 +166,7 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
         return super()._theta_to_params(theta=theta, mean=mean, S=S,
                                         S_det=S_det, min_eig=min_eig,
                                         copula=copula, **kwargs)
+
     def _params_to_theta(self, params: tuple, **kwargs) -> np.ndarray:
         return np.array([params[1], *params[-1].flatten()], dtype=float)
 

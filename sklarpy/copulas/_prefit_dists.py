@@ -1329,7 +1329,6 @@ class PreFitCopula(NotImplementedBase):
             to marginal distribution cdf / pseudo-observation values.
             Default is False.
         """
-
         # checking arguments
         test_rvs: np.ndarray = self.rvs(
             size=2, copula_params=copula_params, mdists=mdists,
