@@ -1,7 +1,7 @@
 # Contains univariate probability distributions
 import scipy.stats
 
-from sklarpy.univariate._prefitted_dists import \
+from sklarpy.univariate._prefit_dists import \
     PreFitParametricContinuousUnivariate, PreFitParametricDiscreteUnivariate, \
     PreFitNumericalContinuousUnivariate, PreFitNumericalDiscreteUnivariate
 from sklarpy.univariate._distributions import discrete_empirical_fit, \
