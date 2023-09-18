@@ -2,10 +2,10 @@
 import numpy as np
 import math
 
-__all__ = ['dlaplace_fit']
+__all__ = ['discrete_laplace_fit']
 
 
-def dlaplace_fit(data: np.ndarray) -> tuple:
+def discrete_laplace_fit(data: np.ndarray) -> tuple:
     """Fitting function for the discrete laplacian distribution. Returns the MLE estimator of the parameter alpha.
 
     Math

@@ -1,10 +1,10 @@
 # contains code for fitting a discrete uniform distribution to data
 import numpy as np
 
-__all__ = ['duniform_fit']
+__all__ = ['discrete_uniform_fit']
 
 
-def duniform_fit(data: np.ndarray) -> tuple:
+def discrete_uniform_fit(data: np.ndarray) -> tuple:
     """Fitting function for the discrete uniform distribution. Returns the minimum and maximum values of the sample.
 
     Math
