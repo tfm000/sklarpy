@@ -18,7 +18,7 @@ __all__ = ['PreFitContinuousMultivariate']
 
 
 class PreFitContinuousMultivariate(NotImplementedBase):
-    """A pre-fit continuous multivariate model"""
+    """A pre-fit continuous multivariate model."""
     _DATA_FIT_METHODS: Tuple[str] = ('mle', )
 
     def __init__(self, name: str, params_obj: Params, num_params: int,
@@ -1144,7 +1144,7 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         Returns
         -------
         num_scalar_params: int
-            The number of unique scalar parameters defining the  multivariate
+            The number of unique scalar parameters defining the multivariate
             model.
         """
 
@@ -1197,9 +1197,9 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         bounds: Union[dict, tuple]
             The bounds to use in parameter fitting / optimization.
         """
-        param_err_msg: str = "bounds must be a tuple of length 2 for " \
-                               "scalar params or a matrix of shape (d, 2) " \
-                               "for vector params."
+        param_err_msg: str = "bounds must be a tuple of length 2 for scalar " \
+                             "params or a matrix of shape (d, 2) for vector " \
+                             "params."
         bounds_tuples: deque = deque()
         for param, param_bounds in bounds_dict.items():
             if isinstance(param_bounds, np.ndarray) and \
@@ -1301,8 +1301,8 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             theta array containing parameter info.
         """
 
-    def _get_mle_objective_func_kwargs(self, data: np.ndarray, **kwargs,
-                                     ) -> dict:
+    def _get_mle_objective_func_kwargs(self, data: np.ndarray, **kwargs
+                                       ) -> dict:
         """Returns any additional arguments (besides theta and data) required
         for the mle objective function.
 
@@ -1557,51 +1557,6 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         kwargs:
             See individual distributions.
 
-        Keyword arguments
-        ------------------
-        cov_method: str
-            When fitting to data only.
-            The method to use when fitting a covariance matrix to the observed data.
-            The covariance matrix is required in mle and em algorithms for all non-archimedean distributions.
-            See SklarPy's CorrelationMatrix documentation for more information on implemented methods.
-            Default is `laloux_pp_kendall`.
-        bounds: dict
-            When fitting to data only.
-            The bounds of the parameters you are fitting.
-            Must be a dictionary with parameter names as keys and values as tuples of the form
-            (lower bound, upper bound) for scalar parameters or values as a (d, 2) matrix for vector parameters,
-            where the left hand side is the matrix contains lower bounds and the right hand side the upper bounds.
-        raise_cov_error: bool
-            When fitting to user provided parameters only.
-            True to raise an error if the shape matrix is an invalid covariance matrix.
-            I.e. we check if the shape matrix is 2d, square, positive definite and symmetric.
-            Default is True.
-        show_progress: bool
-            When fitting to data only.
-            Available for 'low-dim mle' and 'em' algorithms.
-            Prints the progress of these algorithms.
-            Default is False.
-        maxiter: int
-            When fitting to data only.
-            The maximum number of iterations an optimization algorithm is allowed to perform.
-            Default value differs depending on the optimization algorithm / method selected.
-        h: float
-            When fitting to data only.
-            The h parameter to use in numerical differentiation in the 'em' algorithm.
-            Default value is 10 ** -5
-        tol: float
-            When fitting to data only.
-            The tolerance to use when determing convergence.
-            Default value differs depending on the optimisation algorithm / method selected.
-        q2_options: dict
-            When fitting to data only using the 'em' algorithm.
-            Used when optimising the q2 function using scipy's differential_evolution as a part of the 'em' algorithm.
-            keys must be arg / kwarg names of differerntial_evolution algorithm and values their values.
-            bounds of the 'lamb', 'chi' and 'psi' parameters must not be parsed here - see the 'bounds' kwarg for this.
-        params0: Union[Params, tuple]
-            An initial estimate of the parameters to use when starting the
-            optimization algorithm.
-
         Returns
         --------
         fitted_multivariate: FittedContinuousMultivariate
@@ -1681,5 +1636,3 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         fit_info['num_scalar_params'] = self.num_scalar_params(num_variables,
                                                                **kwargs)
         return FittedContinuousMultivariate(self, fit_info)
-
-# TODO: remove kwargs from fit and put them into specific dists

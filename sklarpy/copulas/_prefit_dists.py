@@ -893,6 +893,11 @@ class PreFitCopula(NotImplementedBase):
             True to show the progress of your fitting.
         method: str
             The method to use when fitting the copula distribution to data.
+
+        Returns
+        -------
+        fitted_copula: FittedCopula
+            A fitted copula.
         """
         if (data is None) and (copula_params is None or mdists is None):
             raise ValueError(
@@ -915,6 +920,8 @@ class PreFitCopula(NotImplementedBase):
             u_array: Union[np.ndarray, None] = None
 
         # fitting copula
+        if 'corr_method' in kwargs:
+            kwargs['cov_method'] = kwargs.pop('corr_method')
         kwargs['copula'] = True
         fitted_mv_object: FittedContinuousMultivariate =\
             self._mv_object.fit(data=u_array, params=copula_params, **kwargs)

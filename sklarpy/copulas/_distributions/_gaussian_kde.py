@@ -51,12 +51,18 @@ class gaussian_kde_copula_gen(PreFitCopula):
             distribution. See MarginalFitter.fit documentation for more.
         show_progress: bool
             True to show the progress of your fitting.
+
         bw_method : Union[str, int, float, Callable, None]
             The method used to calculate the estimator bandwidth.
             See scipy.stats.gaussian_kde for options.
         weights: Union[np.ndarray, None]
             weights of datapoints.
             See scipy.stats.gaussian_kde for options.
+
+        Returns
+        -------
+        fitted_copula: FittedCopula
+            A fitted copula.
         """
         return super().fit(data=data, copula_params=copula_params,
                            mdists=mdists, **kwargs)

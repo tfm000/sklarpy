@@ -56,7 +56,8 @@ class archimedean_copula_base_gen(PreFitCopula):
             data. Can be either 'mle' or 'inverse kendall-tau.
             Data must be bivariate to use inverse kendall-tau method.
             Default is 'mle'.
-        bounds: dict
+
+       bounds: dict
             When fitting to data only.
             The bounds of the parameters you are fitting.
             Must be a dictionary with parameter names as keys and values as
@@ -73,11 +74,20 @@ class archimedean_copula_base_gen(PreFitCopula):
         tol: float
             When fitting to data only.
             Available for 'mle' algorithm.
-            The tolerance to use when determing convergence.
+            The tolerance to use when determining convergence.
             Default value is 0.5.
         params0: Union[Params, tuple]
+            When fitting to data only.
+            Available for 'mle' algorithm.
             An initial estimate of the parameters to use when starting the
-            optimization algorithm.
+            optimization algorithm. These can be a Params object of the
+            specific multivariate distribution or a tuple containing these
+            parameters in the correct order.
+
+        Returns
+        -------
+        fitted_copula: FittedCopula
+            A fitted copula.
         """
         return super().fit(data=data, copula_params=copula_params,
                            mdists=mdists, **kwargs)

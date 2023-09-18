@@ -137,8 +137,8 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
         """Call to fit parameters to a given dataset or to fit the
         distribution object to a set of specified parameters.
 
-        For the multivariate Student-T distribution, we use the
-        Maximum-Likelihood Estimation to fit our parameters.
+        For the multivariate Student-T distribution, we use Maximum-Likelihood
+        Estimation to fit our parameters.
 
         Parameters
         ----------

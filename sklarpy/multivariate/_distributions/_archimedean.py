@@ -324,6 +324,8 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
             The tolerance to use when determining convergence.
             Default value is 0.5.
         params0: Union[Params, tuple]
+            When fitting to data only.
+            Available for 'mle' algorithm.
             An initial estimate of the parameters to use when starting the
             optimization algorithm. These can be a Params object of the
             specific multivariate distribution or a tuple containing these
