@@ -7,6 +7,8 @@ from scipy.optimize import differential_evolution
 
 from sklarpy.multivariate._distributions._generalized_hyperbolic import \
     multivariate_gen_hyperbolic_gen
+from sklarpy.multivariate._distributions._student_t import \
+    multivariate_student_t_gen
 from sklarpy._other import Params
 from sklarpy.misc import kv
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
@@ -18,6 +20,33 @@ __all__ = ['multivariate_skewed_t_gen']
 class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
     """Multivariate Skewed-T model."""
     _NUM_W_PARAMS: int = 1
+
+    def __init__(self, name: str, params_obj: Params, num_params: int,
+                 max_num_variables: int, mvt_t: multivariate_student_t_gen):
+        """A pre-fit continuous multivariate model.
+
+        Parameters
+        ----------
+        name : str
+            The name of the multivariate object.
+            Used when saving, if a file path is not specified and/or for
+            additional identification purposes.
+        params_obj: Params
+            The SklarPy Params object associated with this specific
+            multivariate probability distribution.
+        num_params: int
+            The number of parameters which define this distribution.
+        max_num_variables: int
+            The maximum number of variables this multivariate probability
+            distribution is defined for.
+            i.e. 2 for bivariate models.
+        mvt_t: multivariate_student_t_gen
+            The multivariate student-t model.
+        """
+        super().__init__(
+            name=name, params_obj=params_obj,
+            num_params=num_params, max_num_variables=max_num_variables)
+        self._mvt_t: multivariate_student_t_gen = mvt_t
 
     def _get_params(self, params: Union[Params, tuple], **kwargs) -> tuple:
         params_tuple: tuple = PreFitContinuousMultivariate._get_params(
@@ -72,6 +101,20 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
                        + (xrow - loc).T @ shape_inv @ gamma \
                        - s * (np.log(q / dof) - np.log(np.sqrt(q * p)))
         return float(log_c + log_h)
+
+    def _logpdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
+        if not np.any(params[-1]):
+            # gamma is an array of 0's, hence we use the symmetric,
+            # multivariate student-T distribution.
+            return self._mvt_t._logpdf(x=x, params=params[:-1], **kwargs)
+        return super()._logpdf(x=x, params=params, **kwargs)
+
+    def _cdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
+        if not np.any(params[-1]):
+            # gamma is an array of 0's, hence we use the symmetric,
+            # multivariate student-T distribution.
+            return self._mvt_t._cdf(x=x, params=params[:-1], **kwargs)
+        return super()._cdf(x=x, params=params, **kwargs)
 
     def _w_rvs(self, size: int, params: tuple) -> np.ndarray:
         alpha_beta: float = params[1] / 2
