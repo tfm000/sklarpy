@@ -28,4 +28,4 @@ def discrete_uniform_fit(data: np.ndarray) -> tuple:
     estimator: tuple
        (a, b)
     """
-    return data.min(), data.max() + 1
+    return int(data.min()), int(data.max() + 1)
