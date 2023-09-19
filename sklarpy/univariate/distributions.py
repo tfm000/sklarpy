@@ -32,7 +32,7 @@ for name in scipy_cp_names:
     exec(s)
 
 for scipy_name, sklarpy_name in cp_rename_dict.items():
-    dist: str = f"scipy.stats.{name}"
+    dist: str = f"scipy.stats.{scipy_name}"
     s: str = build_cp_str(dist, sklarpy_name)
     exec(s)
 
