@@ -15,10 +15,6 @@ class MultivariateSkewedTParams(MultivariateGenHyperbolicParams,
     _DIST_GENERATOR = multivariate_skewed_t_gen
 
     @property
-    def dof(self) -> float:
-        return self.to_dict['dof']
-
-    @property
     def lamb(self) -> float:
         return -self.dof/2
 
