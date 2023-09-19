@@ -10,6 +10,8 @@ __all__ = ['_ig']
 
 
 class ig_gen(rv_continuous):
+    """The univariate Inverse Gaussian (IG) distribution,
+    with the parametrization specified by McNeil et al."""
     def _argcheck(self, alpha: float, beta: float) -> bool:
         if (alpha > 0) and (beta > 0):
             return True
@@ -21,7 +23,12 @@ class ig_gen(rv_continuous):
         return [ialpha, ibeta]
 
     def __pdf_single(self, xi: float, alpha: float, beta: float) -> float:
-        return (beta ** alpha) * (xi ** - (alpha + 1)) * np.exp(-beta/xi) / scipy.special.gamma(alpha)
+        return float(
+            (beta ** alpha)
+            * (xi ** - (alpha + 1))
+            * np.exp(-beta/xi)
+            / scipy.special.gamma(alpha)
+        )
 
     def _pdf(self, x: np.ndarray, alpha: float, beta: float) -> np.ndarray:
         return np.vectorize(self.__pdf_single, otypes=[float])(x, alpha, beta)

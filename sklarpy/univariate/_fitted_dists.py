@@ -102,7 +102,8 @@ class FittedUnivariateBase(Savable):
         called, the linear interpolation is calculated and saved. If the user
         then calls this method again, the same linear interpolation is reused,
         allowing for faster computation. If the user changes the num points
-        argument, the linear interpolation will be recalculated and saved again.
+        argument, the linear interpolation will be recalculated and saved
+        again.
 
         Parameters
         ----------

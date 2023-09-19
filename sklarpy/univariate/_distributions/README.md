@@ -1,4 +1,5 @@
 # _distributions
 
-contains the code for various distributions not specified fully or partially in scipy.stats, 
-which is then passed into the PreFitUnivariate classes to generate pre-fit SklarPy distribution objects.
+Contains the code for various distributions not specified fully or partially 
+in scipy.stats, in addition to additional parameterizations of 
+scipy.stats distributions.

@@ -1,6 +1,6 @@
 # <u> Multivariate </u>
 
-This directory contains code for all multivariate models implemented in Sklary.
+This directory contains code for all multivariate models implemented in SklarPy.
 
 Examples of how to use these models can be found in the `examples` folder.
 

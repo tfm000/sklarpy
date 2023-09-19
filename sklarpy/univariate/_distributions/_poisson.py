@@ -5,14 +5,15 @@ __all__ = ['poisson_fit']
 
 
 def poisson_fit(data: np.ndarray) -> tuple:
-    """Fitting function for the poisson distribution. Returns the MLE estimator of the parameter lambda.
+    """Fitting function for the poisson distribution.
+    Returns the MLE estimator of the parameter lambda.
 
     Math
-    ====
+    ----
     lambda_mle = sum(x) / n
 
     See Also:
-    =========
+    ---------
     https://en.wikipedia.org/wiki/Poisson_distribution
 
     Parameters

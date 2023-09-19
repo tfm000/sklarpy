@@ -4,7 +4,9 @@ from collections import deque
 
 __all__ = ['distributions_map']
 
+
 def get_scipy_names(names, required, rename_dict):
+    """Returns the names of the distributions available in scipy.stats."""
     scipy_names: deque = deque()
     for name in names:
         dist = eval(f"scipy.stats.{name}")

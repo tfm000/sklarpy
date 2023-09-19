@@ -1,10 +1,11 @@
-# contains code for fitting a discrete empirical distribution
+# Contains code for fitting a discrete empirical distribution
 import numpy as np
 from typing import Callable
 from functools import partial
 import scipy.interpolate
 
-from sklarpy.univariate._distributions._numerical_wrappers import NumericalWrappers
+from sklarpy.univariate._distributions._numerical_wrappers import \
+    NumericalWrappers
 from sklarpy._utils import DiscreteError
 
 __all__ = ['discrete_empirical_fit']
@@ -21,7 +22,8 @@ def discrete_empirical_fit(data: np.ndarray) -> tuple:
     Parameters
     ----------
     data : np.ndarray
-        The data to fit to the discrete empirical distribution in a flattened numpy array.
+        The data to fit to the discrete empirical distribution in a flattened
+        numpy array.
 
     Returns
     -------
@@ -32,7 +34,8 @@ def discrete_empirical_fit(data: np.ndarray) -> tuple:
     num_data_points: int = data.size
 
     # Fitting pdf function
-    pdf_: Callable = partial(discrete_empirical_pdf, data=data, N=num_data_points)
+    pdf_: Callable = partial(discrete_empirical_pdf, data=data,
+                             N=num_data_points)
     pdf: Callable = partial(NumericalWrappers.numerical_pdf, pdf_=pdf_)
 
     # Generating cdf and ppf functions via interpolation
@@ -42,14 +45,26 @@ def discrete_empirical_fit(data: np.ndarray) -> tuple:
     empirical_range, empirical_cdf = empirical_range[idx], empirical_cdf[idx]
 
     if (empirical_cdf.size == 1) and (empirical_cdf[0] == 0):
-        raise DiscreteError("Discrete empirical distribution cannot be fit on continuous data.")
+        raise DiscreteError("Discrete empirical distribution cannot be fit on "
+                            "continuous data.")
 
     # Fitting cdf, ppf and support functions
-    cdf_: Callable = scipy.interpolate.interp1d(empirical_range, empirical_cdf, 'nearest', bounds_error=False)
-    cdf: Callable = partial(NumericalWrappers.numerical_cdf, cdf_=cdf_, xmin=xmin, xmax=xmax)
+    cdf_: Callable = scipy.interpolate.interp1d(
+        empirical_range, empirical_cdf, 'nearest', bounds_error=False
+    )
+    cdf: Callable = partial(
+        NumericalWrappers.numerical_cdf, cdf_=cdf_, xmin=xmin, xmax=xmax
+    )
     F_xmin, F_xmax = cdf(np.array([xmin, xmax]))
-    ppf_: Callable = scipy.interpolate.interp1d(empirical_cdf, empirical_range, 'nearest', bounds_error=False)
-    ppf: Callable = partial(NumericalWrappers.numerical_ppf, ppf_=ppf_, xmin=xmin, xmax=xmax, F_xmin=F_xmin, F_xmax=F_xmax)
-    support: Callable = partial(NumericalWrappers.numerical_support, xmin=xmin, xmax=xmax)
+    ppf_: Callable = scipy.interpolate.interp1d(
+        empirical_cdf, empirical_range, 'nearest', bounds_error=False
+    )
+    ppf: Callable = partial(
+        NumericalWrappers.numerical_ppf, ppf_=ppf_, xmin=xmin,
+        xmax=xmax, F_xmin=F_xmin, F_xmax=F_xmax
+    )
+    support: Callable = partial(
+        NumericalWrappers.numerical_support, xmin=xmin, xmax=xmax
+    )
 
     return pdf, cdf, ppf, support, None
