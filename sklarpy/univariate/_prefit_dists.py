@@ -78,18 +78,19 @@ class PreFitUnivariateBase:
                 raise TypeError("Invalid argument in pre-fit distribution "
                                 "initialisation.")
 
-        if rvs is None:
-            rvs = partial(inverse_transform, ppf=ppf)
-        elif not callable(rvs):
-            raise TypeError("Invalid argument in pre-fit distribution "
-                            "initialisation.")
-
         self._name: str = name
         self._pdf: Callable = pdf
         self._cdf: Callable = cdf
         self._ppf: Callable = ppf
         self._support: Callable = support
         self._fit: Callable = fit
+
+        if rvs is None:
+            rvs = partial(inverse_transform, ppf=self.ppf)
+        elif not callable(rvs):
+            raise TypeError("Invalid argument in pre-fit distribution "
+                            "initialisation.")
+
         self._rvs: Callable = rvs
         self._gof: Callable = None
 
