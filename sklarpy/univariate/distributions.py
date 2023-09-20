@@ -11,7 +11,9 @@ from sklarpy.univariate._distributions import discrete_empirical_fit, \
 from sklarpy.univariate.distributions_map import distributions_map, \
     scipy_cp_names, cp_rename_dict, sklarpy_cp_names, dp_rename_dict
 
-__all__ = [*distributions_map['all']]
+all = [*distributions_map['all']]
+all.remove('skewed_t')
+__all__ = all
 
 
 ###############################################################################

@@ -4,7 +4,7 @@ from typing import Union, Callable
 
 from sklarpy.copulas._prefit_dists import PreFitCopula
 from sklarpy._other import Params
-from sklarpy.univariate import skewed_t
+from sklarpy.univariate.distributions import skewed_t
 
 __all__ = ['skewed_t_copula_gen']
 
