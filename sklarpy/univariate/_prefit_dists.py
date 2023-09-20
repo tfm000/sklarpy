@@ -910,7 +910,7 @@ class PreFitNumericalUnivariateBase(PreFitUnivariateBase):
             ) -> np.ndarray:
         """Not implemented for non-fitted numerical distributions."""
         if self._pdf is None:
-            raise NotImplementedError("PDF not implemented for non-fitted "
+            raise NotImplementedError("pdf not implemented for non-fitted "
                                       "numerical distributions.")
         return PreFitUnivariateBase.pdf(self, x, params)
 
@@ -918,7 +918,7 @@ class PreFitNumericalUnivariateBase(PreFitUnivariateBase):
             ) -> np.ndarray:
         """Not implemented for non-fitted numerical distributions."""
         if self._cdf is None:
-            raise NotImplementedError("CDF not implemented for non-fitted "
+            raise NotImplementedError("cdf not implemented for non-fitted "
                                       "numerical distributions.")
         return PreFitUnivariateBase.cdf(self, x, params)
 
@@ -926,7 +926,7 @@ class PreFitNumericalUnivariateBase(PreFitUnivariateBase):
                    num_points: int = 100, **kwargs) -> np.ndarray:
         """Not implemented for non-fitted numerical distributions."""
         if self._cdf is None:
-            raise NotImplementedError("CDF_APPROX not implemented for "
+            raise NotImplementedError("cdf_approx not implemented for "
                                       "non-fitted numerical distributions.")
         return PreFitUnivariateBase.cdf(self, x, params)
 
@@ -934,7 +934,7 @@ class PreFitNumericalUnivariateBase(PreFitUnivariateBase):
             **kwargs) -> np.ndarray:
         """Not implemented for non-fitted numerical distributions."""
         if self._ppf is None:
-            raise NotImplementedError("PPF not implemented for non-fitted "
+            raise NotImplementedError("ppf not implemented for non-fitted "
                                       "numerical distributions.")
         return PreFitUnivariateBase.ppf(self, q, params, **kwargs)
 
@@ -943,14 +943,14 @@ class PreFitNumericalUnivariateBase(PreFitUnivariateBase):
                    ) -> np.ndarray:
         """Not implemented for non-fitted numerical distributions."""
         if self._ppf is None:
-            raise NotImplementedError("PPF_APPROX not implemented for non-fitted "
+            raise NotImplementedError("ppf_approx not implemented for non-fitted "
                                       "numerical distributions.")
         return PreFitUnivariateBase.ppf(self, q, params, **kwargs)
 
     def support(self, params: tuple = ()) -> tuple:
         """Not implemented for non-fitted numerical distributions."""
         if self._support is None:
-            raise NotImplementedError("Support not implemented for non-fitted "
+            raise NotImplementedError("support not implemented for non-fitted "
                                       "numerical distributions.")
         return PreFitUnivariateBase.support(self, params)
 
@@ -965,7 +965,7 @@ class PreFitNumericalUnivariateBase(PreFitUnivariateBase):
                ) -> np.ndarray:
         """Not implemented for non-fitted numerical distributions."""
         if self._pdf is None:
-            raise NotImplementedError("log-PDF not implemented for non-fitted "
+            raise NotImplementedError("logpdf not implemented for non-fitted "
                                       "numerical distributions.")
         return PreFitUnivariateBase.logpdf(self, x, params)
 
@@ -979,7 +979,7 @@ class PreFitNumericalUnivariateBase(PreFitUnivariateBase):
     def loglikelihood(self, data: np.ndarray, params: tuple = ()) -> float:
         """Not implemented for non-fitted numerical distributions."""
         if self._pdf is None:
-            raise NotImplementedError("log-likelihood not implemented for "
+            raise NotImplementedError("loglikelihood not implemented for "
                                       "non-fitted numerical distributions.")
         return PreFitUnivariateBase.loglikelihood(self, data, params)
 
