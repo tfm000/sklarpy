@@ -922,6 +922,15 @@ class PreFitNumericalUnivariateBase(PreFitUnivariateBase):
                                       "numerical distributions.")
         return PreFitUnivariateBase.cdf(self, x, params)
 
+    def cdf_approx(self, x: Union[float, int, np.ndarray], params: tuple = (),
+                   num_points: int = 100, **kwargs) -> np.ndarray:
+        """Not implemented for non-fitted numerical distributions."""
+        if self._cdf is None:
+            raise NotImplementedError("CDF_APPROX not implemented for "
+                                      "non-fitted numerical distributions.")
+        return PreFitUnivariateBase.cdf_approx(self, x, params, num_points,
+                                               **kwargs)
+
     def ppf(self, q: Union[float, int, np.ndarray], params: tuple = ()
             ) -> np.ndarray:
         """Not implemented for non-fitted numerical distributions."""
