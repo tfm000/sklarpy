@@ -44,12 +44,85 @@ class gh_gen(base_gen):
     def support(self, *params):
         return -np.inf, np.inf
 
-    def get_default_bounds(self, data: np.ndarray, eps: float = 10 ** -5
-                           ) -> tuple:
+    def _get_default_bounds(self, data: np.ndarray, eps: float = 10 ** -5
+                            ) -> tuple:
         xmin, xmax = data.min(), data.max()
-        xextreme = max(abs(xmin), abs(xmax))
-        return ((-10, 10), (eps, 10), (eps, 10), (xmin, xmax),
-                (eps, 2 * (xmax - xmin)), (-xextreme, xextreme))
+        xextreme = float(max(abs(xmin), abs(xmax)))
+        return (-10, 10), (eps, 10), (eps, 10), (-xextreme, xextreme)
+
+    def _get_additional_args(self, data: np.ndarray) -> tuple:
+        return data.mean(), data.var()
+
+    @staticmethod
+    def _exp_w_a(params: tuple, a: float) -> float:
+        """Calculates one of the moments of the distribution W, E[W^a].
+
+        Parameters
+        ----------
+        params : tuple
+            The parameters which define the model, in tuple form.
+        a: float
+            The order of the moment.
+
+        Returns
+        -------
+        exp_w_a : float
+            E[W^a]
+        """
+        lamb, chi, psi = params[:3]
+        r: float = np.sqrt(chi * psi)
+        if r > 100:
+            # tends to 1 as r -> inf
+            bessel_val: float = 1.0
+        else:
+            bessel_val: float = kv.kv(lamb + a, r) / kv.kv(lamb, r)
+        return ((chi / psi) ** (a / 2)) * bessel_val
+
+    @staticmethod
+    def _exp_w(params: tuple) -> float:
+        """Calculates the expectation of the distribution W, E[W].
+
+        Parameters
+        ----------
+        params : tuple
+            The parameters which define the model, in tuple form.
+
+        Returns
+        -------
+        exp_w : float
+            E[W]
+        """
+        return gh_gen._exp_w_a(params, 1)
+
+    @staticmethod
+    def _var_w(params: tuple) -> float:
+        """Calculates the variance of the distribution W, var(W).
+
+        Parameters
+        ----------
+        params : tuple
+            The parameters which define the model, in tuple form.
+
+        Returns
+        -------
+        var_w: float
+            var(w)
+        """
+        return gh_gen._exp_w_a(params, 2) - (gh_gen._exp_w_a(params, 1) ** 2)
+
+    def _theta_to_params(self, theta: np.ndarray, mean: np.ndarray, var: float
+                         ) -> tuple:
+        exp_w: float = self._exp_w(theta)
+        var_w: float = self._var_w(theta)
+
+        gamma: float = theta[-1]
+        loc: float = mean - (exp_w * gamma)
+        scale_sq: float = (var - (var_w * (gamma ** 2))) / exp_w
+        if scale_sq <= 0:
+            return None
+
+        scale: float = scale_sq ** - 0.5
+        return *theta[:3], loc, scale, gamma
 
 
 _gh: gh_gen = gh_gen()

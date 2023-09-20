@@ -1,21 +1,23 @@
 # Standard parametrization of the Skewed T distribution
+# Note there are convergence problems in the fit
 import numpy as np
 import scipy.special
 
 from sklarpy.misc import kv
 from sklarpy.univariate._distributions._base_gen import base_gen
+from sklarpy.univariate._distributions._gh import gh_gen
 
 __all__ = ['_skewed_t']
 
 
-class skewed_t_gen(base_gen):
+class skewed_t_gen(gh_gen):
     """The univariate Skewed-T distribution, with the parametrization specified
     by McNeil et al."""
     _NAME = 'Skewed T'
     _NUM_PARAMS = 4
 
     def _argcheck(self, params) -> None:
-        super()._argcheck(params)
+        base_gen._argcheck(self, params)
 
         if not (params[0] > 0) and (params[2] > 0):
             raise ValueError("dof and scale parameters must be strictly "
@@ -40,15 +42,30 @@ class skewed_t_gen(base_gen):
         )
         return log_c + log_h
 
-    def support(self, *params):
-        return -np.inf, np.inf
+    @staticmethod
+    def _exp_w(params: tuple) -> float:
+        alpha_beta: float = params[1] / 2
+        return alpha_beta / (alpha_beta - 1)
 
-    def get_default_bounds(self, data: np.ndarray, eps: float = 10 ** -5
-                           ) -> tuple:
+    @staticmethod
+    def _var_w(params: tuple) -> float:
+        alpha_beta: float = params[1] / 2
+        return (alpha_beta ** 2) / (((alpha_beta - 1) ** 2) * (alpha_beta - 2))
+
+    def _get_default_bounds(self, data: np.ndarray, *args) -> tuple:
         xmin, xmax = data.min(), data.max()
-        xextreme = max(abs(xmin), abs(xmax))
-        return ((2.01, 10), (xmin, xmax), (eps, 2 * (xmax - xmin)),
-                (-xextreme, xextreme))
+        xextreme = float(max(abs(xmin), abs(xmax)))
+        return (3, 10), (-xextreme, xextreme)
+
+    def _theta_to_params(self, theta: np.ndarray, mean: np.ndarray, var: float
+                         ) -> tuple:
+        dof, gamma = theta
+        gh_theta: np.ndarray = np.array([-0.5 * dof, dof, 0, gamma])
+        gh_params = super()._theta_to_params(gh_theta, mean, var)
+
+        if gh_params is None:
+            return gh_params
+        return gh_params[1], *gh_params[-3:]
 
 
 _skewed_t: skewed_t_gen = skewed_t_gen()

@@ -102,6 +102,8 @@ class base_gen:
             The cdf value for a single observation.
         """
         left: float = self.support(params)[0]
+        if xi <= left:
+            return 0
         return float(
             scipy.integrate.quad(self._pdf_single, left, xi, params)[0]
         )
@@ -182,8 +184,21 @@ class base_gen:
         """
         return np.vectorize(self._ppf_single, otypes=[float])(q, *params)
 
-    def get_default_bounds(self, data: np.ndarray, *args) -> tuple:
+    def _get_default_bounds(self, data: np.ndarray, *args) -> tuple:
         pass
+
+    def _get_additional_args(self, data: np.ndarray) -> tuple:
+        return tuple()
+
+    def _theta_to_params(self, theta: np.ndarray, *args) -> tuple:
+        return tuple(theta)
+
+    def _neg_loglikelihood(self, theta: np.ndarray, data: np.ndarray, *args
+                           ) -> float:
+        params: tuple = self._theta_to_params(theta, *args)
+        if params is None:
+            return np.inf
+        return -np.sum(self.logpdf(data, *params))
 
     def fit(self, data: np.ndarray) -> tuple:
         """Used to fit the distribution to the data.
@@ -199,11 +214,11 @@ class base_gen:
             The parameters of the distribution, optimized to fit the data using
             MLE.
         """
-        def neg_loglikelihood(params: np.ndarray):
-            return -np.sum(self.logpdf(data, *params))
+        bounds: tuple = self._get_default_bounds(data=data)
+        args: tuple = self._get_additional_args(data)
+        res = scipy.optimize.differential_evolution(
+            self._neg_loglikelihood, bounds, args=(data, *args))
 
-        bounds: tuple = self.get_default_bounds(data=data)
-        res = scipy.optimize.differential_evolution(neg_loglikelihood, bounds)
         if not res['success']:
             raise FitError(f"Unable to fit {self._NAME} Distribution to data.")
-        return tuple(res['x'])
+        return self._theta_to_params(res['x'], *args)
