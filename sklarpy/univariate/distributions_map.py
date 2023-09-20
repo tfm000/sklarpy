@@ -33,7 +33,7 @@ scipy_cp_names, cp_rename_dict = get_scipy_names(
     scipy.stats._continuous_distns._distn_names, cp_required, cp_rename_dict
 )
 
-sklarpy_cp_names: tuple = ('gh', 'gig', 'ig', 'skewed_t')
+sklarpy_cp_names: tuple = ('gh', 'gig', 'ig')
 
 continuous_parametric_names: tuple = (
     *scipy_cp_names,

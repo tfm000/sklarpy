@@ -11,9 +11,7 @@ from sklarpy.univariate._distributions import discrete_empirical_fit, \
 from sklarpy.univariate.distributions_map import distributions_map, \
     scipy_cp_names, cp_rename_dict, sklarpy_cp_names, dp_rename_dict
 
-all = [*distributions_map['all']]
-all.remove('skewed_t')
-__all__ = all
+__all__ = [*distributions_map['all']]
 
 
 ###############################################################################
@@ -42,6 +40,11 @@ for name in sklarpy_cp_names:
     dist: str = f"_{name}"
     s: str = build_cp_str(dist, name)
     exec(s)
+
+skewed_t = PreFitParametricContinuousUnivariate(
+    'skewed_t', _skewed_t.pdf, _skewed_t.cdf,
+    _skewed_t.ppf, _skewed_t.support, _skewed_t.fit
+)
 
 ###############################################################################
 # Discrete (Parametric)
