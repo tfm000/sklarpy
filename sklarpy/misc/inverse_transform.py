@@ -31,6 +31,5 @@ def inverse_transform(*params: tuple, size, ppf: Callable, **kwargs):
     """
     shape: tuple = (size, ) if isinstance(size, int) else size
     u: ndarray = random.uniform(size=size)
-    vals = ppf(q=u, **kwargs) if params is None else ppf(q=u, params=params,
-                                                         **kwargs)
+    vals = ppf(u, **kwargs) if params is None else ppf(u, *params, **kwargs)
     return vals.reshape(shape)
