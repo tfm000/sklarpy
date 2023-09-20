@@ -184,5 +184,5 @@ class gen_hyperbolic_copula_gen(PreFitCopula):
         fitted_copula: FittedCopula
             A fitted copula.
         """
-        return self.fit(data=data, copula_params=copula_params,
+        return super().fit(data=data, copula_params=copula_params,
                         mdists=mdists, **kwargs)
