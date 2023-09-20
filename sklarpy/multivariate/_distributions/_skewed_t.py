@@ -13,6 +13,7 @@ from sklarpy._other import Params
 from sklarpy.misc import kv
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.univariate import ig
+from sklarpy.univariate._distributions import _skewed_t
 
 __all__ = ['multivariate_skewed_t_gen']
 
@@ -20,6 +21,7 @@ __all__ = ['multivariate_skewed_t_gen']
 class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
     """Multivariate Skewed-T model."""
     _NUM_W_PARAMS: int = 1
+    _UNIVAR = _skewed_t
 
     def __init__(self, name: str, params_obj: Params, num_params: int,
                  max_num_variables: int, mvt_t: multivariate_student_t_gen):
@@ -134,16 +136,6 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
             bounds['dof'] = bounds.pop('chi')
         return bounds
 
-    @staticmethod
-    def _exp_w(params: tuple) -> float:
-        alpha_beta: float = params[1] / 2
-        return alpha_beta / (alpha_beta - 1)
-
-    @staticmethod
-    def _var_w(params: tuple) -> float:
-        alpha_beta: float = params[1] / 2
-        return (alpha_beta ** 2) / (((alpha_beta - 1) ** 2) * (alpha_beta - 2))
-
     def _etas_deltas_zetas(self, data: np.ndarray, params: tuple, h: float
                            ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         _, dof, _, loc, shape, gamma = params
@@ -160,8 +152,10 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
             qi: float = float(dof + ((xi - loc).T @ shape_inv @ (xi - loc)))
 
             cond_params: tuple = (-s, qi, p)
-            eta_i: float = multivariate_gen_hyperbolic_gen._exp_w(cond_params)
-            delta_i: float = multivariate_gen_hyperbolic_gen._exp_w((s, p, qi))
+            eta_i: float = multivariate_gen_hyperbolic_gen._UNIVAR._exp_w(
+                cond_params)
+            delta_i: float = multivariate_gen_hyperbolic_gen._UNIVAR._exp_w(
+                (s, p, qi))
             zeta_i: float = multivariate_gen_hyperbolic_gen._exp_log_w(
                 cond_params, h)
 

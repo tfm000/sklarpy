@@ -69,7 +69,7 @@ class MultivariateSymGenHyperbolicParams(MultivariateNormalParams):
         exp_w: float
             E[W] of the rv W ~ GIG(lamb, chi, psi).
         """
-        return self._DIST_GENERATOR._exp_w(self._gig_params_tuple)
+        return self._DIST_GENERATOR._UNIVAR._exp_w(self._gig_params_tuple)
 
     @property
     def var_w(self) -> float:
@@ -80,7 +80,7 @@ class MultivariateSymGenHyperbolicParams(MultivariateNormalParams):
         var_w: float
             var[W] of the rv W ~ GIG(lamb, chi, psi).
         """
-        return self._DIST_GENERATOR._var_w(self._gig_params_tuple)
+        return self._DIST_GENERATOR._UNIVAR._var_w(self._gig_params_tuple)
 
     @property
     def cov(self) -> np.ndarray:

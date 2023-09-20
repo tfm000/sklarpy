@@ -8,6 +8,7 @@ from scipy.optimize import differential_evolution
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
 from sklarpy.univariate import gig
+from sklarpy.univariate._distributions import _gh
 from sklarpy.misc import CorrelationMatrix, kv
 from sklarpy._other import Params
 
@@ -19,6 +20,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
     _ASYMMETRIC: bool = True
     _DATA_FIT_METHODS = ('mle', 'em')
     _NUM_W_PARAMS: int = 3
+    _UNIVAR = _gh
 
     def _check_w_params(self, params: tuple) -> None:
         """Performs checks the parameters of the positive mixing variable W
@@ -199,8 +201,8 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             qi: float = chi + ((xi - loc).T @ shape_inv @ (xi - loc))
 
             cond_params: tuple = (v, qi, p)
-            eta_i: float = self._exp_w(cond_params)
-            delta_i: float = self._exp_w((-v, p, qi))
+            eta_i: float = self._UNIVAR._exp_w(cond_params)
+            delta_i: float = self._UNIVAR._exp_w((-v, p, qi))
             zeta_i: float = self._exp_log_w(cond_params, h)
 
             deltas.append(delta_i)
@@ -698,64 +700,6 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         return best_params, converged, best_k, best_loglikelihood
 
     @staticmethod
-    def _exp_w_a(params: tuple, a: float) -> float:
-        """Calculates one of the moments of the distribution W, E[W^a].
-
-        Parameters
-        ----------
-        params : tuple
-            The parameters which define the multivariate model, in tuple form.
-        a: float
-            The order of the moment.
-
-        Returns
-        -------
-        exp_w_a : float
-            E[W^a]
-        """
-        lamb, chi, psi = params[:3]
-        r: float = np.sqrt(chi * psi)
-        if r > 100:
-            # tends to 1 as r -> inf
-            bessel_val: float = 1.0
-        else:
-            bessel_val: float = kv.kv(lamb+a, r) / kv.kv(lamb, r)
-        return ((chi/psi) ** (a/2)) * bessel_val
-
-    @staticmethod
-    def _exp_w(params: tuple) -> float:
-        """Calculates the expectation of the distribution W, E[W].
-
-        Parameters
-        ----------
-        params : tuple
-            The parameters which define the multivariate model, in tuple form.
-
-        Returns
-        -------
-        exp_w : float
-            E[W]
-        """
-        return multivariate_gen_hyperbolic_gen._exp_w_a(params, 1)
-
-    @staticmethod
-    def _var_w(params: tuple) -> float:
-        """Calculates the variance of the distribution W, var(W).
-
-        Parameters
-        ----------
-        params : tuple
-            The parameters which define the multivariate model, in tuple form.
-
-        Returns
-        -------
-        var_w: float
-            var(w)
-        """
-        return multivariate_gen_hyperbolic_gen._exp_w_a(params, 2) \
-               - (multivariate_gen_hyperbolic_gen._exp_w_a(params, 1) ** 2)
-
-    @staticmethod
     def _exp_log_w(params: tuple, h: float) -> float:
         """Calculates the expectation of the log of the distribution W,
         E[log(W)].
@@ -770,9 +714,9 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         exp_log_w: float
             E[log(W)]
         """
-        return (multivariate_gen_hyperbolic_gen._exp_w_a(params, h)
-                - multivariate_gen_hyperbolic_gen._exp_w_a(params, -h)) \
-               / (2 * h)
+        return (multivariate_gen_hyperbolic_gen._UNIVAR._exp_w_a(params, h)
+                - multivariate_gen_hyperbolic_gen._UNIVAR._exp_w_a(params, -h)
+                ) / (2 * h)
 
     def _get_bounds(self, data: np.ndarray, as_tuple: bool, **kwargs
                     ) -> Union[dict, tuple]:
@@ -799,8 +743,8 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             shape: np.ndarray = S
         else:
             # getting central moments of W
-            exp_w: float = self._exp_w(theta[:3])
-            var_w: float = self._var_w(theta[:3])
+            exp_w: float = self._UNIVAR._exp_w(theta[:3])
+            var_w: float = self._UNIVAR._var_w(theta[:3])
 
             # calculating implied location parameter
             loc: np.ndarray = mean - (exp_w * gamma)
