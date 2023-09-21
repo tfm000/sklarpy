@@ -138,6 +138,33 @@ class FittedUnivariateBase(Savable):
                          if ((qi >= eps) and (qi <= 1 - eps))
                          else float(self.ppf(qi)) for qi in q], dtype=float)
 
+    def cdf_approx(self, x: Union[float, int, np.ndarray],
+                   num_points: int = 100, **kwargs) -> np.ndarray:
+        """The approximate cumulative density function.
+
+        We evaluate the cdf function on over a linspace of values in
+        (xmin, xmax) of the given data. We then fit a linear interpolation
+        between these values. Then, using this linear interpolation function,
+        we calculate the approximate cdf values.
+        This is useful when there is no analytical cdf function, as evaluating
+        many numerical integrals can be slow.
+
+        Parameters
+        ---------
+        x: Union[float, int, np.ndarray]
+            The value/values to calculate the cdf values, P(X<=x) of.
+        num_points: int
+            The number of points in the (xmin, xmax) linspace to evalute the
+            (non-approx) cdf function at.
+            Default is 100.
+
+        Returns
+        -------
+        cdf_approx_values: np.ndarray
+            An array of cdf values.
+        """
+        return self.__obj.cdf_approx(x, self.params, num_points, **kwargs)
+
     def rvs(self, size: tuple, ppf_approx: bool = False, **kwargs
             ) -> np.ndarray:
         """Random sampler.
