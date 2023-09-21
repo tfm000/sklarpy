@@ -122,21 +122,7 @@ class FittedUnivariateBase(Savable):
             A random sample of dimension 'size'.
         """
 
-        q: np.ndarray = univariate_num_to_array(q)
-        # q_arr = q; breakpoint()
-        if ((q >= eps) & (q <= 1 - eps)).sum() <= num_points:
-            # faster to use ppf directly
-            return self.ppf(q)
-
-        if ((self._ppf_approx is None) or
-                (num_points != self._ppf_approx_num_points)):
-            # fitting ppf approx function
-            self._ppf_approx: Callable = self.__obj._fit_ppf_approx(
-                self.params, num_points, eps)
-
-        return np.array([self._ppf_approx(qi)
-                         if ((qi >= eps) and (qi <= 1 - eps))
-                         else float(self.ppf(qi)) for qi in q], dtype=float)
+        return self.__obj.ppf_approx(q, self.params, num_points, eps, **kwargs)
 
     def cdf_approx(self, x: Union[float, int, np.ndarray],
                    num_points: int = 100, **kwargs) -> np.ndarray:
