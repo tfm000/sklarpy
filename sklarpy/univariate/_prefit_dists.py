@@ -954,7 +954,7 @@ class PreFitNumericalUnivariateBase(PreFitUnivariateBase):
                                       "numerical distributions.")
         return PreFitUnivariateBase.support(self, params)
 
-    def rvs(self, size: tuple, params: tuple = ()) -> np.ndarray:
+    def rvs(self, size: tuple, params: tuple = (), **kwargs) -> np.ndarray:
         """Not implemented for non-fitted numerical distributions."""
         if self._rvs is None:
             raise NotImplementedError("rvs not implemented for non-fitted "
@@ -1037,8 +1037,10 @@ class PreFitNumericalUnivariateBase(PreFitUnivariateBase):
         fitted_domain: tuple = data.min(), data.max()
 
         # fitting numerical distribution
-        (self._pdf, self._cdf, self._ppf, self._support,
-         self._rvs) = self._fit(data)
+        (self._pdf, self._cdf, self._ppf, self._support, rvs) = self._fit(data)
+        if rvs is None:
+            rvs = partial(inverse_transform, ppf=self.ppf)
+        self._rvs = rvs
 
         # fitting empirical distribution
         empirical_fit: Callable = self._get_empirical_fit()
