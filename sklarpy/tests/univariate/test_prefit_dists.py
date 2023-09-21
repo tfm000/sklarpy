@@ -147,18 +147,19 @@ def test_prefit_cdfs(discrete_data, continuous_data, dists_to_test):
                 # checking cdf values are the correct data-type
                 cdf_values: np.ndarray = func(data, params)
                 assert isinstance(cdf_values, np.ndarray), \
-                    f"cdf values for {name} are not contained in a numpy array"
+                    f"{func_str} values for {name} are not contained in a " \
+                    f"numpy array"
 
                 # checking same number of cdf values as input
                 assert cdf_values.size == data.size, \
-                    f"number cdf values for {name} do not " \
+                    f"number {func_str} values for {name} do not " \
                     f"match the number of inputs"
 
                 # checking for nan values
                 if np.isnan(cdf_values).sum() != 0:
                     breakpoint()
                 assert np.isnan(cdf_values).sum() == 0, \
-                    f"nan values present in {name} pre-fit cdf"
+                    f"nan values present in {name} pre-fit {func_str}"
 
                 # checking cdf values are non-decreasing
                 sorted_data: np.ndarray = data.copy()
@@ -172,14 +173,14 @@ def test_prefit_cdfs(discrete_data, continuous_data, dists_to_test):
                     # we may have negative_values which are very small and
                     # likely a float rounding error.
                     assert np.all(negative_values > - eps), \
-                        f"cdf values of {name} are not monotonically " \
+                        f"{func_str }values of {name} are not monotonically " \
                         f"increasing."
 
                 # checking extremes
                 assert abs(float(dist.cdf(np.inf, params)) - 1.0) <= eps, \
-                    f"cdf of {name} is not 1.0 at infinity"
+                    f"{func_str} of {name} is not 1.0 at infinity"
                 assert float(dist.cdf(-np.inf, params)) <= eps, \
-                    f"cdf of {name} is not 0.0 at -infinity"
+                    f"{func_str} of {name} is not 0.0 at -infinity"
 
 
 def test_prefit_ppfs(uniform_data, discrete_data, continuous_data,
