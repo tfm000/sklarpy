@@ -80,3 +80,31 @@ def get_dist(name: str, data: np.ndarray) -> tuple:
     fitted = dist.fit(data)
     params: tuple = fitted.params
     return dist, fitted, params
+
+
+def get_fitted_dict(name: str, data: np.ndarray) -> dict:
+    """Fits distribution to data and (if parametric) to parameters.
+
+    Parameters
+    -----------
+    name : str
+        The name of the distribution as in distributions_map
+    data: np.ndarray
+        The data to fit the distribution too
+
+    Returns
+    -------
+    fitted_dict: dict
+        Dictionary containing fitted distributions.
+    """
+    dist = eval(name)
+    data_fitted = dist.fit(data)
+    fitted_dict: dict = {'fitted to data': data_fitted}
+
+    if name in distributions_map['all numerical']:
+        return fitted_dict
+
+    params: tuple = data_fitted.params
+    params_fitted = dist.fit(params=params)
+    fitted_dict['fitted to params'] = params_fitted
+    return fitted_dict
