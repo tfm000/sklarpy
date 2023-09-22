@@ -35,6 +35,9 @@ def test_fit_to_data(discrete_data, continuous_data, dists_to_test):
             if name in distributions_map['all numerical']:
                 assert len(params) == 0, \
                     f"{name} is numerical, but params not empty."
+            else:
+                assert len(params) > 0, \
+                    f"{name} is parametric, but params empty."
         except RuntimeError:
             continue
 
