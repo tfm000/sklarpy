@@ -260,7 +260,7 @@ class UnivariateFitter(Savable):
         fit the data for a given p-value."""
         if not self._fitted:
             raise FitError("UnivariateFitter has not been fitted to data. "
-                           "Called .fit method.")
+                           "Call .fit method.")
 
         filtered_dists: dict = {}
         filtered_summaries: dict = {}
@@ -316,13 +316,13 @@ class UnivariateFitter(Savable):
         """
         if not self._fitted:
             raise FitError("UnivariateFitter has not been fitted to data. "
-                           "Called .fit method.")
+                           "Call .fit method.")
 
         # argument checks
         if not isinstance(significant, bool):
             raise TypeError("significant must be a boolean.")
 
-        if not isinstance(pvalue, float):
+        if not (isinstance(pvalue, float) or isinstance(pvalue, int)):
             raise TypeError("pvalue must be a float.")
         elif (pvalue > 1) or (pvalue < 0):
             raise ValueError("pvalue must be a valid probability.")
@@ -476,7 +476,7 @@ class UnivariateFitter(Savable):
         """
         if not self._fitted:
             raise FitError("UnivariateFitter has not been fitted to data. "
-                           "Called .fit method.")
+                           "Call .fit method.")
 
         # argument checks
         if isinstance(which, str):
@@ -622,4 +622,5 @@ class UnivariateFitter(Savable):
         """All distributions fitted to the dataset."""
         if self._fitted:
             return self._fitted_dists
-        raise FitError("Distributions have not been fitted.")
+        raise FitError("UnivariateFitter has not been fitted to data. "
+                       "Call .fit method.")
