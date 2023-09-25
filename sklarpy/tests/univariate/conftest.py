@@ -4,7 +4,7 @@ import numpy as np
 
 from sklarpy.univariate import distributions_map
 
-num = 100  # the number of random numbers to generate
+num: int = 100  # the number of random numbers to generate
 
 
 @pytest.fixture(scope="session", autouse=True)
