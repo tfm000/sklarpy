@@ -514,7 +514,8 @@ class CorrelationMatrix:
             .replace('-', '_').replace(' ', '_')
         if method not in CorrelationMatrix.IMPLEMENTED:
             raise ValueError(
-                f"{method} is not a valid argument. Specify from {CorrelationMatrix.IMPLEMENTED}")
+                f"{method} is not a valid argument. Specify from "
+                f"{CorrelationMatrix.IMPLEMENTED}")
 
         return eval(f"self.{method}(**kwargs)")
 
@@ -617,7 +618,8 @@ class CorrelationMatrix:
             if (psd and not np.all(eigenvalues >= 0)) or (
             not np.all(eigenvalues > 0)):
                 definiteness_msg: str = "semi-" if psd else ""
-                definiteness_msg = f"{name} matrix is not positive {definiteness_msg}definite"
+                definiteness_msg = f"{name} matrix is not positive " \
+                                   f"{definiteness_msg}definite"
                 if raise_error:
                     raise ValueError(definiteness_msg)
                 else:
