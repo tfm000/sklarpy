@@ -151,7 +151,10 @@ def check_multivariate_data(
         raise ValueError("data must be 2-dimensional.")
 
     # checking data contains only numbers
-    if not ((data_array.dtype == float) or (data_array.dtype == int)):
+    dtype = data_array.dtype
+    if not ((dtype == float) or (dtype == int)
+            or (dtype == np.int32) or (dtype == np.int64)
+            or (dtype == np.float32) or (dtype == np.float64)):
         raise ValueError("data must only contain integers or floats.")
 
     # checking number of variables
