@@ -1,7 +1,7 @@
 # Contains code for holding Gaussian / Normal parameters
 import numpy as np
 
-from sklarpy._other import Params
+from sklarpy._utils import Params
 
 __all__ = ['MultivariateNormalParams']
 

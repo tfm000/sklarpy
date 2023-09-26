@@ -10,8 +10,7 @@ import scipy.optimize
 
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
-from sklarpy._utils import get_iterator, FitError
-from sklarpy._other import Params
+from sklarpy._utils import get_iterator, FitError, Params
 from sklarpy.misc import debye
 
 __all__ = ['multivariate_clayton_gen', 'multivariate_gumbel_gen',

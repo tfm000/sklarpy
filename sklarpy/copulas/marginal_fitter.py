@@ -4,9 +4,8 @@ import numpy as np
 import pandas as pd
 from typing import Union, Iterable
 
-from sklarpy._other import Savable
 from sklarpy._utils import FitError, TypeKeeper, check_multivariate_data, \
-    get_iterator
+    get_iterator, Savable
 from sklarpy.univariate import UnivariateFitter
 from sklarpy._plotting import pair_plot
 

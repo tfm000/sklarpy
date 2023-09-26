@@ -9,7 +9,7 @@ from sklarpy.multivariate._distributions._generalized_hyperbolic import \
     multivariate_gen_hyperbolic_gen
 from sklarpy.multivariate._distributions._student_t import \
     multivariate_student_t_gen
-from sklarpy._other import Params
+from sklarpy._utils import Params
 from sklarpy.misc import kv
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.univariate import ig

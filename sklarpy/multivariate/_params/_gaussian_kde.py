@@ -1,5 +1,5 @@
 # Contains code for holding Gaussian KDE parameters.
-from sklarpy._other import Params
+from sklarpy._utils import Params
 
 __all__ = ['MultivariateGaussianKDEParams']
 

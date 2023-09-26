@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 
 from sklarpy.copulas import MarginalFitter
-from sklarpy._other import Params, NotImplementedBase
-from sklarpy._utils import check_multivariate_data, TypeKeeper
+from sklarpy._utils import check_multivariate_data, TypeKeeper, Params, \
+    NotImplementedBase
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate, \
     FittedContinuousMultivariate
 from sklarpy.univariate._fitted_dists import FittedUnivariateBase

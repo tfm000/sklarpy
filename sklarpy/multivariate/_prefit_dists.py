@@ -7,9 +7,8 @@ from collections import deque
 import scipy.integrate
 from scipy.optimize import differential_evolution
 
-from sklarpy._other import Params, NotImplementedBase
 from sklarpy._utils import TypeKeeper, check_multivariate_data, get_iterator, \
-    FitError
+    FitError, Params, NotImplementedBase
 from sklarpy._plotting import pair_plot, threeD_plot
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
 from sklarpy.misc import CorrelationMatrix

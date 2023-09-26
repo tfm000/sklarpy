@@ -5,7 +5,7 @@ from typing import Union, Callable
 
 from sklarpy.copulas._prefit_dists import PreFitCopula
 from sklarpy.copulas._fitted_dists import FittedCopula
-from sklarpy._other import Params
+from sklarpy._utils import Params
 from sklarpy.copulas import MarginalFitter
 from sklarpy.univariate import gh
 

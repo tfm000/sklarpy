@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from sklarpy._other import Savable
+from sklarpy._utils import Savable
 
 __all__ = ['FittedDiscreteUnivariate', 'FittedContinuousUnivariate']
 

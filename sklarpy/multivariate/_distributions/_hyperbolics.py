@@ -7,7 +7,7 @@ from abc import abstractmethod
 from sklarpy.multivariate._distributions._generalized_hyperbolic import \
     multivariate_gen_hyperbolic_gen
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
-from sklarpy._other import Params
+from sklarpy._utils import Params
 
 __all__ = ['multivariate_marginal_hyperbolic_gen',
            'multivariate_hyperbolic_gen', 'multivariate_nig_gen']
