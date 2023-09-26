@@ -7,7 +7,8 @@ import matplotlib.pyplot as plt
 import copy
 import scipy.interpolate
 
-from sklarpy.misc import inverse_transform, continuous_gof, discrete_gof
+from sklarpy.univariate._goodness_of_fit import continuous_gof, discrete_gof
+from sklarpy.univariate._inverse_transform import inverse_transform
 from sklarpy._utils import univariate_num_to_array, check_params, \
     check_univariate_data, FitError, check_array_datatype
 from sklarpy.univariate._fitted_dists import FittedContinuousUnivariate, \
