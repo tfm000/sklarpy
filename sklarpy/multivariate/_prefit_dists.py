@@ -1601,8 +1601,14 @@ class PreFitContinuousMultivariate(NotImplementedBase):
                                f"as variables for {self.name} distribution.")
 
             # fitting parameters to data
-            params_tuple, success = self._fit_given_data(data_array, method,
-                                                         **kwargs)
+            try:
+                params_tuple, success = self._fit_given_data(data_array,
+                                                             method, **kwargs)
+            except Exception as e:
+                raise FitError(f"The following error occurred while fitting. "
+                               f"\n\n{e}\n\nThis may occur if you have "
+                               f"insufficient data to perform the parameter "
+                               f"optimization.")
             params_dict, _ = self._fit_given_params_tuple(params_tuple)
             params: Params = self._params_obj(params_dict, self.name,
                                               num_variables)
