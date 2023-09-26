@@ -4,3 +4,5 @@ from sklarpy.multivariate.distributions import multivariate_gaussian_kde, \
     multivariate_skewed_t, multivariate_student_t, \
     multivariate_sym_gen_hyperbolic, multivariate_sym_marginal_hyperbolic, \
     multivariate_sym_hyperbolic, multivariate_sym_nig
+
+from sklarpy.multivariate.distributions_map import distributions_map
