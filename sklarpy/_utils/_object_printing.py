@@ -2,10 +2,10 @@
 import numpy as np
 import pandas as pd
 
-__all__ = ['print_full_arrays_and_dataframes']
+__all__ = ['print_full']
 
 
-def print_full_arrays_and_dataframes() -> None:
+def print_full() -> None:
     """Ensures numpy arrays and pandas DataFrames are printed in a full and
     readable format."""
     np.set_printoptions(linewidth=np.inf)
