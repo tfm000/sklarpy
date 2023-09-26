@@ -69,19 +69,26 @@ def check_univariate_data(
     data: np.ndarray
         The input data converted into a flattened numpy array.
     """
-    if isinstance(data, np.ndarray):
-        return data.flatten()
-    elif isinstance(data, pd.DataFrame):
+    if isinstance(data, pd.Series):
+        data = data.to_frame()
+    if isinstance(data, pd.DataFrame):
         if len(data.columns) != 1:
             raise ValueError("data must be a single column dataframe for it to"
                              " be considered univariate.")
-        return data.to_numpy()
-    elif isinstance(data, pd.Series):
-        return data.to_numpy()
+        data_array: np.ndarray = data.to_numpy().flatten()
     elif isinstance(data, Iterable):
-        return np.asarray(data).flatten()
+        return np.asarray(list(data)).flatten()
     else:
         raise TypeError("data must be an iterable.")
+
+    # checking data contains only numbers
+    dtype = data_array.dtype
+    if not ((dtype == float) or (dtype == int)
+            or (dtype == np.int32) or (dtype == np.int64)
+            or (dtype == np.float32) or (dtype == np.float64)):
+        raise ValueError("data must only contain integers or floats.")
+
+    return data_array
 
 
 def check_array_datatype(arr: np.ndarray, must_be_numeric: bool = True):
