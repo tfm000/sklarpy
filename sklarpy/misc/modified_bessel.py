@@ -1,7 +1,7 @@
 # Contains code for evaluating Modified Bessel functions
 import numpy as np
 import scipy.special
-from typing import Union
+from typing import Union, Iterable
 
 __all__ = ['kv']
 
@@ -48,6 +48,9 @@ class kv:
         large_value: float = kwargs.get('large_value', kv.__LARGE_VALUE)
 
         for arg in (v, z, large_value, small_value):
+            if isinstance(arg, Iterable) and np.asarray(arg).size == 1:
+                arg = float(arg)
+
             if not (isinstance(arg, float) or isinstance(arg, int)):
                 raise TypeError("all arguments / keyword arguments must "
                                 "be scalars.")
