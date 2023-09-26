@@ -110,7 +110,7 @@ def test_get_best(discrete_data, continuous_data):
         with pytest.raises(FitError, match="UnivariateFitter has not been "
                                            "fitted to data. Call .fit "
                                            "method."):
-            ufitter.plot()
+            ufitter.get_best()
 
         ufitter.fit()
 
