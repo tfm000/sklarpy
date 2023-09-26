@@ -76,12 +76,13 @@ class multivariate_normal_gen(PreFitContinuousMultivariate):
         res: Tuple[tuple, bool]
             The parameters optimized to fit the data, True.
         """
+        d: int = data.shape[1]
         if copula:
-            loc: np.ndarray = np.zeros((data.shape[1], 1), dtype=float)
+            loc: np.ndarray = np.zeros((d, 1), dtype=float)
             shape: np.ndarray = CorrelationMatrix(data).corr(method=cov_method,
                                                              **kwargs)
         else:
-            loc: np.ndarray = data.mean(axis=0, dtype=float)
+            loc: np.ndarray = data.mean(axis=0, dtype=float).reshape((d, 1))
             shape: np.ndarray = CorrelationMatrix(data).cov(method=cov_method,
                                                             **kwargs)
         return (loc, shape), True
