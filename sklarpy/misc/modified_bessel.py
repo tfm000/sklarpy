@@ -43,8 +43,15 @@ class kv:
         logkv: float
             The value of log(K_v(z))
         """
+        # argchecks
         small_value: float = kwargs.get('small_value', kv.__SMALL_VALUE)
         large_value: float = kwargs.get('large_value', kv.__LARGE_VALUE)
+
+        for arg in (v, z, large_value, small_value):
+            if not (isinstance(arg, float) or isinstance(arg, int)):
+                raise TypeError("all arguments / keyword arguments must "
+                                "be scalars.")
+        # k_-v(z) = k_v(z)
         v = abs(v)
 
         if 0 <= z <= small_value:
