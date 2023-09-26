@@ -73,7 +73,7 @@ class DebyeIntegrator:
             quad(func=DebyeIntegrator.integrand, a=0.0, b=x, args=(n, ))
 
         # returning result
-        return n * (x ** - n) * res[0]
+        return float(n * (x ** - n) * res[0])
 
 
 def debye(n: Union[int, float], x: Union[int, float]) -> float:
