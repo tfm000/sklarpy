@@ -19,7 +19,7 @@ def test_correct_type():
 
 
 def test_fit_to_data(discrete_data, continuous_data, dists_to_test):
-    """Testing we can fit distributions to data"""
+    """Testing we can fit distributions to data."""
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         target_fit = get_target_fit(name, continuous_data, discrete_data)
