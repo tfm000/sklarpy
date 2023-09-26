@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from typing import Callable
 import pytest
+import matplotlib.pyplot as plt
 
 from sklarpy.univariate import *
 from sklarpy.univariate._prefit_dists import PreFitUnivariateBase
@@ -420,3 +421,4 @@ def test_prefit_plots(discrete_data, continuous_data, dists_to_test):
         else:
             # checking we can plot without errors
             dist.plot(params, show=False)
+            plt.close()

@@ -4,6 +4,7 @@ from typing import Callable
 import pandas as pd
 from pathlib import Path
 import os
+import matplotlib.pyplot as plt
 
 from sklarpy.tests.univariate.helpers import get_data, get_fitted_dict
 from sklarpy._utils import SaveError, FitError
@@ -282,6 +283,7 @@ def test_fitted_plots(discrete_data, continuous_data, dists_to_test):
         for fitted_type, fitted in fitted_dict.items():
             # checking we can plot without errors
             fitted.plot(show=False)
+            plt.close()
 
 
 def test_fitted_saves(discrete_data, continuous_data, dists_to_test):

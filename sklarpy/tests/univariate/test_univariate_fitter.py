@@ -1,6 +1,7 @@
 # Contains tests for sklarpy's UnivariateFitter class
 import pandas as pd
 import pytest
+import matplotlib.pyplot as plt
 
 from sklarpy.univariate import UnivariateFitter, distributions_map
 from sklarpy.univariate._fitted_dists import FittedContinuousUnivariate, \
@@ -142,6 +143,7 @@ def test_plot(discrete_data, continuous_data):
 
         ufitter.fit()
         ufitter.plot(show=False)
+        plt.close()
 
 
 def test_fitted_distributions(discrete_data, continuous_data):
