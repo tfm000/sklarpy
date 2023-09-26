@@ -104,19 +104,44 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
                        - s * (np.log(q / dof) - np.log(np.sqrt(q * p)))
         return float(log_c + log_h)
 
-    def _logpdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
+    def _logpdf_cdf(self, func_str: str, x: np.ndarray, params: tuple, **kwargs
+                    ) -> np.ndarray:
+        """Utility function able to implement logpdf and cdf methods without
+        duplicate code.
+
+        Parameters
+        ----------
+        func_str: str
+            The name of the method to implement.
+        x: Union[pd.DataFrame, np.ndarray]
+            Our input data for our functions of the multivariate distribution.
+        params: Union[pd.DataFrame, tuple]
+            The parameters which define the multivariate model. These can be a
+            Params object of the specific multivariate distribution or a tuple
+            containing these parameters in the correct order.
+        kwargs:
+            kwargs to pass to the implemented method.
+
+        Returns
+        -------
+        output: np.ndarray
+            Implemented method values.
+        """
         if not np.any(params[-1]):
             # gamma is an array of 0's, hence we use the symmetric,
             # multivariate student-T distribution.
-            return self._mvt_t._logpdf(x=x, params=params[:-1], **kwargs)
-        return super()._logpdf(x=x, params=params, **kwargs)
+            params: tuple = (params[1], *params[3:5])
+            obj = self._mvt_t
+        else:
+            obj = super()
+        return eval(f'obj._{func_str}(x=x, params=params, **kwargs)')
+
+    def _logpdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
+        return self._logpdf_cdf(func_str='logpdf', x=x, params=params,
+                                **kwargs)
 
     def _cdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
-        if not np.any(params[-1]):
-            # gamma is an array of 0's, hence we use the symmetric,
-            # multivariate student-T distribution.
-            return self._mvt_t._cdf(x=x, params=params[:-1], **kwargs)
-        return super()._cdf(x=x, params=params, **kwargs)
+        return self._logpdf_cdf(func_str='cdf', x=x, params=params, **kwargs)
 
     def _w_rvs(self, size: int, params: tuple) -> np.ndarray:
         alpha_beta: float = params[1] / 2
@@ -211,13 +236,9 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
                      min_eig, copula: bool, **kwargs) -> tuple:
         # modifying bounds to fit those of the Generalized Hyperbolic
         bounds = ((0, 0), bounds[0], (0, 0), *bounds[1:])
-        params0: tuple = super()._get_params0(
-            data=data, bounds=bounds, cov_method=cov_method,
-            min_eig=min_eig, copula=copula, **kwargs)
-
-        d: int = data.shape[1]
-        data_stds: np.ndarray = data.std(axis=0, dtype=float)
-        return (*params0[:-1], np.random.normal(scale=data_stds, size=(d,)))
+        return super()._get_params0(data=data, bounds=bounds,
+                                    cov_method=cov_method, min_eig=min_eig,
+                                    copula=copula, **kwargs)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs
                                 ) -> Tuple[dict, int]:
