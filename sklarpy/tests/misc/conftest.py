@@ -28,4 +28,4 @@ def mvt_discrete_data():
     for i in range(1, d):
         poisson_data[:, i] = poisson_data[:, i] + poisson_data[:, i + 1]
 
-    return poisson_data[:-1]
+    return poisson_data[:, -1]
