@@ -228,8 +228,11 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         show_progress: bool = kwargs.get('show_progress', False)
         iterator = get_iterator(x, show_progress, "calculating cdf values")
 
-        return np.array([self._singlular_cdf(num_variables, xrow, params)
-                         for xrow in iterator], dtype=float)
+        try:
+            return np.array([self._singlular_cdf(num_variables, xrow, params)
+                             for xrow in iterator], dtype=float)
+        except NotImplementedError:
+            self._not_implemented('cdf')
 
     def _logpdf(self, x: np.ndarray, params: tuple,  **kwargs) -> np.ndarray:
         """The log of the probability density function of the multivariate
