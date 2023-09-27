@@ -47,7 +47,7 @@ def test_prefit_name():
     """Testing the name of pre-fit distributions is a string."""
     for name in distributions_map['all']:
         dist = eval(name)
-        assert isinstance(dist.name, str), f"name of {name} is not a string"
+        assert isinstance(dist.name, str), f"name of {name} is not a string."
 
 
 def test_prefit_continuous_or_parametric():
@@ -56,9 +56,9 @@ def test_prefit_continuous_or_parametric():
         dist = eval(name)
         s: str = dist.continuous_or_discrete
         assert isinstance(s, str), f"continuous_or_discrete is not a string " \
-                                   f"for {name}"
+                                   f"for {name}."
         assert s in ('continuous', 'discrete'), f"{name} is not continuous " \
-                                                f"or discrete"
+                                                f"or discrete."
 
 
 def test_fit_to_params(discrete_data, continuous_data, dists_to_test):
@@ -330,7 +330,7 @@ def test_prefit_logpdfs(discrete_data, continuous_data,
             assert isinstance(logpdf_values, np.ndarray), \
                 f"log-pdf values for {name} are not contained in a numpy array"
 
-            # checking same number of pdf values as input
+            # checking same number of logpdf values as input
             assert logpdf_values.size == data.size, \
                 f"number of log-pdf values for {name} do not match the " \
                 f"number of inputs"
