@@ -38,6 +38,11 @@ def test_fit_to_data(mvt_continuous_data, mvt_discrete_data,
             except RuntimeError:
                 continue
 
+            # testing fitted to correct type
+            assert issubclass(type(fitted), FittedContinuousMultivariate), \
+                f"{name} is not fitted to a child class of " \
+                f"FittedContinuousMultivariate."
+
             # testing parameters object
             params = fitted.params
             assert issubclass(type(params), Params), \
@@ -104,9 +109,17 @@ def test_fit_to_data(mvt_continuous_data, mvt_discrete_data,
 
             # testing we can fit distribution using parameters object.
             params_fitted = dist.fit(params=params)
+            assert issubclass(type(params_fitted),
+                              FittedContinuousMultivariate), \
+                f"{name} is not fitted to a child class of " \
+                f"FittedContinuousMultivariate."
 
             # testing we can fit distribution using tuple object.
             tuple_fitted = dist.fit(params=params.to_tuple)
+            assert issubclass(type(tuple_fitted),
+                              FittedContinuousMultivariate), \
+                f"{name} is not fitted to a child class of " \
+                f"FittedContinuousMultivariate."
 
             # testing for errors if incorrect params object provided
             with pytest.raises(
