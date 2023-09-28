@@ -5,13 +5,13 @@ __all__ = ['distributions_map']
 # Continuous (Parametric)
 ###############################################################################
 continuous_parametric_names: tuple = (
+    'multivariate_normal',
+    'multivariate_student_t',
     'multivariate_gen_hyperbolic',
     'multivariate_marginal_hyperbolic',
     'multivariate_hyperbolic',
     'multivariate_nig',
-    'multivariate_normal',
     'multivariate_skewed_t',
-    'multivariate_student_t',
     'multivariate_sym_gen_hyperbolic',
     'multivariate_sym_marginal_hyperbolic',
     'multivariate_sym_hyperbolic',
@@ -31,8 +31,8 @@ discrete_numerical_names: tuple = tuple()
 ###############################################################################
 # Distribution Categories/Map
 ###############################################################################
-all_continuous_names: tuple = (*continuous_parametric_names,
-                               *continuous_numerical_names)
+all_continuous_names: tuple = (*continuous_numerical_names,
+                               *continuous_parametric_names)
 
 all_discrete_names: tuple = (*discrete_parametric_names,
                              *discrete_numerical_names)
