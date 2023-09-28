@@ -179,7 +179,8 @@ class FittedContinuousMultivariate(Savable, Copyable):
         """
         if data is None:
             return self.__fit_info[func_str]
-        return eval(f"self.__obj.{func_str}(data, self.params)")
+        obj = self.__obj
+        return eval(f"obj.{func_str}(data, self.params)")
 
     def likelihood(self, data: Union[pd.DataFrame, np.ndarray] = None
                    ) -> float:
