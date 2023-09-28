@@ -236,9 +236,20 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
                      min_eig, copula: bool, **kwargs) -> tuple:
         # modifying bounds to fit those of the Generalized Hyperbolic
         bounds = ((0, 0), bounds[0], (0, 0), *bounds[1:])
-        return super()._get_params0(data=data, bounds=bounds,
-                                    cov_method=cov_method, min_eig=min_eig,
-                                    copula=copula, **kwargs)
+        params0: tuple = super()._get_params0(
+            data=data, bounds=bounds, cov_method=cov_method,
+            min_eig=min_eig, copula=copula, **kwargs)
+
+        if not kwargs.get('em_opt', False):
+            return params0
+
+        # EM algorithm requires gamma parameter to be non-zero
+        d: int = data.shape[1]
+        data_stds: np.ndarray = data.std(axis=0, dtype=float)
+        gamma: np.ndarray = np.array([0])
+        while not np.any(gamma):
+            gamma = np.random.normal(scale=data_stds, size=(d,))
+        return (*params0[:-1], gamma)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs
                                 ) -> Tuple[dict, int]:

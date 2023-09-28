@@ -382,7 +382,7 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
         S_det: float = shape0_eigenvalues.prod()
 
         # other constants
-        min_eig: float = shape0_eigenvalues.min()  if min_eig is None \
+        min_eig: float = shape0_eigenvalues.min() if min_eig is None \
             else min_eig  # used to shape matrix pd
         x_bar: np.ndarray = data.mean(axis=0, dtype=float)
 
@@ -400,7 +400,8 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             p0: tuple = self._get_params(
                 self._get_params0(
                     data=data, bounds=bounds, copula=copula,
-                    cov_method=cov_method, min_eig=min_eig, **kwargs)
+                    cov_method=cov_method, min_eig=min_eig, em_opt=True,
+                    **kwargs)
                 if params0 is None else params0)
 
             # doing a single expectation-maximisation run
