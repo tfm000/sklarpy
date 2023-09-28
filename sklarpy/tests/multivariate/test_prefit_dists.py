@@ -161,7 +161,7 @@ def test_logpdf_pdf_cdf_mc_cdfs(mvt_continuous_data, mvt_discrete_data,
             for data in datasets:
                 output = func(x=data, params=params, match_datatype=True)
                 np_output = np.asarray(output)
-                n, d = np.asarray(data).shape
+                n, d = np.asarray(data).shape[0]
 
                 # checking same datatype
                 assert isinstance(output, type(data)), \
@@ -183,6 +183,13 @@ def test_logpdf_pdf_cdf_mc_cdfs(mvt_continuous_data, mvt_discrete_data,
                 elif func_str in ('cdf', 'mc_cdf'):
                     assert np.all((-eps <= np_output) & (output <= 1 + eps)), \
                         f"{func_str} values in {name} outside [0, 1]."
+
+            # checking error if wrong dimension
+            new_dataset: np.ndarray = np.zeros((n, d+1))
+            with pytest.raises(
+                    ValueError, match="Dimensions implied by parameters do "
+                                      "not match those of the dataset."):
+                func(x=new_dataset, params=params)
 
 
 def test_rvs(mv_dists_to_test):
@@ -212,9 +219,8 @@ def test_prefit_scalars(mvt_continuous_data, mvt_discrete_data,
     """Testing the likelihood, loglikelihood, AIC and BIC functions of
     multivariate pre-fit distributions."""
     for name in mv_dists_to_test:
-        dist, _, params = get_dist(name)
+        dist, _, params = get_dist(name, 2)
         for func_str in ('likelihood', 'loglikelihood', 'aic', 'bic'):
-            print(name, '-', func_str)
             func: Callable = eval(f'dist.{func_str}')
             for data in (mvt_continuous_data, mvt_discrete_data,
                          pd_mvt_continuous_data, pd_mvt_discrete_data):
@@ -235,6 +241,15 @@ def test_prefit_scalars(mvt_continuous_data, mvt_discrete_data,
                     assert value >= 0, \
                         f"{func_str} for {name} is negative when datatype " \
                         f"is {type(data)}."
+
+            # checking error if wrong dimension
+            n, d = data.shape
+            new_dataset: np.ndarray = np.zeros((n, d + 1))
+            with pytest.raises(
+                    ValueError,
+                    match="Dimensions implied by parameters do "
+                          "not match those of the dataset."):
+                func(data=new_dataset, params=params)
 
 
 def test_plots(mv_dists_to_test):
