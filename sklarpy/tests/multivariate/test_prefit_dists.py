@@ -137,9 +137,9 @@ def test_fit_to_data(mvt_continuous_data, mvt_discrete_data,
             dist.fit(params=range(1000))
 
 
-def test_logpdf_pdf_cdf_mc_cdfs(mvt_continuous_data, mvt_discrete_data,
-                     pd_mvt_continuous_data, pd_mvt_discrete_data,
-                     mv_dists_to_test):
+def test_prefit_logpdf_pdf_cdf_mc_cdfs(
+        mvt_continuous_data, mvt_discrete_data, pd_mvt_continuous_data,
+        pd_mvt_discrete_data, mv_dists_to_test):
     """Testing the logpdf, pdf, cdf and mc-cdf functions of pre-fit
     multivariate distributions."""
     eps: float = 10 ** -5
@@ -192,7 +192,7 @@ def test_logpdf_pdf_cdf_mc_cdfs(mvt_continuous_data, mvt_discrete_data,
                 func(x=new_dataset, params=params)
 
 
-def test_rvs(mv_dists_to_test):
+def test_prefit_rvs(mv_dists_to_test):
     """Testing the rvs functions of multivariate distributions."""
     for name in mv_dists_to_test:
         dist, _, params = get_dist(name)
@@ -252,7 +252,7 @@ def test_prefit_scalars(mvt_continuous_data, mvt_discrete_data,
                 func(data=new_dataset, params=params)
 
 
-def test_plots(mv_dists_to_test):
+def test_prefit_plots(mv_dists_to_test):
     """Testing the marginal_pairplot, pdf_plot, cdf_plot and mc_cdf_plot
     methods of pre-fit multivariate distributions."""
     for name in mv_dists_to_test:
@@ -268,14 +268,14 @@ def test_plots(mv_dists_to_test):
                 plt.close()
             else:
                 with pytest.raises(NotImplementedError,
-                                   match=f"{func_str}_plot is not "
+                                   match=f"{func_str} is not "
                                          f"implemented when the number of "
                                          f"variables is not 2."):
                     func(params=params_3d, show=False)
 
             # testing 2d plots
-            kwargs = {} if func_str == 'marginal_pairplot' \
-                else {'num_points': 2}
+            kwargs = {'num_generate': 10} if func_str == 'marginal_pairplot' \
+        else {'num_points': 2, 'num_generate': 10, 'mc_num_generate': 10}
             func(params=params_2d, show=False, **kwargs)
             plt.close()
 
@@ -287,7 +287,7 @@ def test_prefit_name(mv_dists_to_test):
         assert isinstance(dist.name, str), f"name of {name} is not a string."
 
 
-def test_num_params(mv_dists_to_test):
+def test_prefit_num_params(mv_dists_to_test):
     """Testing the num_params and num_scalar_params of pre-fit multivariate
     distributions."""
     for name in mv_dists_to_test:

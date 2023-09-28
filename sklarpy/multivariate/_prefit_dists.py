@@ -894,7 +894,8 @@ class PreFitContinuousMultivariate(NotImplementedBase):
                  figsize: tuple = (8, 8), grid: bool = True,
                  axes_names: tuple = None, zlim: tuple = (None, None),
                  num_generate: int = 1000, num_points: int = 100,
-                 show_progress: bool = True, show: bool = True) -> None:
+                 show_progress: bool = True, show: bool = True, **kwargs
+                 ) -> None:
         """Produces a 3D plot of the multivariate distribution's pdf / density
         function.
 
@@ -970,7 +971,8 @@ class PreFitContinuousMultivariate(NotImplementedBase):
                  figsize: tuple = (8, 8), grid: bool = True,
                  axes_names: tuple = None, zlim: tuple = (0, 1),
                  num_generate: int = 1000, num_points: int = 100,
-                 show_progress: bool = True, show: bool = True) -> None:
+                 show_progress: bool = True, show: bool = True, **kwargs
+                 ) -> None:
         """Produces a 3D plot of the multivariate distribution's cdf /
         cumulative density function.
 
@@ -1052,7 +1054,7 @@ class PreFitContinuousMultivariate(NotImplementedBase):
                     grid: bool = True, axes_names: tuple = None,
                     zlim: tuple = (0, 1), num_generate: int = 1000,
                     num_points: int = 100, show_progress: bool = True,
-                    show: bool = True) -> None:
+                    show: bool = True, **kwargs) -> None:
         """Produces a 3D plot of the multivariate distribution's cdf /
         cumulative density function, using monte-carlo numerical approximation.
 
