@@ -7,7 +7,7 @@ import numpy as np
 from sklarpy.multivariate import distributions_map
 
 num: int = 100
-d: int = 3
+d: int = 2
 
 
 @pytest.fixture(scope="session", autouse=True)
