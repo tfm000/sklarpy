@@ -161,7 +161,7 @@ def test_prefit_logpdf_pdf_cdf_mc_cdfs(
             for data in datasets:
                 output = func(x=data, params=params, match_datatype=True)
                 np_output = np.asarray(output)
-                n, d = np.asarray(data).shape[0]
+                n, d = np.asarray(data).shape
 
                 # checking same datatype
                 assert isinstance(output, type(data)), \
@@ -293,7 +293,7 @@ def test_prefit_num_params(mv_dists_to_test):
     for name in mv_dists_to_test:
         dist, _, params = get_dist(name)
 
-        for func_str in ('num_params', 'num_scalar_params()'):
+        for func_str in ('num_params', 'num_scalar_params(d=3)'):
             value = eval(f"dist.{func_str}")
             assert isinstance(value, int), \
                 f"{func_str} of {name} is not an integer."
