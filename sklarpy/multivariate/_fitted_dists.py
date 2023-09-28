@@ -382,8 +382,9 @@ class FittedContinuousMultivariate(Savable, Copyable):
                 axes_names = type_keeper.original_info['other']['cols']
 
         if self.num_variables != 2:
-            raise ValueError(f"{func_name}_plot is not implemented when number"
-                             f" of variables is not 2.")
+            raise NotImplementedError(
+                f"{func_name}_plot is not implemented when the number of "
+                f"variables is not 2.")
 
         if (not isinstance(num_points, int)) or (num_points <= 0):
             raise TypeError("num_points must be a strictly positive integer.")
@@ -412,7 +413,8 @@ class FittedContinuousMultivariate(Savable, Copyable):
                  alpha: float = 1.0, figsize: tuple = (8, 8),
                  grid: bool = True, axes_names: tuple = None,
                  zlim: tuple = (None, None), num_points: int = 100,
-                 show_progress: bool = True, show: bool = True) -> None:
+                 show_progress: bool = True, show: bool = True,
+                 **kwargs) -> None:
         """Produces a 3D plot of the multivariate distribution's pdf / density
         function.
 
@@ -480,7 +482,8 @@ class FittedContinuousMultivariate(Savable, Copyable):
                  alpha: float = 1.0, figsize: tuple = (8, 8),
                  grid: bool = True, axes_names: tuple = None,
                  zlim: tuple = (None, None), num_points: int = 100,
-                 show_progress: bool = True, show: bool = True) -> None:
+                 show_progress: bool = True, show: bool = True,
+                 **kwargs) -> None:
         """Produces a 3D plot of the multivariate distribution's cdf /
         cumulative density function.
 
@@ -553,7 +556,8 @@ class FittedContinuousMultivariate(Savable, Copyable):
                     alpha: float = 1.0, figsize: tuple = (8, 8),
                     grid: bool = True, axes_names: tuple = None,
                     zlim: tuple = (None, None), num_points: int = 100,
-                    show_progress: bool = True, show: bool = True) -> None:
+                    show_progress: bool = True, show: bool = True,
+                    **kwargs) -> None:
         """Produces a 3D plot of the multivariate distribution's cdf /
         cumulative density function, using monte-carlo numerical approximation.
 
