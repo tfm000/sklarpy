@@ -34,8 +34,10 @@ class multivariate_normal_gen(PreFitContinuousMultivariate):
                                                    cov=params[1])
 
     def _rvs(self, size: int, params: tuple) -> np.ndarray:
+        loc: np.ndarray = params[0]
         return scipy.stats.multivariate_normal.rvs(
-            size=size, mean=params[0].flatten(), cov=params[1])
+            size=size, mean=loc.flatten(), cov=params[1]).reshape(
+            (size, loc.size))
 
     def _fit_given_data_kwargs(self, method: str, data: np.ndarray,
                                **user_kwargs) -> dict:

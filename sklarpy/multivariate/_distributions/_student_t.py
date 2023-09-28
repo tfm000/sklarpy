@@ -72,8 +72,10 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
         ], dtype=float).flatten()
 
     def _rvs(self, size: int, params: tuple) -> np.ndarray:
+        loc: np.ndarray = params[1]
         return scipy.stats.multivariate_t.rvs(
-            size=size, loc=params[1].flatten(), shape=params[2], df=params[0])
+            size=size, loc=loc.flatten(), shape=params[2],
+            df=params[0]).reshape((size, loc.size))
 
     def _get_bounds(self, data: np.ndarray, as_tuple: bool, **kwargs
                     ) -> Union[dict, tuple]:
