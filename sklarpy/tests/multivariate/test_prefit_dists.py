@@ -193,7 +193,7 @@ def test_prefit_logpdf_pdf_cdf_mc_cdfs(
 
 
 def test_prefit_rvs(mv_dists_to_test):
-    """Testing the rvs functions of multivariate distributions."""
+    """Testing the rvs functions of pre-fit multivariate distributions."""
     for name in mv_dists_to_test:
         dist, _, params = get_dist(name)
         for size in (1, 2, 5, 101):
