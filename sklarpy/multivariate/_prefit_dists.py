@@ -166,6 +166,36 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             self._check_params(params, **kwargs)
         return params
 
+    @abstractmethod
+    def _get_dim(self, params: tuple) -> int:
+        """Retrieves the number of variables implied by the given parameters.
+
+        Parameters
+        ----------
+        params : tuple
+            The parameters which define the multivariate model, in tuple form.
+
+        Return
+        -------
+        d: int
+            The number of variables implied by the given parameters.
+        """
+
+    def _check_dim(self, data: np.ndarray, params: tuple) -> None:
+        """Checks the dimensions of the dataset match that of the parameters.
+        Raises an error if the dimensions do not match.
+
+        Parameters
+        ----------
+        data : np.ndarray
+            The dataset provided by the user.
+        params : tuple
+            The parameters which define the multivariate model, in tuple form.
+        """
+        if data.shape[1] != self._get_dim(params):
+            raise ValueError("Dimensions implied by parameters do not match "
+                             "those of the dataset.")
+
     def _singlular_cdf(self, num_variables: int, xrow: np.ndarray,
                        params: tuple) -> float:
         """Returns the cumulative distribution function value for a single set
@@ -335,6 +365,7 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             raise ValueError("func_name invalid")
         x_array: np.ndarray = self._get_x_array(x)
         params_tuple: tuple = self._get_params(params, **kwargs)
+        self._check_dim(data=x_array, params=params_tuple)
 
         shape: tuple = x_array.shape
 
@@ -493,6 +524,8 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         """
         # checking arguments
         x_array: np.ndarray = self._get_x_array(x)
+        params_tuple: tuple = self._get_params(params, **kwargs)
+        self._check_dim(data=x_array, params=params_tuple)
         if not isinstance(num_generate, int) or (num_generate <= 0):
             raise TypeError("num_generate must be a positive integer")
 

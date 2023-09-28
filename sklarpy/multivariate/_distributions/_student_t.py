@@ -59,6 +59,9 @@ class multivariate_student_t_gen(PreFitContinuousMultivariate):
         elif dof <= 0:
             raise ValueError(dof_msg)
 
+    def _get_dim(self, params: tuple) -> int:
+        return params[1].size
+
     def _logpdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
         return np.array([
             scipy.stats.multivariate_t.logpdf(x, loc=params[1].flatten(),

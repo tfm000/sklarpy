@@ -24,6 +24,9 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
     _DEFAULT_BOUNDS: tuple
     _N_PARAMS: int
 
+    def _get_dim(self, params: tuple) -> int:
+        return params[-1]
+
     @abstractmethod
     def _param_range(self, d: int) -> Tuple[Tuple[float, float], list]:
         """Returns the parameter range for which the Archimedean copula is

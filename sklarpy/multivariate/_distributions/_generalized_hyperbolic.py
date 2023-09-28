@@ -59,6 +59,9 @@ class multivariate_gen_hyperbolic_gen(PreFitContinuousMultivariate):
             raise ValueError("gamma vector must be a numpy array with the "
                              "same size as the location vector.")
 
+    def _get_dim(self, params: tuple) -> int:
+        return params[3].size
+
     def _singular_logpdf(self, xrow: np.ndarray, params: tuple, **kwargs) \
             -> float:
         """Returns the log-pdf value for a single set of variable observations.

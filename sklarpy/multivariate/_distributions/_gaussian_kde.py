@@ -29,6 +29,9 @@ class multivariate_gaussian_kde_gen(PreFitContinuousMultivariate):
         if iserror:
             raise ValueError("kde param must be a fitted gaussian_kde object.")
 
+    def _get_dim(self, params: tuple) -> int:
+        return params[0].covariance.shape[1]
+
     def _logpdf(self, x: np.ndarray, params: tuple,  **kwargs) -> np.ndarray:
         kde: scipy.stats.gaussian_kde = params[0]
         return kde.logpdf(x.T).T

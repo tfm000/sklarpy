@@ -25,6 +25,9 @@ class multivariate_normal_gen(PreFitContinuousMultivariate):
                               kwargs.get('ones', False))
         self._check_loc_shape(loc, shape, definiteness, ones)
 
+    def _get_dim(self, params: tuple) -> int:
+        return params[0].size
+
     def _logpdf(self, x: np.ndarray, params: tuple, **kwargs) -> np.ndarray:
         return scipy.stats.multivariate_normal.logpdf(
             x, mean=params[0].flatten(), cov=params[1])
