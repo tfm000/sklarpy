@@ -143,6 +143,7 @@ def test_prefit_logpdf_pdf_cdf_mc_cdfs(
     """Testing the logpdf, pdf, cdf and mc-cdf functions of pre-fit
     multivariate distributions."""
     eps: float = 10 ** -5
+    num_generate: int = 10
 
     for name in mv_dists_to_test:
         dist, _, params = get_dist(name, 2)
@@ -159,7 +160,8 @@ def test_prefit_logpdf_pdf_cdf_mc_cdfs(
                                            pd_mvt_discrete_data)
 
             for data in datasets:
-                output = func(x=data, params=params, match_datatype=True)
+                output = func(x=data, params=params, match_datatype=True,
+                              num_generate=num_generate)
                 np_output = np.asarray(output)
                 n, d = np.asarray(data).shape
 
@@ -189,7 +191,7 @@ def test_prefit_logpdf_pdf_cdf_mc_cdfs(
             with pytest.raises(
                     ValueError, match="Dimensions implied by parameters do "
                                       "not match those of the dataset."):
-                func(x=new_dataset, params=params)
+                func(x=new_dataset, params=params, num_generate=num_generate)
 
 
 def test_prefit_rvs(mv_dists_to_test):
@@ -297,8 +299,7 @@ def test_prefit_num_params(mv_dists_to_test):
             value = eval(f"dist.{func_str}")
             assert isinstance(value, int), \
                 f"{func_str} of {name} is not an integer."
-            assert dist.num_params >= 0, f"{func_str} of {name} is negative."
+            assert value >= 0, f"{func_str} of {name} is negative."
         assert dist.num_params == len(params), \
             f"num_params of {name} does not match the length of its params " \
             f"object."
-
