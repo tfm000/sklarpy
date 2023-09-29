@@ -489,7 +489,7 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         return self._logpdf_pdf_cdf("cdf", x, params, match_datatype, **kwargs)
 
     def mc_cdf(self, x: Union[pd.DataFrame, np.ndarray],
-               params: Union[Params, tuple], match_datatype: bool,
+               params: Union[Params, tuple], match_datatype: bool = True,
                num_generate: int = 10 ** 4, show_progress: bool = False,
                **kwargs) -> Union[pd.DataFrame, np.ndarray]:
         """The monte-carlo numerical approximation of the multivariate cdf
