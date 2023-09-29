@@ -4,22 +4,22 @@ import pandas as pd
 import pytest
 from typing import Callable
 import matplotlib.pyplot as plt
+import scipy.stats
 
-from sklarpy.multivariate import *
 from sklarpy.tests.multivariate.helpers import get_dist
 from sklarpy._utils import Params
 
 
 def test_fitted_logpdf_pdf_cdf_mc_cdf(
         mvt_continuous_data, mvt_discrete_data, pd_mvt_continuous_data,
-        pd_mvt_discrete_data, mv_dists_to_test):
+        pd_mvt_discrete_data, mv_dists_to_test, params_2d):
     """Testing the logpdf, pdf, cdf and mc-cdf functions of fitted multivariate
      distributions"""
     eps: float = 10 ** -5
     num_generate: int = 10
 
     for name in mv_dists_to_test:
-        _, fitted, _ = get_dist(name, 2)
+        _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
         for func_str in ('logpdf', 'pdf', 'cdf', 'mc_cdf'):
             func: Callable = eval(f'fitted.{func_str}')
             cdf_num: int = 10
@@ -67,10 +67,10 @@ def test_fitted_logpdf_pdf_cdf_mc_cdf(
                 func(x=new_dataset, num_generate=num_generate)
 
 
-def test_fitted_rvs(mv_dists_to_test):
+def test_fitted_rvs(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the rvs functions of fitted multivariate distributions."""
     for name in mv_dists_to_test:
-        _, fitted, _ = get_dist(name)
+        _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
         for size in (1, 2, 5, 101):
             rvs = fitted.rvs(size=size)
             np_rvs: np.ndarray = np.asarray(rvs)
@@ -87,11 +87,11 @@ def test_fitted_rvs(mv_dists_to_test):
 
 def test_fitted_scalars(mvt_continuous_data, mvt_discrete_data,
                         pd_mvt_continuous_data, pd_mvt_discrete_data,
-                        mv_dists_to_test):
+                        mv_dists_to_test, params_2d):
     """Testing the likelihood, loglikelihood, AIC and BIC functions of
     multivariate fitted distributions."""
     for name in mv_dists_to_test:
-        _, fitted, _ = get_dist(name, 2)
+        _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
         for func_str in ('likelihood', 'loglikelihood', 'aic', 'bic'):
             func: Callable = eval(f'fitted.{func_str}')
             for data in (mvt_continuous_data, mvt_discrete_data,
@@ -124,12 +124,14 @@ def test_fitted_scalars(mvt_continuous_data, mvt_discrete_data,
                 func(data=new_dataset)
 
 
-def test_fitted_plots(mv_dists_to_test):
+def test_fitted_plots(mv_dists_to_test, params_2d, params_3d, mvt_continuous_data):
     """Testing the marginal_pairplot, pdf_plot, cdf_plot and mc_cdf_plot
     methods of fitted multivariate distributions."""
+    mvt_continuous_data_3d: np.ndarray = scipy.stats.multivariate_normal.rvs(
+        size=(mvt_continuous_data.shape[0], 3))
     for name in mv_dists_to_test:
-        _, fitted_2d, _ = get_dist(name, 2)
-        _, fitted_3d, _ = get_dist(name, 3)
+        _, fitted_2d, _ = get_dist(name, params_2d, mvt_continuous_data)
+        _, fitted_3d, _ = get_dist(name, params_3d, mvt_continuous_data_3d)
         for func_str in ('marginal_pairplot', 'pdf_plot',
                          'cdf_plot', 'mc_cdf_plot'):
             func_2d: Callable = eval(f'fitted_2d.{func_str}')
@@ -153,10 +155,10 @@ def test_fitted_plots(mv_dists_to_test):
             plt.close()
 
 
-def test_fitted_params(mv_dists_to_test):
+def test_fitted_params(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the params attribute of fitted multivariate distributions."""
     for name in mv_dists_to_test:
-        _, fitted, _ = get_dist(name, 2)
+        _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
 
         # checking exists
         assert 'params' in dir(fitted), f"params is not an attribute of " \
@@ -167,11 +169,11 @@ def test_fitted_params(mv_dists_to_test):
             f"params of fitted {name} is not a Params object."
 
 
-def test_fitted_integers(mv_dists_to_test):
+def test_fitted_integers(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the num_params, num_scalar_params, num_variables and
     fitted_num_data_points of fitted multivariate distributions."""
     for name in mv_dists_to_test:
-        _, fitted, params = get_dist(name)
+        _, fitted, params = get_dist(name, params_2d, mvt_continuous_data)
 
         for func_str in ('num_params', 'num_scalar_params', 'num_variables',
                          'fitted_num_data_points'):
@@ -188,10 +190,10 @@ def test_fitted_integers(mv_dists_to_test):
             f"object."
 
 
-def test_fitted_converged(mv_dists_to_test):
+def test_fitted_converged(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing converged attributes of fitted multivariate distributions."""
     for name in mv_dists_to_test:
-        _, fitted, _ = get_dist(name)
+        _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
 
         # testing exists
         assert 'converged' in dir(fitted), \
@@ -202,10 +204,10 @@ def test_fitted_converged(mv_dists_to_test):
             f"converged is not a boolean value for fitted {name}."
 
 
-def test_fitted_summaries(mv_dists_to_test):
+def test_fitted_summaries(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the summaries of fitted multivariate distributions."""
     for name in mv_dists_to_test:
-        _, fitted, _ = get_dist(name)
+        _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
 
         # testing exists
         assert 'summary' in dir(fitted), \

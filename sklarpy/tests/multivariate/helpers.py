@@ -1,28 +1,35 @@
 # Contains helper functions for testing SklarPy multivariate code
 import os
+import numpy as np
 
 from sklarpy.multivariate import *
-from sklarpy import load
 
 __all__ = ['get_dist']
 
 
-def get_dist(name: str, d: int = 3) -> tuple:
+def get_dist(name: str, params_dict: dict, data: np.ndarray = None) -> tuple:
     """Fits a distribution to data.
 
     Parameters
     ----------
     name : str
         The name of the distribution as in distributions_map
-    d: int
-        The dimension of the data.
+    params_dict: dict
+        Dictionary containing the parameters of each distribution.
+    data: np.ndarray
+        Multivariate data to fit the distribution too if its params are not
+        specified in params_dict.
+
     Returns
     -------
     res: tuple
         non-fitted dist, fitted dist, parameters for fitted dist
     """
     dist = eval(name)
-    path: str = f'{os.getcwd()}\\sklarpy\\tests\\multivariate\\{name}_{d}D'
-    params = load(path)
-    fitted = dist.fit(params=params)
+    if name in params_dict:
+        params: tuple = params_dict[name]
+        fitted = dist.fit(params=params)
+    else:
+        fitted = dist.fit(data=data)
+        params: tuple = fitted.params.to_tuple
     return dist, fitted, params

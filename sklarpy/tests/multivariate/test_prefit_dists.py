@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 from typing import Callable
 import matplotlib.pyplot as plt
+import scipy.stats
 
 from sklarpy.multivariate import *
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
@@ -139,14 +140,14 @@ def test_fit_to_data(mvt_continuous_data, mvt_discrete_data,
 
 def test_prefit_logpdf_pdf_cdf_mc_cdfs(
         mvt_continuous_data, mvt_discrete_data, pd_mvt_continuous_data,
-        pd_mvt_discrete_data, mv_dists_to_test):
+        pd_mvt_discrete_data, mv_dists_to_test, params_2d):
     """Testing the logpdf, pdf, cdf and mc-cdf functions of pre-fit
     multivariate distributions."""
     eps: float = 10 ** -5
     num_generate: int = 10
 
     for name in mv_dists_to_test:
-        dist, _, params = get_dist(name, 2)
+        dist, _, params = get_dist(name, params_2d, mvt_continuous_data)
         for func_str in ('logpdf', 'pdf', 'cdf', 'mc_cdf'):
             func: Callable = eval(f'dist.{func_str}')
             cdf_num: int = 10
@@ -194,10 +195,10 @@ def test_prefit_logpdf_pdf_cdf_mc_cdfs(
                 func(x=new_dataset, params=params, num_generate=num_generate)
 
 
-def test_prefit_rvs(mv_dists_to_test):
+def test_prefit_rvs(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the rvs functions of pre-fit multivariate distributions."""
     for name in mv_dists_to_test:
-        dist, _, params = get_dist(name)
+        dist, _, params = get_dist(name, params_2d, mvt_continuous_data)
         for size in (1, 2, 5, 101):
             rvs = dist.rvs(size=size, params=params)
 
@@ -217,11 +218,11 @@ def test_prefit_rvs(mv_dists_to_test):
 
 def test_prefit_scalars(mvt_continuous_data, mvt_discrete_data,
                         pd_mvt_continuous_data, pd_mvt_discrete_data,
-                        mv_dists_to_test):
+                        mv_dists_to_test, params_2d):
     """Testing the likelihood, loglikelihood, AIC and BIC functions of
     multivariate pre-fit distributions."""
     for name in mv_dists_to_test:
-        dist, _, params = get_dist(name, 2)
+        dist, _, params = get_dist(name, params_2d, mvt_continuous_data)
         for func_str in ('likelihood', 'loglikelihood', 'aic', 'bic'):
             func: Callable = eval(f'dist.{func_str}')
             for data in (mvt_continuous_data, mvt_discrete_data,
@@ -254,12 +255,15 @@ def test_prefit_scalars(mvt_continuous_data, mvt_discrete_data,
                 func(data=new_dataset, params=params)
 
 
-def test_prefit_plots(mv_dists_to_test):
+def test_prefit_plots(mv_dists_to_test, params_2d, params_3d,
+                      mvt_continuous_data):
     """Testing the marginal_pairplot, pdf_plot, cdf_plot and mc_cdf_plot
     methods of pre-fit multivariate distributions."""
+    mvt_continuous_data_3d: np.ndarray = scipy.stats.multivariate_normal.rvs(
+        size=(mvt_continuous_data.shape[0], 3))
     for name in mv_dists_to_test:
-        dist, _, params_2d = get_dist(name, 2)
-        _, _, params_3d = get_dist(name, 3)
+        dist, _, params_2d = get_dist(name, params_2d, mvt_continuous_data)
+        _, _, params_3d = get_dist(name, params_3d, mvt_continuous_data_3d)
         for func_str in ('marginal_pairplot', 'pdf_plot',
                          'cdf_plot', 'mc_cdf_plot'):
             func: Callable = eval(f'dist.{func_str}')
@@ -289,11 +293,11 @@ def test_prefit_name(mv_dists_to_test):
         assert isinstance(dist.name, str), f"name of {name} is not a string."
 
 
-def test_prefit_num_params(mv_dists_to_test):
+def test_prefit_num_params(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the num_params and num_scalar_params of pre-fit multivariate
     distributions."""
     for name in mv_dists_to_test:
-        dist, _, params = get_dist(name)
+        dist, _, params = get_dist(name, params_2d, mvt_continuous_data)
 
         for func_str in ('num_params', 'num_scalar_params(d=3)'):
             value = eval(f"dist.{func_str}")
