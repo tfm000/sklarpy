@@ -107,7 +107,10 @@ def check_array_datatype(arr: np.ndarray, must_be_numeric: bool = True):
     data-type
         the data-type of the numpy array.
     """
-    if not ((arr.dtype == float) or (arr.dtype == int)):
+    dtype = arr.dtype
+    if not ((dtype == float) or (dtype == int)
+            or (dtype == np.int32) or (dtype == np.int64)
+            or (dtype == np.float32) or (dtype == np.float64)):
         if must_be_numeric:
             raise TypeError("Array must contain integer or float values.")
         return arr.dtype
