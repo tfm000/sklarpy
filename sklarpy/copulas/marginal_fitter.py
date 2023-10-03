@@ -244,6 +244,7 @@ class MarginalFitter(Savable):
         if x is None:
             x = self._cdf_data if func_str == 'ppf' else self._data
         else:
+            check_multivariate_data(x, self._num_variables)
             x = self._typekeeper.match_secondary_input(x)
             x = check_multivariate_data(x, self._num_variables)
 
