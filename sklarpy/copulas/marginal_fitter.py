@@ -39,9 +39,11 @@ class MarginalFitter(Savable):
         self._data: np.ndarray = check_multivariate_data(data)
         self._num_variables: int = data.shape[1]
         self._fitted: bool = False
+        self._typekeeper: TypeKeeper = TypeKeeper(data)
+
         self._fitted_marginals: dict = None
         self._summary: pd.DataFrame = None
-        self._typekeeper: TypeKeeper = TypeKeeper(data)
+        self._cdf_data: np.ndarray = None
 
     def __str__(self):
         return f"{self.name}(fitted={self._fitted})"
@@ -183,6 +185,7 @@ class MarginalFitter(Savable):
             self._check_univariate_fitter_options(univariate_fitter_options)
         summaries: list = []
         self._fitted_marginals = {}
+        self._cdf_data: np.ndarray = np.full(self._data.shape, np.nan, float)
 
         iterator = get_iterator(
             range(self._num_variables), kwargs.get('show_progress', False),
@@ -194,6 +197,7 @@ class MarginalFitter(Savable):
             )
             self._fitted_marginals[index] = marginal_dist
             summaries.append(marginal_dist.summary)
+            self._cdf_data[:, index] = marginal_dist.cdf(self._data[:, index])
 
         summary: pd.DataFrame = pd.concat(summaries, axis=1)
         if self._typekeeper.original_type == pd.DataFrame:
@@ -238,7 +242,7 @@ class MarginalFitter(Savable):
         self._fit_check()
 
         if x is None:
-            x = self._data
+            x = self._cdf_data if func_str == 'ppf' else self._data
         else:
             x = self._typekeeper.match_secondary_input(x)
             x = check_multivariate_data(x, self._num_variables)
@@ -279,7 +283,7 @@ class MarginalFitter(Savable):
 
     def marginal_cdfs(self, x: Union[pd.DataFrame, np.ndarray] = None,
                       match_datatype: bool = True) \
-            -> Union[pd.DataFrame, np.ndarray] :
+            -> Union[pd.DataFrame, np.ndarray]:
         """Calculates the cdf values for each univariate marginal
         distribution for a given set of observations x.
 
@@ -302,7 +306,7 @@ class MarginalFitter(Savable):
         """
         return self._pdfs_cdf_ppfs_logpdfs_inputs('cdf', x, match_datatype)
 
-    def marginal_ppfs(self, q: Union[pd.DataFrame, np.ndarray],
+    def marginal_ppfs(self, q: Union[pd.DataFrame, np.ndarray] = None,
                       match_datatype: bool = True) \
             -> Union[pd.DataFrame, np.ndarray]:
         """Calculates the ppf values for each univariate marginal
