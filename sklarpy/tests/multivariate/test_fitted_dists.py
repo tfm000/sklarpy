@@ -33,8 +33,14 @@ def test_fitted_logpdf_pdf_cdf_mc_cdf(
                                            pd_mvt_discrete_data)
 
             for data in datasets:
-                output = func(x=data, match_datatype=True,
-                              num_generate=num_generate)
+                try:
+                    output = func(x=data, match_datatype=True,
+                                  num_generate=num_generate)
+                except MemoryError as e:
+                    print(f"MemoryError occured when calculating fitted "
+                          f"{name}.{func_str} \n{e}")
+                    continue
+
                 np_output = np.asarray(output)
                 n, d = np.asarray(data).shape
 

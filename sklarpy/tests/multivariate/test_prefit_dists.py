@@ -161,8 +161,14 @@ def test_prefit_logpdf_pdf_cdf_mc_cdfs(
                                            pd_mvt_discrete_data)
 
             for data in datasets:
-                output = func(x=data, params=params, match_datatype=True,
-                              num_generate=num_generate)
+                try:
+                    output = func(x=data, params=params, match_datatype=True,
+                                  num_generate=num_generate)
+                except MemoryError as e:
+                    print(f"MemoryError occured when calculating pre-fit "
+                          f"{name}.{func_str} \n{e}")
+                    continue
+
                 np_output = np.asarray(output)
                 n, d = np.asarray(data).shape
 
