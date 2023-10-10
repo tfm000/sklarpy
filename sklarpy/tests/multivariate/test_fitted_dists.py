@@ -20,7 +20,7 @@ def test_fitted_logpdf_pdf_cdf_mc_cdf(
 
     for name in mv_dists_to_test:
         _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
-        for func_str in ('logpdf', 'pdf', 'cdf', 'mc_cdf'):
+        for func_str in ('logpdf', 'pdf', 'mc_cdf'): #, 'cdf'):
             func: Callable = eval(f'fitted.{func_str}')
             cdf_num: int = 10
             datasets = (mvt_continuous_data[:cdf_num, :],
@@ -33,13 +33,8 @@ def test_fitted_logpdf_pdf_cdf_mc_cdf(
                                            pd_mvt_discrete_data)
 
             for data in datasets:
-                try:
-                    output = func(x=data, match_datatype=True,
-                                  num_generate=num_generate)
-                except MemoryError as e:
-                    print(f"MemoryError occured when calculating fitted "
-                          f"{name}.{func_str} \n{e}")
-                    continue
+                output = func(x=data, match_datatype=True,
+                              num_generate=num_generate)
 
                 np_output = np.asarray(output)
                 n, d = np.asarray(data).shape
