@@ -150,7 +150,8 @@ class FittedCopula(Savable, Copyable):
             match_datatype=match_datatype, num_generate=num_generate,
             show_progress=show_progress, **kwargs)
 
-    def rvs(self, size: int, ppf_approx: bool = True) -> np.ndarray:
+    def rvs(self, size: int, ppf_approx: bool = True,
+            match_datatype: bool = True) -> np.ndarray:
         """The random variable generator function of the overall joint
         distribution. This requires the evaluation of the ppf / quantile
         function of each marginal distribution, which for certain univariate
@@ -169,6 +170,10 @@ class FittedCopula(Savable, Copyable):
             ppf / quantile function, via linear interpolation, when generating
             random variables.
             Default is True.
+        match_datatype: bool
+        True to output the same datatype as the fitted data, if possible.
+        False to output a np.ndarray.
+        Default is True.
 
         Returns
         -------
@@ -176,9 +181,12 @@ class FittedCopula(Savable, Copyable):
             Multivariate array of random variables, sampled from the
             joint distribution.
         """
-        return self.__obj.rvs(
+        rvs_array: np.ndarray = self.__obj.rvs(
             size=size, copula_params=self.copula_params, mdists=self.mdists,
             ppf_approx=ppf_approx)
+        type_keeper: TypeKeeper = self.__fit_info['type_keeper']
+        return type_keeper.type_keep_from_2d_array(
+            rvs_array, match_datatype=match_datatype)
 
     def copula_logpdf(self, u: Union[pd.DataFrame, np.ndarray],
                       match_datatype: bool = True, **kwargs) \
