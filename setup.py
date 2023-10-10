@@ -52,12 +52,12 @@ setup(
     ],
     python_requires='>=3.9',
     install_requires=[
-        'pandas>=1.4.3',
-        'numpy>=1.23.0',
+        'pandas>=2.0.2',
+        'numpy>=1.24.3',
         'scipy>=1.11.0',
-        'matplotlib>=3.5.2',
-        'dill>=0.3.5.1',
-        'tqdm>=4.64.1',
+        'matplotlib>=3.7.1',
+        'dill>=0.3.6',
+        'tqdm>=4.65.0',
         'seaborn>=0.12.2',
     ],
     extras_require={
