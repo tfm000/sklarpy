@@ -245,10 +245,10 @@ class multivariate_skewed_t_gen(multivariate_gen_hyperbolic_gen):
 
         # EM algorithm requires gamma parameter to be non-zero
         d: int = data.shape[1]
-        data_stds: np.ndarray = data.std(axis=0, dtype=float)
+        data_stds: np.ndarray = data.std(axis=0, dtype=float).reshape((d, 1))
         gamma: np.ndarray = np.array([0])
         while not np.any(gamma):
-            gamma = np.random.normal(scale=data_stds, size=(d,))
+            gamma = np.random.normal(scale=data_stds, size=(d, 1))
         return (*params0[:-1], gamma)
 
     def _fit_given_params_tuple(self, params: tuple, **kwargs
