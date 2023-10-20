@@ -72,6 +72,7 @@ setup(
         'Intended Audience :: Science/Research',
         'Intended Audience :: Financial and Insurance Industry',
         'Intended Audience :: Developers',
+        'Intended Audience :: Education',
         'Topic :: Software Development :: Build Tools',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.9',
