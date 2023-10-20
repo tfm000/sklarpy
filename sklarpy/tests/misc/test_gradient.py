@@ -8,6 +8,7 @@ from sklarpy.tests.misc.helpers import XCubed, Exp, Log
 
 def test_gradient_1d():
     """Testing gradient_1d function."""
+    print("\nTesting gradient-1d")
     funcs: list = [XCubed, Exp, Log]
     x_values = [0, 1.5, -0.5, 4.3, 9.7, 11, -8]
     datatypes = [np.asarray, list, pd.DataFrame, pd.Series, set]

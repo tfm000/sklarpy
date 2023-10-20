@@ -4,6 +4,7 @@ from sklarpy.misc import debye
 
 def test_debye():
     """Testing debye function."""
+    print("\nTesting debye")
     n_values = range(0, 10)
     x_values: list = [0, 1.5, -0.5, 4.3]
 

@@ -15,6 +15,7 @@ def test_fitted_logpdf_pdf_cdf_mc_cdf(
         pd_mvt_discrete_data, mv_dists_to_test, params_2d):
     """Testing the logpdf, pdf, cdf and mc-cdf functions of fitted multivariate
      distributions"""
+    print('\nTesting logpdf, pdf, cdf and mc-cdf functions')
     eps: float = 10 ** -5
     num_generate: int = 10
 
@@ -70,6 +71,7 @@ def test_fitted_logpdf_pdf_cdf_mc_cdf(
 
 def test_fitted_rvs(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the rvs functions of fitted multivariate distributions."""
+    print('\nTesting rvs')
     for name in mv_dists_to_test:
         _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
         for size in (1, 2, 5, 101):
@@ -91,6 +93,7 @@ def test_fitted_scalars(mvt_continuous_data, mvt_discrete_data,
                         mv_dists_to_test, params_2d):
     """Testing the likelihood, loglikelihood, AIC and BIC functions of
     multivariate fitted distributions."""
+    print('\nTesting scalars')
     for name in mv_dists_to_test:
         _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
         for func_str in ('likelihood', 'loglikelihood', 'aic', 'bic'):
@@ -128,6 +131,7 @@ def test_fitted_scalars(mvt_continuous_data, mvt_discrete_data,
 def test_fitted_plots(mv_dists_to_test, params_2d, params_3d, mvt_continuous_data):
     """Testing the marginal_pairplot, pdf_plot, cdf_plot and mc_cdf_plot
     methods of fitted multivariate distributions."""
+    print('Testing plots')
     mvt_continuous_data_3d: np.ndarray = scipy.stats.multivariate_normal.rvs(
         size=(mvt_continuous_data.shape[0], 3))
     for name in mv_dists_to_test:
@@ -140,24 +144,25 @@ def test_fitted_plots(mv_dists_to_test, params_2d, params_3d, mvt_continuous_dat
 
             # testing 3d plots
             if func_str == 'marginal_pairplot':
-                func_3d(show=False)
+                func_3d(show=False, show_progress=False)
                 plt.close()
             else:
                 with pytest.raises(NotImplementedError,
                                    match=f"{func_str} is not "
                                          f"implemented when the number of "
                                          f"variables is not 2."):
-                    func_3d(show=False)
+                    func_3d(show=False, show_progress=False)
 
             # testing 2d plots
             kwargs = {'num_generate': 10} if func_str == 'marginal_pairplot' \
         else {'num_points': 2, 'num_generate': 10, 'mc_num_generate': 10}
-            func_2d(show=False, **kwargs)
+            func_2d(show=False, show_progress=False, **kwargs)
             plt.close()
 
 
 def test_fitted_params(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the params attribute of fitted multivariate distributions."""
+    print('\nTesting params')
     for name in mv_dists_to_test:
         _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
 
@@ -173,6 +178,7 @@ def test_fitted_params(mv_dists_to_test, params_2d, mvt_continuous_data):
 def test_fitted_integers(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the num_params, num_scalar_params, num_variables and
     fitted_num_data_points of fitted multivariate distributions."""
+    print('\nTesting integers')
     for name in mv_dists_to_test:
         _, fitted, params = get_dist(name, params_2d, mvt_continuous_data)
 
@@ -193,6 +199,7 @@ def test_fitted_integers(mv_dists_to_test, params_2d, mvt_continuous_data):
 
 def test_fitted_converged(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing converged attributes of fitted multivariate distributions."""
+    print('\nTesting converged')
     for name in mv_dists_to_test:
         _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
 
@@ -207,6 +214,7 @@ def test_fitted_converged(mv_dists_to_test, params_2d, mvt_continuous_data):
 
 def test_fitted_summaries(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the summaries of fitted multivariate distributions."""
+    print('\nTesting summaries')
     for name in mv_dists_to_test:
         _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
 

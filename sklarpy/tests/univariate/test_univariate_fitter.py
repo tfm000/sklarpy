@@ -11,12 +11,14 @@ from sklarpy._utils import FitError, SignificanceError
 
 def test_init(discrete_data, continuous_data):
     """Testing whether UnivariateFitter initialises without errors"""
+    print("\nTesting init")
     for data in (discrete_data, continuous_data):
         fitter = UnivariateFitter(data)
 
 
 def test_fit(discrete_data, continuous_data):
     """Testing the fit method of UnivariateFitter."""
+    print("\nTesting fit")
 
     for data in (discrete_data, continuous_data):
         # fitting with default args
@@ -70,6 +72,7 @@ def test_fit(discrete_data, continuous_data):
 
 def test_get_summary(discrete_data, continuous_data):
     """Testing the get_summary method of UnivariateFitter"""
+    print("\nTesting get-summary")
     for ufitter in (UnivariateFitter(discrete_data),
                     UnivariateFitter(continuous_data)):
         # testing not implemented when not fit
@@ -103,6 +106,7 @@ def test_get_summary(discrete_data, continuous_data):
 
 def test_get_best(discrete_data, continuous_data):
     """Testing the get_best method of UnivariateFitter"""
+    print("\nTesting get-best")
     for dtype, ufitter in {'discrete': UnivariateFitter(discrete_data),
                            'continuous': UnivariateFitter(continuous_data)
                            }.items():
@@ -131,6 +135,7 @@ def test_get_best(discrete_data, continuous_data):
 
 def test_plot(discrete_data, continuous_data):
     """Testing the plot method of UnivariateFitter"""
+    print("\nTesting plot")
     for dtype, ufitter in {'discrete': UnivariateFitter(discrete_data),
                            'continuous': UnivariateFitter(continuous_data)
                            }.items():
@@ -148,6 +153,7 @@ def test_plot(discrete_data, continuous_data):
 
 def test_fitted_distributions(discrete_data, continuous_data):
     """Testing the fitted_distributions property of UnivariateFitter"""
+    print("\nTesting distributions")
     for dtype, ufitter in {'discrete': UnivariateFitter(discrete_data),
                            'continuous': UnivariateFitter(continuous_data)
                            }.items():
