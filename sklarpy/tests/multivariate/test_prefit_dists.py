@@ -13,6 +13,7 @@ from sklarpy.tests.multivariate.helpers import get_dist
 
 
 def test_correct_type():
+    print('\nTesting correct type')
     """Testing multivariate distributions are all SklarPy objects."""
     for name in distributions_map['all']:
         dist = eval(name)
@@ -24,6 +25,7 @@ def test_fit_to_data(mvt_continuous_data, mvt_discrete_data,
                      pd_mvt_continuous_data, pd_mvt_discrete_data,
                      mv_dists_to_test):
     """Testing we can fit multivariate distributions to data."""
+    print('\nTesting fitting to data')
     for name in mv_dists_to_test:
         dist = eval(name)
 
@@ -143,6 +145,7 @@ def test_prefit_logpdf_pdf_cdf_mc_cdfs(
         pd_mvt_discrete_data, mv_dists_to_test, params_2d):
     """Testing the logpdf, pdf, cdf and mc-cdf functions of pre-fit
     multivariate distributions."""
+    print("\nTesting logpdf, pdf, cdf and mc-cdf functions")
     eps: float = 10 ** -5
     num_generate: int = 10
 
@@ -198,6 +201,7 @@ def test_prefit_logpdf_pdf_cdf_mc_cdfs(
 
 def test_prefit_rvs(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the rvs functions of pre-fit multivariate distributions."""
+    print("\nTesting the rvs")
     for name in mv_dists_to_test:
         dist, _, params = get_dist(name, params_2d, mvt_continuous_data)
         for size in (1, 2, 5, 101):
@@ -222,6 +226,7 @@ def test_prefit_scalars(mvt_continuous_data, mvt_discrete_data,
                         mv_dists_to_test, params_2d):
     """Testing the likelihood, loglikelihood, AIC and BIC functions of
     multivariate pre-fit distributions."""
+    print("\nTesting scalars")
     for name in mv_dists_to_test:
         dist, _, params = get_dist(name, params_2d, mvt_continuous_data)
         for func_str in ('likelihood', 'loglikelihood', 'aic', 'bic'):
@@ -260,43 +265,51 @@ def test_prefit_plots(mv_dists_to_test, params_2d, params_3d,
                       mvt_continuous_data):
     """Testing the marginal_pairplot, pdf_plot, cdf_plot and mc_cdf_plot
     methods of pre-fit multivariate distributions."""
+    print("\nTesting plots")
     mvt_continuous_data_3d: np.ndarray = scipy.stats.multivariate_normal.rvs(
         size=(mvt_continuous_data.shape[0], 3))
     for name in mv_dists_to_test:
-        dist, _, params_2d = get_dist(name, params_2d, mvt_continuous_data)
-        _, _, params_3d = get_dist(name, params_3d, mvt_continuous_data_3d)
+        dist, _, dist_params_2d = get_dist(name, params_2d,
+                                           mvt_continuous_data)
+        _, _, dist_params_3d = get_dist(name, params_3d,
+                                        mvt_continuous_data_3d)
         for func_str in ('marginal_pairplot', 'pdf_plot',
                          'cdf_plot', 'mc_cdf_plot'):
             func: Callable = eval(f'dist.{func_str}')
 
             # testing 3d plots
             if func_str == 'marginal_pairplot':
-                func(params=params_3d, show=False)
+                func(params=dist_params_3d, show=False)
                 plt.close()
             else:
                 with pytest.raises(NotImplementedError,
                                    match=f"{func_str} is not "
                                          f"implemented when the number of "
                                          f"variables is not 2."):
-                    func(params=params_3d, show=False)
+                    func(params=dist_params_3d, show=False,
+                         show_progress=False)
 
             # testing 2d plots
             kwargs = {'num_generate': 10} if func_str == 'marginal_pairplot' \
-        else {'num_points': 2, 'num_generate': 10, 'mc_num_generate': 10}
-            func(params=params_2d, show=False, **kwargs)
+                else {'num_points': 2, 'num_generate': 10,
+                      'mc_num_generate': 10}
+            func(params=dist_params_2d, show=False, show_progress=False,
+                 **kwargs)
             plt.close()
 
 
 def test_prefit_name(mv_dists_to_test):
     """Testing that name of pre-fit multivariate distributions is a string."""
+    print("\nTesting name")
     for name in mv_dists_to_test:
         dist = eval(name)
         assert isinstance(dist.name, str), f"name of {name} is not a string."
 
 
-def test_prefit_num_params(mv_dists_to_test, params_2d, mvt_continuous_data):
+def test_prefit_integers(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the num_params and num_scalar_params of pre-fit multivariate
     distributions."""
+    print("\nTesting integers")
     for name in mv_dists_to_test:
         dist, _, params = get_dist(name, params_2d, mvt_continuous_data)
 
