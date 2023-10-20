@@ -259,8 +259,8 @@ class FittedContinuousMultivariate(Savable, Copyable):
     def marginal_pairplot(self, color: str = 'royalblue', alpha: float = 1.0,
                           figsize: tuple = (8, 8), grid: bool = True,
                           axes_names: Iterable = None, plot_kde: bool = True,
-                          num_generate: int = 10 ** 3, show: bool = True
-                          ) -> None:
+                          num_generate: int = 10 ** 3, show: bool = True,
+                          **kwargs) -> None:
         """Produces a pair-plot of each marginal distribution of the
         multivariate distribution.
 

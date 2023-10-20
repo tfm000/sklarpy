@@ -1160,7 +1160,7 @@ class PreFitCopula(NotImplementedBase):
                           alpha: float = 1.0, figsize: tuple = (8, 8),
                           grid: bool = True, axes_names: tuple = None,
                           plot_kde: bool = True, num_generate: int = 10 ** 3,
-                          show: bool = True) -> None:
+                          show: bool = True, **kwargs) -> None:
         """Produces a pair-plot of each fitted marginal distribution.
 
         This requires the sampling of multivariate random variables from the
