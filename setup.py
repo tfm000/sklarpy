@@ -49,6 +49,7 @@ setup(
         'Finance',
         'Risk',
         'VaR',
+        'Machine Learning',
     ],
     python_requires='>=3.9',
     install_requires=[
