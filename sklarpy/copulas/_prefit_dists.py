@@ -1096,14 +1096,14 @@ class PreFitCopula(NotImplementedBase):
             # raising a function specific exception
             self._not_implemented('log-likelihood')
 
-        mask, masked_values, _ = get_mask(logpdf_values)
+        mask: np.ndarray = np.isnan(logpdf_values)
         if np.any(np.isinf(logpdf_values)):
             # returning -np.inf instead of nan
             return -np.inf
         elif mask.sum() == mask.size:
             # all logpdf values are nan, so returning nan
             return np.nan
-        return float(np.sum(masked_values))
+        return float(np.sum(logpdf_values[~mask]))
 
     def aic(self, data: Union[pd.DataFrame, np.ndarray],
             copula_params: Union[Params, tuple],

@@ -84,5 +84,3 @@ def test_fit(mvt_continuous_data, mvt_discrete_data,
                         raise
                 except RuntimeError:
                     pass
-
-
