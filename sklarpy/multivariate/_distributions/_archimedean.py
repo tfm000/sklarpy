@@ -4,7 +4,7 @@
 import numpy as np
 import pandas as pd
 from abc import abstractmethod
-from typing import Union, Tuple
+from typing import Union, Tuple, Callable
 import scipy.stats
 import scipy.optimize
 
@@ -28,7 +28,7 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
         return params[-1]
 
     @abstractmethod
-    def _param_range(self, d: int) -> Tuple[Tuple[float, float], list]:
+    def _param_range(self, d: int) -> Tuple[Tuple[float, float], np.ndarray]:
         """Returns the parameter range for which the Archimedean copula is
         defined.
 
@@ -40,7 +40,7 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
         Returns
         -------
         bounds, excluded : tuple
-            The inclusive bounds of any parameters, A list of values within
+            The inclusive bounds of any parameters, An array of values within
             the bounds which the dist is not defined for.
         """
 
@@ -194,7 +194,21 @@ class multivariate_archimedean_base_gen(PreFitContinuousMultivariate):
 
     def _get_mle_objective_func_kwargs(self, data: np.ndarray, **kwargs,
                                      ) -> dict:
-        return {'d': data.shape[1]}
+        _, excluded = self._param_range(d=data.shape[1])
+        con_shape: tuple = excluded.shape
+        if excluded.size == 0:
+            # no equality constraints
+            constraints: tuple = tuple()
+        else:
+            # adding equality constraints
+            con: Callable = lambda theta: np.abs(np.full(con_shape, theta[0])
+                                                 - excluded)
+            nlc: scipy.optimize.NonlinearConstraint = \
+                scipy.optimize.NonlinearConstraint(
+                    con, np.full(con_shape, 10**-5),
+                    np.full(con_shape, np.inf))
+            constraints: tuple = (nlc, )
+        return {'d': data.shape[1], 'constraints': constraints}
 
     def _inverse_kendall_tau_calc(self, kendall_tau: float) -> float:
         """Estimates the theta parameter analytically, by using the
@@ -347,9 +361,9 @@ class multivariate_clayton_gen(multivariate_archimedean_base_gen):
     _DEFAULT_BOUNDS = (-1, 100.0)
     _N_PARAMS = 2
 
-    def _param_range(self, d: int) -> Tuple[Tuple[float, float], list]:
+    def _param_range(self, d: int) -> Tuple[Tuple[float, float], np.ndarray]:
         lb: float = 0.0 if d > 2 else -1
-        return (lb, np.inf), [0.0]
+        return (lb, np.inf), np.array([0.0])
 
     def _generator(self, u: np.ndarray, params: tuple) -> np.ndarray:
         theta: float = params[0]
@@ -400,8 +414,8 @@ class multivariate_gumbel_gen(multivariate_archimedean_base_gen):
     _DEFAULT_BOUNDS = _DEFAULT_STRICT_BOUNDS
     _N_PARAMS = 2
 
-    def _param_range(self, d: int) -> Tuple[Tuple[float, float], list]:
-        return (self._DEFAULT_BOUNDS[0], np.inf), []
+    def _param_range(self, d: int) -> Tuple[Tuple[float, float], np.ndarray]:
+        return (self._DEFAULT_BOUNDS[0], np.inf), np.array([])
 
     def _generator(self, u: np.ndarray, params: tuple) -> np.ndarray:
         theta: float = params[0]
@@ -485,8 +499,8 @@ class bivariate_frank_gen(multivariate_archimedean_base_gen):
     _DEFAULT_BOUNDS = _DEFAULT_STRICT_BOUNDS
     _N_PARAMS = 1
 
-    def _param_range(self, d: int) -> Tuple[Tuple[float, float], list]:
-        return (-np.inf, np.inf), [0.0]
+    def _param_range(self, d: int) -> Tuple[Tuple[float, float], np.ndarray]:
+        return (-np.inf, np.inf), np.array([0.0])
 
     def _generator(self, u: np.ndarray, params: tuple) -> np.ndarray:
         theta: float = params[0]

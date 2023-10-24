@@ -1434,11 +1434,13 @@ class PreFitContinuousMultivariate(NotImplementedBase):
         # getting args to pass to the optimizer
         mle_kwargs: dict = self._get_mle_objective_func_kwargs(data=data,
                                                                **kwargs)
+        constraints: tuple = mle_kwargs.pop('constraints', tuple())
 
         # running optimization
         mle_res = differential_evolution(
             self._mle_objective_func, bounds, args=(data, mle_kwargs),
-            maxiter=maxiter, tol=tol, x0=theta0, disp=show_progress)
+            maxiter=maxiter, tol=tol, x0=theta0, disp=show_progress,
+            constraints=constraints)
 
         # extracting params from results
         theta: np.ndarray = mle_res['x']
