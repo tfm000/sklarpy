@@ -5,3 +5,4 @@ from sklarpy.copulas.distributions import gaussian_copula, \
     sym_gen_hyperbolic_copula, sym_marginal_hyperbolic_copula, \
     sym_hyperbolic_copula, sym_nig_copula, clayton_copula, gumbel_copula, \
     frank_copula
+from sklarpy.copulas.distributions_map import distributions_map
