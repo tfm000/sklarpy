@@ -3,16 +3,16 @@ import numpy as np
 import pytest
 import scipy.stats
 
+from sklarpy.univariate import lognorm, poisson, cauchy, gamma, normal
+
 num: int = 100
 d: int = 2
 
 
-@pytest.fixture(scope="session", autouse=True)
 def mvt_continuous_data():
     return scipy.stats.multivariate_normal.rvs(size=(num, d))
 
 
-@pytest.fixture(scope="session", autouse=True)
 def mvt_discrete_data():
     poisson_data: np.ndarray = scipy.stats.poisson.rvs(4, size=(num, d + 1))
     for i in range(1, d):
@@ -20,13 +20,11 @@ def mvt_discrete_data():
     return poisson_data[:, :-1]
 
 
-@pytest.fixture(scope="session", autouse=True)
 def pd_mvt_continuous_data():
     data: np.ndarray = scipy.stats.multivariate_normal.rvs(size=(num, d))
     return pd.DataFrame(data, columns=[f'var {i}' for i in range(d)])
 
 
-@pytest.fixture(scope="session", autouse=True)
 def pd_mvt_discrete_data():
     poisson_data: np.ndarray = scipy.stats.poisson.rvs(4, size=(num, d + 1))
     for i in range(1, d):
@@ -35,7 +33,6 @@ def pd_mvt_discrete_data():
                                                        range(d)])
 
 
-@pytest.fixture(scope="session", autouse=True)
 def mvt_mixed_data():
     mixed_data = np.full((num, d), np.nan)
     mixed_data[:, 0] = scipy.stats.multivariate_normal.rvs(size=(num,))
@@ -43,7 +40,6 @@ def mvt_mixed_data():
     return mixed_data
 
 
-@pytest.fixture(scope="session", autouse=True)
 def pd_mvt_mixed_data():
     mixed_data = np.full((num, d), np.nan)
     mixed_data[:, 0] = scipy.stats.multivariate_normal.rvs(size=(num,))
@@ -51,15 +47,25 @@ def pd_mvt_mixed_data():
     return pd.DataFrame(mixed_data, columns=[f'var {i}' for i in range(d)])
 
 
-@pytest.fixture(scope="session", autouse=True)
 def mvt_uniform_data():
     return np.random.uniform(size=(num, d))
 
 
-@pytest.fixture(scope="session", autouse=True)
 def pd_mvt_uniform_data():
     data: np.ndarray = np.random.uniform(size=(num, d))
     return pd.DataFrame(data, columns=[f'var {i}' for i in range(d)])
+
+
+@pytest.fixture(scope="session", autouse=True)
+def all_mv_data():
+    return {
+        'mv_continuous': mvt_continuous_data(),
+        'mvt_discrete': mvt_discrete_data(),
+        'pd_mvt_continuous': pd_mvt_continuous_data(),
+        'pd_mvt_discrete': pd_mvt_discrete_data(),
+        'mvt_mixed': mvt_mixed_data(),
+        'pd_mvt_mixed': pd_mvt_mixed_data(),
+    }
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -231,3 +237,65 @@ def copula_params_3d():
                       [0.00317332, 1., 0.03426521],
                       [0.02411494, 0.03426521, 1.]])),
     }
+
+
+@pytest.fixture(scope="session", autouse=True)
+def all_mdists_2d():
+    return {
+        'mv_continuous': {
+            0: lognorm.fit(params=(0.01, -120.05, 119.9)),
+            1: lognorm.fit(params=(0.01, -150.77, 150.67))},
+
+        'mvt_discrete': {
+            0: poisson.fit(params=(3.95,)),
+            1: poisson.fit(params=(7.83,))},
+
+        'pd_mvt_continuous': {
+            0: lognorm.fit(params=(0.0, -202.7, 202.72)),
+            1: cauchy.fit(params=(-0.0, 0.53))},
+
+        'pd_mvt_discrete': {
+            0: poisson.fit(params=(3.84,)),
+            1: poisson.fit(params=(7.91,))},
+
+        'mvt_mixed': {
+            0: lognorm.fit(params=(0.03, -30.7, 30.61)),
+            1: poisson.fit(params=(3.85,))},
+
+        'pd_mvt_mixed': {
+            0: gamma.fit(params=(8735.3, -87.37, 0.01)),
+            1: poisson.fit(params=(4.15,))}}
+
+
+@pytest.fixture(scope="session", autouse=True)
+def all_mdists_3d():
+    return {
+        'mv_continuous': {
+            0: lognorm.fit(params=(0.02, -51.43, 51.52)),
+            1: cauchy.fit(params=(0.08, 0.51)),
+            2: cauchy.fit(params=(0.09, 0.59))},
+
+        'mvt_discrete': {
+            0: poisson.fit(params=(4.15,)),
+            1: poisson.fit(params=(7.89,)),
+            2: poisson.fit(params=(7.92,))},
+
+        'pd_mvt_continuous': {
+            0: lognorm.fit(params=(0.01, -127.24, 127.27)),
+            1: lognorm.fit(params=(0.12, -7.33, 7.33)),
+            2: lognorm.fit(params=(0.12, -8.12, 8.1))},
+
+        'pd_mvt_discrete': {
+            0: poisson.fit(params=(3.89,)),
+            1: poisson.fit(params=(7.87,)),
+            2: poisson.fit(params=(7.87,))},
+
+        'mvt_mixed': {
+            0: gamma.fit(params=(11979.83, -107.67, 0.01)),
+            1: poisson.fit(params=(3.86,)),
+            2: normal.fit(params=(0, 1))},
+
+        'pd_mvt_mixed': {
+            0: cauchy.fit(params=(0.15, 0.53)),
+            1: poisson.fit(params=(3.79,)),
+            2: normal.fit(params=(0, 1))}}
