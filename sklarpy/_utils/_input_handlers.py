@@ -4,7 +4,7 @@ import pandas as pd
 from typing import Iterable, Union
 
 __all__ = ['univariate_num_to_array', 'check_params', 'check_univariate_data',
-           'check_array_datatype', 'check_multivariate_data']
+           'check_array_datatype', 'check_multivariate_data', 'get_mask']
 
 
 def univariate_num_to_array(x: Union[float, int, np.ndarray]) -> np.ndarray:
@@ -177,3 +177,22 @@ def check_multivariate_data(
     if (not allow_nans) and (np.isnan(data_array).sum() != 0):
         raise ValueError("data must not contain NaN values")
     return data_array
+
+
+def get_mask(data: np.ndarray) -> tuple:
+    """Creates a mask for nan values in the given dataset.
+
+    Parameters
+    ----------
+    data: np.ndarray
+        Numpy array which potentially contains NaN values.
+
+    Returns
+    -------
+    output: tuple
+        mask array, data with mask applied, array of nan values the same shape
+        as the original data.
+    """
+    output: np.ndarray = np.full((data.shape[0], ), np.nan)
+    mask: np.ndarray = np.isnan(data).any(axis=1)
+    return mask, data[~mask], output
