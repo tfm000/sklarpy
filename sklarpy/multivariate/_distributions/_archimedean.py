@@ -366,9 +366,7 @@ class multivariate_clayton_gen(multivariate_archimedean_base_gen):
     def _v_rvs(self, size: int, params: tuple) -> np.ndarray:
         theta = params[0]
         if theta < 0:
-            raise NotImplementedError("cannot generate random variables for "
-                                      "Clayton Copula when theta parameter is "
-                                      "not positive.")
+            return np.full((size, 1), np.nan)
         return scipy.stats.gamma.rvs(a=1/theta, scale=1, size=(size, 1))
 
     def _inverse_kendall_tau_calc(self, kendall_tau: float) -> float:

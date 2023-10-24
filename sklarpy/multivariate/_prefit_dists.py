@@ -639,10 +639,13 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             # raising a function specific exception
             self._not_implemented('log-likelihood')
 
+        mask: np.ndarray = np.isnan(logpdf_values)
         if np.any(np.isinf(logpdf_values)):
             # returning -np.inf instead of nan
             return -np.inf
-        mask: np.ndarray = np.isnan(logpdf_values)
+        elif mask.sum() == mask.size:
+            # all logpdf values are nan, so returning nan
+            return np.nan
         return float(np.sum(logpdf_values[~mask]))
 
     def aic(self, data: Union[pd.DataFrame, np.ndarray],
@@ -1376,7 +1379,9 @@ class PreFitContinuousMultivariate(NotImplementedBase):
             The negative log-likelihood value associated with the theta array.
         """
         params: tuple = self._theta_to_params(theta=theta, **kwargs)
-        return -self.loglikelihood(data=data, params=params, definiteness=None)
+        loglikelihood: float = self.loglikelihood(data=data, params=params,
+                                                  definiteness=None)
+        return np.inf if np.isnan(loglikelihood) else -loglikelihood
 
     def _mle(self, data: np.ndarray, params0: np.ndarray, bounds: tuple,
              maxiter: int, tol: float, show_progress: bool, **kwargs

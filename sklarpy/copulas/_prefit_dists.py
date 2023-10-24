@@ -5,7 +5,7 @@ import pandas as pd
 
 from sklarpy.copulas import MarginalFitter
 from sklarpy._utils import check_multivariate_data, TypeKeeper, Params, \
-    NotImplementedBase
+    NotImplementedBase, get_mask
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate, \
     FittedContinuousMultivariate
 from sklarpy.univariate._fitted_dists import FittedUnivariateBase
@@ -63,7 +63,7 @@ class PreFitCopula(NotImplementedBase):
         """
         # checking if data is multivariate and converting to np.ndarray
         data_array: np.ndarray = check_multivariate_data(
-            data=data, allow_1d=True, allow_nans=False)
+            data=data, allow_1d=True, allow_nans=True)
         if is_u:
             # checking if data lies in [0, 1] range
             if not (np.all(data_array >= 0.0) and np.all(data_array <= 1.0) and
@@ -212,21 +212,26 @@ class PreFitCopula(NotImplementedBase):
         """
         # checking data
         x_array: np.ndarray = self._get_data_array(data=x, is_u=False)
-        mdists_dict: dict = self._get_mdists(mdists, d=x_array.shape[1],
-                                             check=True)
+
+        # getting non-nan data
+        mask, masked_data, output = get_mask(data=x_array)
 
         # calculating u values
+        mdists_dict: dict = self._get_mdists(mdists, d=masked_data.shape[1],
+                                             check=True)
         res: dict = self.__mdist_calcs(func_strs=['cdf', 'logpdf'],
-                                       data=x_array, mdists=mdists_dict,
+                                       data=masked_data, mdists=mdists_dict,
                                        check=True)
 
         # calculating logpdf values
         logpdf_values: np.ndarray = self.copula_logpdf(
             u=res['cdf'], copula_params=copula_params,
             match_datatype=False, **kwargs) + res['logpdf'].sum(axis=1)
+
+        # converting to correct output datatype
+        output[~mask] = logpdf_values
         return TypeKeeper(x).type_keep_from_1d_array(
-            array=logpdf_values, match_datatype=match_datatype,
-            col_name=['logpdf'])
+            array=output, match_datatype=match_datatype, col_name=['logpdf'])
 
     def pdf(self, x: Union[pd.DataFrame, np.ndarray],
             copula_params: Union[Params, tuple],
@@ -311,15 +316,27 @@ class PreFitCopula(NotImplementedBase):
         cdf: Union[pd.DataFrame, np.ndarray]
             cdf / mc_cdf values of the joint distribution.
         """
+        # checking data
         x_array: np.ndarray = self._get_data_array(data=x, is_u=False)
+
+        # getting non-nan data
+        mask, masked_data, output = get_mask(data=x_array)
+
+        # calculating u values
         res: dict = self.__mdist_calcs(
-            func_strs=['cdf'], data=x_array, mdists=mdists, check=True)
+            func_strs=['cdf'], data=masked_data, mdists=mdists, check=True)
+
+        # calculating cdf values
         mc_str: str = "mc_" if mc_cdf else ""
-        copula_cdf_values: np.ndarray = eval(
-            f"self.copula_{mc_str}cdf(u=res['cdf'], "
-            f"copula_params=copula_params, match_datatype=False, **kwargs)")
+        func: Callable = eval(f"self.copula_{mc_str}cdf")
+        copula_cdf_values: np.ndarray = func(
+            u=res['cdf'], copula_params=copula_params,
+            match_datatype=False, **kwargs)
+
+        # converting to correct output datatype
+        output[~mask] = copula_cdf_values
         return TypeKeeper(x).type_keep_from_1d_array(
-            array=copula_cdf_values, match_datatype=match_datatype,
+            array=output, match_datatype=match_datatype,
             col_name=[f'{mc_str}cdf'])
 
     def cdf(self, x: Union[pd.DataFrame, np.ndarray],
@@ -581,12 +598,15 @@ class PreFitCopula(NotImplementedBase):
         copula_cdf: Union[pd.DataFrame, np.ndarray]
             cdf / mc_cdf values of the copula distribution.
         """
+        # checking data
         u_array: np.ndarray = self._get_data_array(data=u, is_u=True)
+
+        # calculating cdf values
         g: np.ndarray = self._u_to_g(u_array, copula_params)
         mc_str: str = "mc_" if mc_cdf else ""
-        func_str = f"self._mv_object.{mc_str}cdf(x=g, params=copula_params, " \
-                   f"match_datatype=False, **kwargs)"
-        copula_cdf_values: np.ndarray = eval(func_str)
+        func: Callable = eval(f"self._mv_object.{mc_str}cdf")
+        copula_cdf_values: np.ndarray = func(x=g, params=copula_params,
+                                             match_datatype=False, **kwargs)
         return TypeKeeper(u).type_keep_from_1d_array(
             array=copula_cdf_values, match_datatype=match_datatype,
             col_name=[f'{mc_str}cdf'])
@@ -940,23 +960,25 @@ class PreFitCopula(NotImplementedBase):
                              "params do not match.")
 
         # generating data to use when calculating statistics
-        data = self.rvs(size=10**3, copula_params=fitted_mv_object.params,
-                        mdists=mdists_dict, ppf_approx=True) \
-            if data is None else data
+        data_array: np.ndarray = self.rvs(
+            size=10**3, copula_params=fitted_mv_object.params,
+            mdists=mdists_dict, ppf_approx=True
+        ) if data is None \
+            else check_multivariate_data(data, allow_1d=True, allow_nans=True)
 
         # fitting TypeKeeper object
-        type_keeper: TypeKeeper = TypeKeeper(data)
+        type_keeper: TypeKeeper = TypeKeeper(data_array)
 
         # calculating fit statistics
         loglikelihood: float = self.loglikelihood(
-            data=data, copula_params=fitted_mv_object.params,
+            data=data_array, copula_params=fitted_mv_object.params,
             mdists=mdists_dict)
         likelihood = np.exp(loglikelihood)
         aic: float = self.aic(
-            data=data, copula_params=fitted_mv_object.params,
+            data=data_array, copula_params=fitted_mv_object.params,
             mdists=mdists_dict)
         bic: float = self.bic(
-            data=data, copula_params=fitted_mv_object.params,
+            data=data_array, copula_params=fitted_mv_object.params,
             mdists=mdists_dict)
 
         fit_info: dict = {}
@@ -984,13 +1006,13 @@ class PreFitCopula(NotImplementedBase):
         fit_info['summary'] = summary
 
         # calculating fit bounds
-        data_array: np.ndarray = check_multivariate_data(data, allow_1d=True,
-                                                         allow_nans=False)
         num_variables: int = data_array.shape[1]
         fitted_bounds: np.ndarray = np.full((num_variables, 2), np.nan,
                                             dtype=float)
-        fitted_bounds[:, 0] = data_array.min(axis=0)
-        fitted_bounds[:, 1] = data_array.max(axis=0)
+        mask, _, _ = get_mask(data_array)
+        if (~mask).sum() != 0:
+            fitted_bounds[:, 0] = data_array.min(axis=0)
+            fitted_bounds[:, 1] = data_array.max(axis=0)
         fit_info['fitted_bounds'] = fitted_bounds
 
         # other fit values
@@ -1074,10 +1096,14 @@ class PreFitCopula(NotImplementedBase):
             # raising a function specific exception
             self._not_implemented('log-likelihood')
 
+        mask, masked_values, _ = get_mask(logpdf_values)
         if np.any(np.isinf(logpdf_values)):
             # returning -np.inf instead of nan
             return -np.inf
-        return float(np.sum(logpdf_values))
+        elif mask.sum() == mask.size:
+            # all logpdf values are nan, so returning nan
+            return np.nan
+        return float(np.sum(masked_values))
 
     def aic(self, data: Union[pd.DataFrame, np.ndarray],
             copula_params: Union[Params, tuple],

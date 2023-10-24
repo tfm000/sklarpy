@@ -612,6 +612,11 @@ class FittedCopula(Savable, Copyable):
         eps: float = 10 ** -2
         rng_bounds = np.array([[eps, 1-eps], [eps, 1-eps]], dtype=float) \
             if 'copula' in func_str else self.__fit_info['fitted_bounds']
+        if np.isnan(rng_bounds.flatten()).sum() != 0:
+            raise ArithmeticError(
+                f"Cannot plot {func_str} as fitted_bounds contains nans. "
+                f"This is likely because the parameters estimated via the "
+                f"specified fit method are not valid.")
         if var1_range is None:
             var1_range: np.ndarray = np.linspace(
                 rng_bounds[0][0], rng_bounds[0][1], num_points, dtype=float)
