@@ -1,5 +1,4 @@
 # Contains helper functions for testing SklarPy multivariate code
-import os
 import numpy as np
 
 from sklarpy.multivariate import *
@@ -13,7 +12,7 @@ def get_dist(name: str, params_dict: dict, data: np.ndarray = None) -> tuple:
     Parameters
     ----------
     name : str
-        The name of the distribution as in distributions_map
+        The name of the distribution as in distributions_map.
     params_dict: dict
         Dictionary containing the parameters of each distribution.
     data: np.ndarray
