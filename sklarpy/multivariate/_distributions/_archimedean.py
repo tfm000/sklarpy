@@ -497,7 +497,7 @@ class bivariate_frank_gen(multivariate_archimedean_base_gen):
     """Bivariate distribution for the bivariate Gumbel copula model."""
     _DEFAULT_STRICT_BOUNDS = (-100.0, 100.0)
     _DEFAULT_BOUNDS = _DEFAULT_STRICT_BOUNDS
-    _N_PARAMS = 1
+    _N_PARAMS = 2
 
     def _param_range(self, d: int) -> Tuple[Tuple[float, float], np.ndarray]:
         return (-np.inf, np.inf), np.array([0.0])
