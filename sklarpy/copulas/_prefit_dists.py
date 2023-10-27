@@ -800,7 +800,8 @@ class PreFitCopula(NotImplementedBase):
         mv_summary.columns = [self.name]
         return pd.concat([mv_summary, summary], axis=1)
 
-    def num_marginal_params(self, mdists: Union[MarginalFitter, dict]) -> int:
+    def num_marginal_params(self, mdists: Union[MarginalFitter, dict],
+                            **kwargs) -> int:
         """Calculates the total number of parameters defining the marginal
         distributions.
 
@@ -822,7 +823,8 @@ class PreFitCopula(NotImplementedBase):
         mdists_dict: dict = self._get_mdists(mdists=mdists, d=d, check=True)
         return int(sum([dist.num_params for dist in mdists_dict.values()]))
 
-    def num_copula_params(self, copula_params: Union[Params, dict]) -> int:
+    def num_copula_params(self, copula_params: Union[Params, dict], **kwargs
+                          ) -> int:
         """Calculates the number of parameters defining the copula
         distribution.
 
@@ -841,7 +843,8 @@ class PreFitCopula(NotImplementedBase):
         """
         return len(copula_params)
 
-    def num_scalar_params(self, mdists: Union[MarginalFitter, dict]) -> int:
+    def num_scalar_params(self, mdists: Union[MarginalFitter, dict], **kwargs
+                          ) -> int:
         """Calculates the number of scalar parameters defining the overall
         joint distribution.
 
@@ -863,7 +866,7 @@ class PreFitCopula(NotImplementedBase):
         return self._mv_object.num_scalar_params(
             d=len(mdists), copula=True) + self.num_marginal_params(mdists)
 
-    def num_params(self, mdists: Union[MarginalFitter, dict]) -> int:
+    def num_params(self, mdists: Union[MarginalFitter, dict], **kwargs) -> int:
         """Calculates the number of parameters defining the overall joint
         distribution.
 
