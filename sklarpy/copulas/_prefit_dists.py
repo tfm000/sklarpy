@@ -1455,7 +1455,7 @@ class PreFitCopula(NotImplementedBase):
                  grid: bool = True, axes_names: tuple = None,
                  zlim: tuple = (None, None), num_generate: int = 1000,
                  num_points: int = 100, show_progress: bool = True,
-                 show: bool = True) -> None:
+                 show: bool = True, **kwargs) -> None:
         """Produces a 3D plot of the joint distribution's pdf / density
         function.
 
@@ -1555,7 +1555,8 @@ class PreFitCopula(NotImplementedBase):
                  figsize: tuple = (8, 8), grid: bool = True,
                  axes_names: tuple = None, zlim: tuple = (None, None),
                  num_generate: int = 1000, num_points: int = 100,
-                 show_progress: bool = True, show: bool = True) -> None:
+                 show_progress: bool = True, show: bool = True, **kwargs
+                 ) -> None:
         """Produces a 3D plot of the joint distribution's cdf / cumulative
         density function.
 
@@ -1661,7 +1662,7 @@ class PreFitCopula(NotImplementedBase):
                     grid: bool = True, axes_names: tuple = None,
                     zlim: tuple = (None, None), num_generate: int = 1000,
                     num_points: int = 100, show_progress: bool = True,
-                    show: bool = True) -> None:
+                    show: bool = True, **kwargs) -> None:
         """Produces a 3D plot of the joint distribution's cdf / cumulative
         density function, using a monte-carlo numerical approximation.
 
@@ -1771,7 +1772,8 @@ class PreFitCopula(NotImplementedBase):
                         figsize: tuple = (8, 8), grid: bool = True,
                         axes_names: tuple = None, zlim: tuple = (None, None),
                         num_generate: int = 1000, num_points: int = 100,
-                        show_progress: bool = True, show: bool = True) -> None:
+                        show_progress: bool = True, show: bool = True,
+                        **kwargs) -> None:
         """Produces a 3D plot of the copula distribution's pdf / density
         function.
 
@@ -1858,7 +1860,8 @@ class PreFitCopula(NotImplementedBase):
                         figsize: tuple = (8, 8), grid: bool = True,
                         axes_names: tuple = None, zlim: tuple = (None, None),
                         num_generate: int = 1000, num_points: int = 100,
-                        show_progress: bool = True, show: bool = True) -> None:
+                        show_progress: bool = True, show: bool = True, **kwargs
+                        ) -> None:
         """Produces a 3D plot of the copula distribution's cdf / density
         function.
 
@@ -1929,7 +1932,7 @@ class PreFitCopula(NotImplementedBase):
             Default is True.
         """
         self._threeD_plot(
-            unc_str='copula_cdf', copula_params=copula_params, mdists=mdists,
+            func_str='copula_cdf', copula_params=copula_params, mdists=mdists,
             ppf_approx=True, var1_range=var1_range, var2_range=var2_range,
             color=color, alpha=alpha, figsize=figsize, grid=grid,
             axes_names=axes_names, zlim=zlim, num_generate=num_generate,
@@ -1945,8 +1948,8 @@ class PreFitCopula(NotImplementedBase):
                            axes_names: tuple = None,
                            zlim: tuple = (None, None),
                            num_generate: int = 1000, num_points: int = 100,
-                           show_progress: bool = True, show: bool = True) \
-            -> None:
+                           show_progress: bool = True, show: bool = True,
+                           **kwargs) -> None:
         """Produces a 3D plot of the copula distribution's cdf / density
         function using monte-carlo numerical methods.
 
