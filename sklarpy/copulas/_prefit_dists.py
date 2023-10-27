@@ -432,8 +432,8 @@ class PreFitCopula(NotImplementedBase):
             show_progress=show_progress, **kwargs)
 
     def rvs(self, size: int, copula_params: Union[Params, tuple],
-            mdists: Union[MarginalFitter, dict], ppf_approx: bool = True) \
-            -> np.ndarray:
+            mdists: Union[MarginalFitter, dict], ppf_approx: bool = True,
+            **kwargs) -> np.ndarray:
         """The random variable generator function of the overall joint
         distribution. This requires the evaluation of the ppf / quantile
         function of each marginal distribution, which for certain univariate
@@ -730,8 +730,8 @@ class PreFitCopula(NotImplementedBase):
     def _u_to_g(self, u: np.ndarray, copula_params: Union[Params, tuple]):
         return u
 
-    def copula_rvs(self, size: int, copula_params: Union[Params, tuple]) \
-            -> np.ndarray:
+    def copula_rvs(self, size: int, copula_params: Union[Params, tuple],
+                   **kwargs) -> np.ndarray:
         """The random variable generator function of the copula distribution.
 
         Parameters
