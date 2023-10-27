@@ -57,14 +57,22 @@ def pd_mvt_uniform_data():
 
 
 @pytest.fixture(scope="session", autouse=True)
-def all_mv_data():
+def all_mvt_data():
     return {
-        'mv_continuous': mvt_continuous_data(),
+        'mvt_continuous': mvt_continuous_data(),
         'mvt_discrete': mvt_discrete_data(),
         'pd_mvt_continuous': pd_mvt_continuous_data(),
         'pd_mvt_discrete': pd_mvt_discrete_data(),
         'mvt_mixed': mvt_mixed_data(),
         'pd_mvt_mixed': pd_mvt_mixed_data(),
+    }
+
+
+@pytest.fixture(scope="session", autouse=True)
+def all_mvt_uniform_data():
+    return {
+        'np_uniform': mvt_uniform_data(),
+        'pd_uniform': pd_mvt_uniform_data(),
     }
 
 
@@ -242,7 +250,7 @@ def copula_params_3d():
 @pytest.fixture(scope="session", autouse=True)
 def all_mdists_2d():
     return {
-        'mv_continuous': {
+        'mvt_continuous': {
             0: lognorm.fit(params=(0.01, -120.05, 119.9)),
             1: lognorm.fit(params=(0.01, -150.77, 150.67))},
 
@@ -251,7 +259,7 @@ def all_mdists_2d():
             1: poisson.fit(params=(7.83,))},
 
         'pd_mvt_continuous': {
-            0: lognorm.fit(params=(0.0, -202.7, 202.72)),
+            0: lognorm.fit(params=(0.01, -120.05, 119.9)),
             1: cauchy.fit(params=(-0.0, 0.53))},
 
         'pd_mvt_discrete': {
@@ -270,7 +278,7 @@ def all_mdists_2d():
 @pytest.fixture(scope="session", autouse=True)
 def all_mdists_3d():
     return {
-        'mv_continuous': {
+        'mvt_continuous': {
             0: lognorm.fit(params=(0.02, -51.43, 51.52)),
             1: cauchy.fit(params=(0.08, 0.51)),
             2: cauchy.fit(params=(0.09, 0.59))},

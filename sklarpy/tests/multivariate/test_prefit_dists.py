@@ -148,12 +148,12 @@ def test_prefit_logpdf_pdf_cdf_mc_cdfs(
     print("\nTesting logpdf, pdf, cdf and mc-cdf functions")
     eps: float = 10 ** -5
     num_generate: int = 10
+    cdf_num: int = 10
 
     for name in mv_dists_to_test:
         dist, _, params = get_dist(name, params_2d, mvt_continuous_data)
         for func_str in ('logpdf', 'pdf', 'mc_cdf'): #, 'cdf'):
             func: Callable = eval(f'dist.{func_str}')
-            cdf_num: int = 10
             datasets = (mvt_continuous_data[:cdf_num, :],
                         mvt_discrete_data[:cdf_num, :],
                         pd_mvt_continuous_data.iloc[:cdf_num, :],
@@ -298,7 +298,7 @@ def test_prefit_plots(mv_dists_to_test, params_2d, params_3d,
             plt.close()
 
 
-def test_prefit_name(mv_dists_to_test):
+def test_prefit_names(mv_dists_to_test):
     """Testing that name of pre-fit multivariate distributions is a string."""
     print("\nTesting name")
     for name in mv_dists_to_test:
