@@ -3,7 +3,8 @@
 import numpy as np
 import pandas as pd
 
-# specifying the parameters of the multivariate normal distribution we are generating from
+# specifying the parameters of the multivariate normal distribution we are
+# sampling from
 num_generate: int = 1000
 my_mu: np.ndarray = np.array([33, 44], dtype=float)
 my_corr: np.ndarray = np.array([[1, 0.7], [0.7, 1]], dtype=float)
@@ -15,7 +16,8 @@ my_mvn_params: tuple = (my_mu, my_cov)
 from sklarpy.multivariate import multivariate_normal
 
 rvs: np.ndarray = multivariate_normal.rvs(num_generate, my_mvn_params)
-rvs_df: pd.DataFrame = pd.DataFrame(rvs, columns=['Wife Age', 'Husband Age'], dtype=float)
+rvs_df: pd.DataFrame = pd.DataFrame(rvs, columns=['Wife Age', 'Husband Age'
+                                                  ], dtype=float)
 
 # applying MarginalFitter to our random variables
 from sklarpy.copulas import MarginalFitter

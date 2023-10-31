@@ -1,5 +1,7 @@
-# This file contains examples of how to use discrete, univariate distributions in SklarPy.
-# These work in exactly the same way as continuous distributions, as shown below.
+# This file contains examples of how to use discrete, univariate
+# distributions in SklarPy.
+# These work in exactly the same way as continuous distributions,
+# as shown below.
 import numpy as np
 import pandas as pd
 
@@ -33,4 +35,4 @@ from sklarpy import load
 loaded_fitted_poisson = load('poisson.pickle')
 
 # which we can quickly verify is the same as the above
-print(loaded_fitted_poisson.param)
+print(loaded_fitted_poisson.params)

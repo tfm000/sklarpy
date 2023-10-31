@@ -6,8 +6,10 @@ import numpy as np
 from sklarpy.univariate import normal
 
 num_generate: int = 10000
-normal_rvs1: np.ndarray = normal.rvs((num_generate,), (1, 1))  # generating a 1d array of N(1, 1) random variables
-normal_rvs2: np.ndarray = normal.rvs((num_generate,), (0, 3))  # generating a 1d array of N(2, 3) random variables
+# generating a 1d array of N(1, 1) random variables
+normal_rvs1: np.ndarray = normal.rvs((num_generate,), (1, 1))
+# generating a 1d array of N(2, 3) random variables
+normal_rvs2: np.ndarray = normal.rvs((num_generate,), (0, 3))
 rvs = normal_rvs1 * normal_rvs2
 
 # applying UnivariateFitter to our product of normal random variables
