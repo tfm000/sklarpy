@@ -356,7 +356,8 @@ class FittedCopula(Savable, Copyable):
         """
         if data is None:
             return self.__fit_info[func_str]
-        return eval(f"self.__obj.{func_str}(data=data, "
+        obj = self.__obj
+        return eval(f"obj.{func_str}(data=data, "
                     f"copula_params=self.copula_params, mdists=self.mdists)")
 
     def loglikelihood(self, data: Union[np.ndarray, pd.DataFrame] = None) \
