@@ -2,14 +2,15 @@
 import numpy as np
 from typing import Union, Callable
 
-from sklarpy.copulas._prefit_dists import PreFitCopula
+from sklarpy.copulas._distributions._generalized_hyperbolic import \
+    gen_hyperbolic_copula_gen
 from sklarpy._utils import Params
 from sklarpy.univariate.distributions import skewed_t
 
 __all__ = ['skewed_t_copula_gen']
 
 
-class skewed_t_copula_gen(PreFitCopula):
+class skewed_t_copula_gen(gen_hyperbolic_copula_gen):
     """The Multivariate Skewed-T copula model."""
     def _u_g_pdf(self, func: Callable, arr: np.ndarray,
                  copula_params: Union[Params, tuple], **kwargs) -> np.ndarray:

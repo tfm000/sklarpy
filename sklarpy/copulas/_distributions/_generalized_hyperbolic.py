@@ -80,6 +80,7 @@ class gen_hyperbolic_copula_gen(PreFitCopula):
             True to show the progress of your fitting.
         method: str
             The method to use when fitting the copula distribution to data.
+            Can be either 'mle' or 'em'. Default is 'mle'.
 
         bounds: tuple
             When fitting to data only.

@@ -66,8 +66,6 @@ class student_t_copula_gen(PreFitCopula):
             distribution. See MarginalFitter.fit documentation for more.
         show_progress: bool
             True to show the progress of your fitting.
-        method: str
-            The method to use when fitting the copula distribution to data.
 
         corr_method: str
             When fitting to data only.
