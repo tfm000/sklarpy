@@ -128,12 +128,15 @@ def test_fitted_scalars(mvt_continuous_data, mvt_discrete_data,
                 func(data=new_dataset)
 
 
-def test_fitted_plots(mv_dists_to_test, params_2d, params_3d, mvt_continuous_data):
+def test_fitted_plots(mv_dists_to_test, params_2d, params_3d,
+                      mvt_continuous_data):
     """Testing the marginal_pairplot, pdf_plot, cdf_plot and mc_cdf_plot
     methods of fitted multivariate distributions."""
     print('Testing plots')
     mvt_continuous_data_3d: np.ndarray = scipy.stats.multivariate_normal.rvs(
         size=(mvt_continuous_data.shape[0], 3))
+    kwargs: dict = {'num_points': 2, 'num_generate': 10, 'mc_num_generate': 10,
+                    'show': False, 'show_progress': False}
     for name in mv_dists_to_test:
         _, fitted_2d, _ = get_dist(name, params_2d, mvt_continuous_data)
         _, fitted_3d, _ = get_dist(name, params_3d, mvt_continuous_data_3d)
@@ -144,19 +147,17 @@ def test_fitted_plots(mv_dists_to_test, params_2d, params_3d, mvt_continuous_dat
 
             # testing 3d plots
             if func_str == 'marginal_pairplot':
-                func_3d(show=False, show_progress=False)
+                func_3d(**kwargs)
                 plt.close()
             else:
                 with pytest.raises(NotImplementedError,
                                    match=f"{func_str} is not "
                                          f"implemented when the number of "
                                          f"variables is not 2."):
-                    func_3d(show=False, show_progress=False)
+                    func_3d(**kwargs)
 
             # testing 2d plots
-            kwargs = {'num_generate': 10} if func_str == 'marginal_pairplot' \
-        else {'num_points': 2, 'num_generate': 10, 'mc_num_generate': 10}
-            func_2d(show=False, show_progress=False, **kwargs)
+            func_2d(**kwargs)
             plt.close()
 
 

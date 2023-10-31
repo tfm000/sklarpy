@@ -268,6 +268,8 @@ def test_prefit_plots(mv_dists_to_test, params_2d, params_3d,
     print("\nTesting plots")
     mvt_continuous_data_3d: np.ndarray = scipy.stats.multivariate_normal.rvs(
         size=(mvt_continuous_data.shape[0], 3))
+    kwargs: dict = {'num_points': 2, 'num_generate': 10, 'mc_num_generate': 10,
+                    'show': False, 'show_progress': False}
     for name in mv_dists_to_test:
         dist, _, dist_params_2d = get_dist(name, params_2d,
                                            mvt_continuous_data)
@@ -279,22 +281,17 @@ def test_prefit_plots(mv_dists_to_test, params_2d, params_3d,
 
             # testing 3d plots
             if func_str == 'marginal_pairplot':
-                func(params=dist_params_3d, show=False)
+                func(params=dist_params_3d, **kwargs)
                 plt.close()
             else:
                 with pytest.raises(NotImplementedError,
                                    match=f"{func_str} is not "
                                          f"implemented when the number of "
                                          f"variables is not 2."):
-                    func(params=dist_params_3d, show=False,
-                         show_progress=False)
+                    func(params=dist_params_3d, **kwargs)
 
             # testing 2d plots
-            kwargs = {'num_generate': 10} if func_str == 'marginal_pairplot' \
-                else {'num_points': 2, 'num_generate': 10,
-                      'mc_num_generate': 10}
-            func(params=dist_params_2d, show=False, show_progress=False,
-                 **kwargs)
+            func(params=dist_params_2d, **kwargs)
             plt.close()
 
 
