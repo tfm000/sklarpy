@@ -7,21 +7,17 @@ from sklarpy.copulas import MarginalFitter
 from sklarpy._utils import FitError
 
 
-def test_init(mvt_continuous_data, mvt_discrete_data, pd_mvt_continuous_data,
-              pd_mvt_discrete_data):
+def test_init(all_mvt_data):
     """Testing whether MarginalFitter initialises without errors."""
     print("\nTesting init")
-    for data in (mvt_continuous_data, mvt_discrete_data,
-                 pd_mvt_continuous_data, pd_mvt_discrete_data):
+    for data in all_mvt_data.values():
         mfitter = MarginalFitter(data)
 
 
-def test_fit(mvt_continuous_data, mvt_discrete_data, pd_mvt_continuous_data,
-              pd_mvt_discrete_data):
+def test_fit(all_mvt_data):
     """Testing the fit method for MarginalFitter"""
     print("\nTesting fit")
-    for data in (mvt_continuous_data, mvt_discrete_data,
-                 pd_mvt_continuous_data, pd_mvt_discrete_data):
+    for dataset_name, data in all_mvt_data.items():
         # testing fit with default arguments
         mfitter1: MarginalFitter = MarginalFitter(data)
         mfitter1.fit()
@@ -48,11 +44,11 @@ def test_fit(mvt_continuous_data, mvt_discrete_data, pd_mvt_continuous_data,
             mfitter4.fit(univar_opts4)
 
 
-def test_pdfs_cdfs_ppfs_logpdf(mvt_mixed_data, pd_mvt_mixed_data,
-                               mvt_uniform_data, pd_mvt_uniform_data):
+def test_pdfs_cdfs_ppfs_logpdf(all_mvt_data, all_mvt_uniform_data):
     """Testing the cdfs method for MarginalFitter"""
     print("\nTesting pdfs, cdfs, ppfs and logpdfs")
-    for data in (mvt_mixed_data, pd_mvt_mixed_data):
+    for dataset_name in ('mvt_mixed', 'pd_mvt_mixed'):
+        data = all_mvt_data[dataset_name]
         mfitter: MarginalFitter = MarginalFitter(data)
         for func in ('marginal_pdfs', 'marginal_cdfs', 'marginal_ppfs',
                      'marginal_logpdfs'):
@@ -71,9 +67,9 @@ def test_pdfs_cdfs_ppfs_logpdf(mvt_mixed_data, pd_mvt_mixed_data,
                 values = eval(f"mfitter.{func}()")
                 all_values.append((values, data))
 
-            datasets = (mvt_uniform_data, pd_mvt_uniform_data) \
+            datasets = all_mvt_uniform_data.values() \
                 if func == 'marginal_ppfs' \
-                else (mvt_mixed_data, pd_mvt_mixed_data)
+                else (all_mvt_data['mvt_mixed'], all_mvt_data['pd_mvt_mixed'])
 
             for func_data in datasets:
                 # testing func when fit, with data
@@ -83,7 +79,6 @@ def test_pdfs_cdfs_ppfs_logpdf(mvt_mixed_data, pd_mvt_mixed_data,
             for values, func_data in all_values:
                 # checking match datatype
                 assert type(values) == type(data), 'match_datatype failed'
-
 
                 # checking same shape
                 np_values, np_func_data = (np.asarray(values),
