@@ -141,9 +141,8 @@ def test_prefit_logpdf_pdf_cdf_mc_cdfs(all_mvt_data, copula_params_2d,
                 # checking error if wrong dimension
                 new_dataset: np.ndarray = np.zeros((n, d + 1))
                 with pytest.raises(ValueError,
-                                   match='mdists number of distributions and '
-                                         'the number of variables are not '
-                                         'equal.'):
+                                   match='Dimensions implied by parameters do '
+                                         'not match those of the dataset.'):
                     func(x=new_dataset, copula_params=copula_params,
                          mdists=mdists, match_datatype=True,
                          num_generate=num_generate, show_progress=False)
@@ -203,7 +202,9 @@ def test_prefit_copula_logpdf_pdf_cdf_mc_cdfs(all_mvt_uniform_data,
 
                 # checking error if wrong dimension
                 new_dataset: np.ndarray = np.zeros((n, d + 1))
-                with pytest.raises(ValueError):
+                with pytest.raises(ValueError,
+                                   match='Dimensions implied by parameters do'
+                                         ' not match those of the dataset.'):
                     func(u=new_dataset, copula_params=copula_params,
                          mdists=mdists, match_datatype=True,
                          num_generate=num_generate, show_progress=False)
@@ -283,8 +284,8 @@ def test_prefit_scalars(all_mvt_data, copula_params_2d, all_mdists_2d):
                 new_dataset: np.ndarray = np.zeros((n, d + 1))
                 with pytest.raises(
                         ValueError,
-                        match='mdists number of distributions and the '
-                              'number of variables are not equal.'):
+                        match='Dimensions implied by parameters do not match '
+                              'those of the dataset.'):
                     func(data=new_dataset, copula_params=copula_params,
                          mdists=mdists)
 
