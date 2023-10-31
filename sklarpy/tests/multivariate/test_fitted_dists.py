@@ -132,7 +132,7 @@ def test_fitted_plots(mv_dists_to_test, params_2d, params_3d,
                       mvt_continuous_data):
     """Testing the marginal_pairplot, pdf_plot, cdf_plot and mc_cdf_plot
     methods of fitted multivariate distributions."""
-    print('Testing plots')
+    print('\nTesting plots')
     mvt_continuous_data_3d: np.ndarray = scipy.stats.multivariate_normal.rvs(
         size=(mvt_continuous_data.shape[0], 3))
     kwargs: dict = {'num_points': 2, 'num_generate': 10, 'mc_num_generate': 10,

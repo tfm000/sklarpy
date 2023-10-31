@@ -21,7 +21,6 @@ def test_fitted_logpdf_pdf_cdf_mc_cdfs(all_mvt_data, copula_params_2d,
     for dataset_name, data in all_mvt_data.items():
         mdists = all_mdists_2d[dataset_name]
         for name in distributions_map['all']:
-            print(f'{name} - {dataset_name}')
             _, fcopula, _ = get_dist(name, copula_params_2d,
                                                 mdists, data)
 
