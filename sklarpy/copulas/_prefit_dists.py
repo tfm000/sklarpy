@@ -869,8 +869,8 @@ class PreFitCopula(NotImplementedBase):
 
     def num_copula_params(self, copula_params: Union[Params, dict], **kwargs
                           ) -> int:
-        """Calculates the number of parameters defining the copula
-        distribution.
+        """Calculates the number of parameters defining the multivariate
+        distribution of the copula model.
 
         Parameters
         ----------
@@ -883,7 +883,8 @@ class PreFitCopula(NotImplementedBase):
         Returns
         -------
         num_copula_params: int
-            The number of parameters defining the copula distribution.
+            The number of parameters defining the multivariate distribution
+            of the copula model.
         """
         return len(copula_params)
 

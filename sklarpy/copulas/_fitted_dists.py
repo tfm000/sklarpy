@@ -334,6 +334,52 @@ class FittedCopula(Savable, Copyable):
         return self.__obj.copula_rvs(
             size=size, copula_params=self.copula_params)
 
+    def num_marginal_params(self) -> int:
+        """Calculates the total number of parameters defining the marginal
+        distributions.
+
+        Returns
+        -------
+        num_marginal_params : int
+            The total number of parameters defining the marginal distributions.
+        """
+        return self.__obj.num_marginal_params(mdists=self.mdists)
+
+    def num_copula_params(self) -> int:
+        """Calculates the number of parameters defining the multivariate
+        distribution of the copula model.
+
+        Returns
+        -------
+        num_copula_params: int
+            The number of parameters defining the multivariate distribution
+            of the copula model.
+        """
+        return self.__obj.num_copula_params(copula_params=self.copula_params)
+
+    def num_scalar_params(self) -> int:
+        """Calculates the number of scalar parameters defining the overall
+        joint distribution.
+
+        Returns
+        -------
+        num_scalar_params: int
+            The number of scalar parameters defining the overall joint
+            distribution.
+        """
+        return self.__obj.num_scalar_params(mdists=self.mdists)
+
+    def num_params(self) -> int:
+        """Calculates the number of parameters defining the overall joint
+        distribution.
+
+        Returns
+        -------
+        num_params: int
+            The number of parameters defining the overall joint distribution.
+        """
+        return self.__obj.num_params(mdists=self.mdists)
+
     def __likelihood_loglikelihood_aic_bic(
             self, func_str: str, data: Union[pd.DataFrame, np.ndarray] = None)\
             -> float:
