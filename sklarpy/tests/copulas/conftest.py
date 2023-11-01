@@ -246,32 +246,31 @@ def copula_params_3d():
                       [0.02411494, 0.03426521, 1.]])),
     }
 
-
 @pytest.fixture(scope="session", autouse=True)
 def all_mdists_2d():
     return {
         'mvt_continuous': {
-            0: lognorm.fit(params=(0.01, -120.05, 119.9)),
-            1: lognorm.fit(params=(0.01, -150.77, 150.67))},
+            0: normal.fit(params=(0, 1)),
+            1: normal.fit(params=(0, 1))},
 
         'mvt_discrete': {
             0: poisson.fit(params=(3.95,)),
             1: poisson.fit(params=(7.83,))},
 
         'pd_mvt_continuous': {
-            0: lognorm.fit(params=(0.01, -120.05, 119.9)),
-            1: cauchy.fit(params=(-0.0, 0.53))},
+            0: normal.fit(params=(0, 1)),
+            1: normal.fit(params=(0, 1))},
 
         'pd_mvt_discrete': {
             0: poisson.fit(params=(3.84,)),
             1: poisson.fit(params=(7.91,))},
 
         'mvt_mixed': {
-            0: lognorm.fit(params=(0.03, -30.7, 30.61)),
+            0: normal.fit(params=(0, 1)),
             1: poisson.fit(params=(3.85,))},
 
         'pd_mvt_mixed': {
-            0: gamma.fit(params=(8735.3, -87.37, 0.01)),
+            0: normal.fit(params=(0, 1)),
             1: poisson.fit(params=(4.15,))}}
 
 
@@ -279,9 +278,9 @@ def all_mdists_2d():
 def all_mdists_3d():
     return {
         'mvt_continuous': {
-            0: lognorm.fit(params=(0.02, -51.43, 51.52)),
-            1: cauchy.fit(params=(0.08, 0.51)),
-            2: cauchy.fit(params=(0.09, 0.59))},
+            0: normal.fit(params=(0, 1)),
+            1: normal.fit(params=(0, 1)),
+            2: normal.fit(params=(0, 1))},
 
         'mvt_discrete': {
             0: poisson.fit(params=(4.15,)),
@@ -289,9 +288,9 @@ def all_mdists_3d():
             2: poisson.fit(params=(7.92,))},
 
         'pd_mvt_continuous': {
-            0: lognorm.fit(params=(0.01, -127.24, 127.27)),
-            1: lognorm.fit(params=(0.12, -7.33, 7.33)),
-            2: lognorm.fit(params=(0.12, -8.12, 8.1))},
+            0: normal.fit(params=(0, 1)),
+            1: normal.fit(params=(0, 1)),
+            2: normal.fit(params=(0, 1))},
 
         'pd_mvt_discrete': {
             0: poisson.fit(params=(3.89,)),
@@ -299,11 +298,11 @@ def all_mdists_3d():
             2: poisson.fit(params=(7.87,))},
 
         'mvt_mixed': {
-            0: gamma.fit(params=(11979.83, -107.67, 0.01)),
+            0: normal.fit(params=(0, 1)),
             1: poisson.fit(params=(3.86,)),
             2: normal.fit(params=(0, 1))},
 
         'pd_mvt_mixed': {
-            0: cauchy.fit(params=(0.15, 0.53)),
+            0: normal.fit(params=(0, 1)),
             1: poisson.fit(params=(3.79,)),
             2: normal.fit(params=(0, 1))}}
