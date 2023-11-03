@@ -4,18 +4,27 @@ from setuptools import setup, find_packages
 setup(
     name='sklarpy',
     packages=find_packages(),
-    version='0.1.3',
+    version='1.0.0',
     license='MIT',
-    description="A Python library for copula and univariate probability distribution fitting.",
-    long_description="SklarPy (pronounced 'Sky-Lar-Pee' or 'Sky-La-Pie') is an open-source software for probability "
-                     "distribution fitting.  It contains useful tools for fitting copula and univariate probability "
-                     "distributions. Named after Sklar's theorem and Abe Sklar, the American mathematician who proved "
-                     "that multivariate cumulative distribution functions can be expressed in terms of copulas and "
-                     "their marginals.",
+    description="A Python library for Copula, Multivariate and Univariate "
+                "probability distribution fitting.",
+    long_description="SklarPy (pronounced 'Sky-Lar-Pee' or 'Sky-La-Pie') is "
+                     "an open-source software for probability distribution "
+                     "fitting.  It contains useful tools for fitting Copula, "
+                     "Multivariate and Univariate probability distributions. "
+                     "In addition to over 100 univariate distributins, we "
+                     "implement many multivariate normal mixture distributions"
+                     " and their copulas, including Gaussian, Student-T, "
+                     "Skewed-T and Generalized Hyperbolic distributions and "
+                     "copulas. Named after Sklar's theorem and Abe Sklar, the "
+                     "American mathematician who proved that multivariate "
+                     "cumulative distribution functions can be expressed in "
+                     "terms of copulas and their marginals.",
     author='Tyler Mitchell',
     author_email='sklarpy@gmail.com',
     url='https://github.com/sklarpy/sklarpy',
-    download_url='https://github.com/sklarpy/sklarpy/archive/refs/tags/v0.1.2.tar.gz',
+    download_url='https://github.com/sklarpy/sklarpy/archive/refs/tags/'
+                 'v0.1.2.tar.gz',
     keywords=[
         'SklarPy',
         'Sklar',
@@ -32,15 +41,25 @@ setup(
         'Modeling',
         'Quantitative',
         'Fitting'
-        'SciPy'
+        'SciPy',
+        'Statistics',
+        'Mathematics',
+        'Science'
+        'Scientific',
+        'Finance',
+        'Risk',
+        'VaR',
+        'Machine Learning',
     ],
-    python_requires='>=3.8',
+    python_requires='>=3.9',
     install_requires=[
-        'pandas>=1.4.3',
-        'numpy>=1.23.0',
-        'scipy>=1.9.3',
-        'matplotlib>=3.5.2',
-        'dill>=0.3.5.1'
+        'pandas>=2.0.2',
+        'numpy>=1.24.3',
+        'scipy>=1.11.0',
+        'matplotlib>=3.7.1',
+        'dill>=0.3.6',
+        'tqdm>=4.65.0',
+        'seaborn>=0.12.2',
     ],
     extras_require={
         "dev": [
@@ -53,9 +72,9 @@ setup(
         'Intended Audience :: Science/Research',
         'Intended Audience :: Financial and Insurance Industry',
         'Intended Audience :: Developers',
+        'Intended Audience :: Education',
         'Topic :: Software Development :: Build Tools',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
