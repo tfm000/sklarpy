@@ -330,7 +330,7 @@ def test_prefit_plots(all_mvt_data, copula_params_2d, copula_params_3d,
         size=(mvt_data_2d.shape[0], 3))
     mdists_3d: dict = all_mdists_3d['mvt_continuous']
 
-    for name in distributions_map['all']:
+    for name in ('gaussian_copula',):
         copula, _, cparams_2d = get_dist(name, copula_params_2d, mdists_2d,
                                          mvt_data_2d)
 

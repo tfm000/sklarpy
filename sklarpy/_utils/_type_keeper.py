@@ -43,8 +43,9 @@ class TypeKeeper:
         user_input_type = type(user_input)
         if user_input_type == pd.DataFrame:
             ndims: int = len(user_input.columns)
-            shape: tuple = len(user_input.index), ndims
-            other: dict = {'cols': user_input.columns, 'index': user_input.index}
+            shape: tuple = (len(user_input.index), ndims)
+            other: dict = {'cols': user_input.columns,
+                           'index': user_input.index}
         elif user_input_type == np.ndarray:
             shape: tuple = user_input.shape
             ndims: int = shape[-1]

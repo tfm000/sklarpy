@@ -315,7 +315,7 @@ class PreFitUnivariateBase:
             return self.cdf(x, params)
 
         # fitting cdf approx function
-        bounds: tuple = x.min(), x.max()
+        bounds: tuple = (x.min(), x.max())
         cdf_approx = self._fit_cdf_approx(params, num_points, bounds)
         return np.array([cdf_approx(xi) for xi in x], dtype=float)
 
@@ -776,7 +776,7 @@ class PreFitUnivariateBase:
 
         # calculating support and fitted domain
         support: tuple = self.support(params)
-        fitted_domain: tuple = data.min(), data.max()
+        fitted_domain: tuple = (data.min(), data.max())
 
         # fitting empirical distribution
         empirical_fit: Callable = self._get_empirical_fit()
@@ -1035,7 +1035,7 @@ class PreFitNumericalUnivariateBase(PreFitUnivariateBase):
         """
         data = check_univariate_data(data)
         params: tuple = ()
-        fitted_domain: tuple = data.min(), data.max()
+        fitted_domain: tuple = (data.min(), data.max())
 
         # fitting numerical distribution
         (self._pdf, self._cdf, self._ppf, self._support, rvs) = self._fit(data)

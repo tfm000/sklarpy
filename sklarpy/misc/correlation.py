@@ -344,7 +344,7 @@ class CorrelationMatrix:
 
         # substituting any eigenvalues in the bulk by their mean.
         new_eigenvalues: np.ndarray = rm_eigenvalues.copy()
-        bulk: tuple = (1 - (Q ** -0.5)) ** 2, (1 + (Q ** -0.5)) ** 2
+        bulk: tuple = ((1 - (Q ** -0.5)) ** 2, (1 + (Q ** -0.5)) ** 2)
         eigenvalues_in_bulk: np.ndarray = \
             np.where(new_eigenvalues < bulk[1])[0]
         if len(eigenvalues_in_bulk) > 0:
