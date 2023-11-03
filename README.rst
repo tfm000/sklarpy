@@ -10,12 +10,12 @@
 .. image:: https://github.com/sklarpy/sklarpy/actions/workflows/tests.yml/badge.svg
     :alt: Tests
     :scale: 100%
-    :target: https://github.com/sklarpy/sklarpy/actions/workflows/tests.yml
+    :target: https://github.com/tfm000/sklarpy/actions/workflows/tests.yml
 
 .. image:: https://img.shields.io/pypi/l/sklarpy.svg
    :alt: License
    :scale: 100%
-   :target: https://github.com/sklarpy/sklarpy/blob/main/LICENSE
+   :target: https://github.com/tfm000/sklarpy/blob/main/LICENSE
 
 .. image:: https://img.shields.io/pypi/pyversions/sklarpy.svg
    :alt: Python versions
@@ -27,10 +27,10 @@
    :scale: 100%
    :target: https://pepy.tech/project/sklarpy
 
-SklarPy (pronounced "Sky-Lar-Pee" or "Sky-La-Pie") is an open-source software for probability distribution fitting.
-It contains useful tools for fitting copula and univariate probability distributions.
-Named after Sklar's theorem and Abe Sklar, the American mathematician who proved that multivariate cumulative
-distribution functions can be expressed in terms of copulas and their marginals.
+SklarPy (pronounced 'Sky-Lar-Pee' or 'Sky-La-Pie') is an open-source software for probability distribution fitting.
+It contains useful tools for fitting Copula, Multivariate and Univariate probability distributions.
+In addition to over 100 univariate distributions, we implement many multivariate normal mixture distributions and their copulas, including Gaussian, Student-T, Skewed-T and Generalized Hyperbolic distributions and copulas.
+Named after Sklar's theorem and Abe Sklar, the American mathematician who proved that multivariate cumulative distribution functions can be expressed in terms of copulas and their marginals.
 
 =================
 **Installation**
