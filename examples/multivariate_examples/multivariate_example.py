@@ -15,18 +15,17 @@ my_cov: np.ndarray = np.diag(my_sig) @ my_corr @ np.diag(my_sig)
 my_mvn_params: tuple = (my_mu, my_cov)
 
 # generating multivariate random normal variables
-from sklarpy.multivariate import multivariate_normal
+from sklarpy.multivariate import mvt_normal
 
-rvs: np.ndarray = multivariate_normal.rvs(1000, my_mvn_params)
+rvs: np.ndarray = mvt_normal.rvs(1000, my_mvn_params)
 rvs_df: pd.DataFrame = pd.DataFrame(rvs, columns=['Wife Age', 'Husband Age'],
                                     dtype=float)
 
 # fitting a symmetric hyperbolic dist to our generated data using
 # Maximum Likelihood Estimation
-from sklarpy.multivariate import multivariate_sym_hyperbolic
+from sklarpy.multivariate import mvt_shyperbolic
 
-fitted_msh = multivariate_sym_hyperbolic.fit(rvs_df, method='mle',
-                                             show_progress=True)
+fitted_msh = mvt_shyperbolic.fit(rvs_df, method='mle', show_progress=True)
 
 # printing our fitted parameters
 print(fitted_msh.params.to_dict)
@@ -48,7 +47,7 @@ fitted_msh.params.save()
 # distribution of the same type
 from sklarpy import load
 
-loaded_msh_params = load('multivariate_sym_hyperbolic.pickle')
-param_fitted_msh = multivariate_sym_hyperbolic.fit(params=loaded_msh_params)
+loaded_msh_params = load('mvt_shyperbolic.pickle')
+param_fitted_msh = mvt_shyperbolic.fit(params=loaded_msh_params)
 print(param_fitted_msh.params.to_dict)
 param_fitted_msh.pdf_plot(axes_names=rvs_df.columns)

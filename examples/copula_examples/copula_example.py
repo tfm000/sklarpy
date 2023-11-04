@@ -15,10 +15,10 @@ my_gamma = np.array([2.3, -4.3], dtype=float)
 my_params = (my_chi, my_psi, my_loc, my_shape, my_gamma)
 
 # generating multivariate hyperbolic random variables
-from sklarpy.multivariate import multivariate_hyperbolic
+from sklarpy.multivariate import mvt_hyperbolic
 
 num_generate: int = 1000
-rvs: np.ndarray = multivariate_hyperbolic.rvs(num_generate, my_params)
+rvs: np.ndarray = mvt_hyperbolic.rvs(num_generate, my_params)
 rvs_df: pd.DataFrame = pd.DataFrame(rvs, columns=['Process A', 'Process B'],
                                     dtype=float)
 

@@ -9,16 +9,16 @@ all_parametric_names: tuple = (
     'gumbel_copula',
     'frank_copula',
     'gaussian_copula',
-    'gen_hyperbolic_copula',
-    'marginal_hyperbolic_copula',
+    'gh_copula',
+    'mh_copula',
     'hyperbolic_copula',
     'nig_copula',
     'skewed_t_copula',
     'student_t_copula',
-    'sym_gen_hyperbolic_copula',
-    'sym_marginal_hyperbolic_copula',
-    'sym_hyperbolic_copula',
-    'sym_nig_copula',
+    'sgh_copula',
+    'smh_copula',
+    'shyperbolic_copula',
+    'snig_copula',
 )
 
 ###############################################################################

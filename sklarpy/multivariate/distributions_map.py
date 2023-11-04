@@ -5,17 +5,17 @@ __all__ = ['distributions_map']
 # Continuous (Parametric)
 ###############################################################################
 continuous_parametric_names: tuple = (
-    'multivariate_normal',
-    'multivariate_student_t',
-    'multivariate_gen_hyperbolic',
-    'multivariate_marginal_hyperbolic',
-    'multivariate_hyperbolic',
-    'multivariate_nig',
-    'multivariate_skewed_t',
-    'multivariate_sym_gen_hyperbolic',
-    'multivariate_sym_marginal_hyperbolic',
-    'multivariate_sym_hyperbolic',
-    'multivariate_sym_nig')
+    'mvt_normal',
+    'mvt_student_t',
+    'mvt_gh',
+    'mvt_mh',
+    'mvt_hyperbolic',
+    'mvt_nig',
+    'mvt_skewed_t',
+    'mvt_sgh',
+    'mvt_smh',
+    'mvt_shyperbolic',
+    'mvt_snig')
 
 ###############################################################################
 # Discrete (Parametric)
@@ -25,7 +25,7 @@ discrete_parametric_names: tuple = tuple()
 ###############################################################################
 # Numerical/Non-Parametric
 ###############################################################################
-continuous_numerical_names: tuple = ('multivariate_gaussian_kde',)
+continuous_numerical_names: tuple = ('mvt_gaussian_kde',)
 discrete_numerical_names: tuple = tuple()
 
 ###############################################################################

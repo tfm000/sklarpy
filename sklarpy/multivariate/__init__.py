@@ -1,8 +1,5 @@
-from sklarpy.multivariate.distributions import multivariate_gaussian_kde, \
-    multivariate_gen_hyperbolic, multivariate_marginal_hyperbolic, \
-    multivariate_hyperbolic, multivariate_nig, multivariate_normal, \
-    multivariate_skewed_t, multivariate_student_t, \
-    multivariate_sym_gen_hyperbolic, multivariate_sym_marginal_hyperbolic, \
-    multivariate_sym_hyperbolic, multivariate_sym_nig
+from sklarpy.multivariate.distributions import (
+    mvt_gaussian_kde, mvt_gh, mvt_mh, mvt_hyperbolic, mvt_nig, mvt_normal,
+    mvt_skewed_t, mvt_student_t, mvt_sgh, mvt_smh, mvt_shyperbolic, mvt_snig)
 
 from sklarpy.multivariate.distributions_map import distributions_map
