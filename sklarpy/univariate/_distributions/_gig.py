@@ -1,6 +1,5 @@
 # Standard parametrization of the Generalized Inverse Gaussian distribution
 import numpy as np
-# import scipy.integrate
 import scipy.optimize
 from scipy.stats import rv_continuous
 from scipy.stats._distn_infrastructure import _ShapeInfo

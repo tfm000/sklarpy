@@ -12,7 +12,7 @@ setup(
                      "an open-source software for probability distribution "
                      "fitting.  It contains useful tools for fitting Copula, "
                      "Multivariate and Univariate probability distributions. "
-                     "In addition to over 100 univariate distributins, we "
+                     "In addition to over 100 univariate distributions, we "
                      "implement many multivariate normal mixture distributions"
                      " and their copulas, including Gaussian, Student-T, "
                      "Skewed-T and Generalized Hyperbolic distributions and "
@@ -21,9 +21,9 @@ setup(
                      "cumulative distribution functions can be expressed in "
                      "terms of copulas and their marginals.",
     author='Tyler Mitchell',
-    author_email='sklarpy@gmail.com',
-    url='https://github.com/sklarpy/sklarpy',
-    download_url='https://github.com/sklarpy/sklarpy/archive/refs/tags/'
+    author_email='tylerfmitchell1999@gmail.com',
+    url='https://github.com/tfm000/sklarpy',
+    download_url='https://github.com/tfm000/sklarpy/archive/refs/tags/'
                  'v0.1.2.tar.gz',
     keywords=[
         'SklarPy',
