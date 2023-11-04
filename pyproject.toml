@@ -71,7 +71,3 @@ dev = [
 "Homepage" = "https://github.com/tfm000/sklarpy"
 "Bug Reports" = "https://github.com/tfm000/sklarpy/issues"
 "Source" = "https://github.com/tfm000/sklarpy"
-
-[build-system]
-requires = ["setuptools>=63.0.0", "wheel"]
-build-backend = "setuptools.build_meta"
