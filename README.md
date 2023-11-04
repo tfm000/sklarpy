@@ -1,0 +1,91 @@
+<p align="center">
+    <a href="https://opensource.org/licenses/MIT">
+        <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg"
+            alt="MIT license"></a> &nbsp;
+    <a href="https://github.com/tfm000/sklarpy/actions/workflows/tests.yml">
+        <img src="https://github.com/sklarpy/sklarpy/actions/workflows/tests.yml/badge.svg"
+            alt="build"></a> &nbsp;
+    <a href="https://pepy.tech/project/sklarpy">
+        <img src="https://static.pepy.tech/personalized-badge/sklarpy?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads"
+            alt="downloads"></a> &nbsp;
+</p>
+
+
+SklarPy (pronounced 'Sky-Lar-Pee' or 'Sky-La-Pie') is an open-source software for probability distribution fitting.
+It contains useful tools for fitting Copula, Multivariate and Univariate probability distributions.
+In addition to over 100 univariate distributions, we implement many multivariate normal mixture distributions and their copulas, including Gaussian, Student-T, Skewed-T and Generalized Hyperbolic distributions and copulas.
+Named after Sklar's theorem and Abe Sklar, the American mathematician who proved that multivariate cumulative distribution functions can be expressed in terms of copulas and their marginals.
+
+
+## Table of contents
+
+- [Table of contents](#table_of_contents)
+- [Installation](#installation)
+- [Examples](#examples)
+- [Why we are better](#why-we-are-better)
+- [Testing](#testing)
+
+## Installation
+SklarPy is available on PyPI and can be installed by running:
+
+```bash
+pip install sklarpy
+```
+
+## Examples
+Here is an example of SklarPy's implementation of the Generalized Hyperbolic Copula model being fitted onto bivariate data.
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklarpy.copulas import gh_copula
+
+# generating random data
+n: int = 1000
+obs: np.ndarray = np.full((n, 2), np.nan)
+obs[:, 0] = np.random.normal(3,4, size=(n,))
+obs[:, 1] = obs[:, 0] + 0.5 * np.random.normal(3, 5, size=(n,))
+obvs_df: pd.DataFrame = pd.DataFrame(obs, columns=['Process A', 'Process B'])
+
+# fitting our copula model
+fitted_copula = gh_copula.fit(obvs_df)
+
+# printing our fitted copula parameters
+print(fitted_copula.copula_params.to_dict)
+
+# printing our fitted marginal distributions
+print(fitted_copula.mdists)
+
+# plotting our fit
+fitted_copula.pdf_plot(show=False)
+fitted_copula.copula_pdf_plot(show=False)
+plt.show()
+```
+```txt
+{'lamb': -10.0, 'chi': 4.227038325195731, 'psi': 10.0, 
+    'loc': array([[0.], [0.]]), 
+    'shape': array([[1. , 0.84273015], 
+                    [0.84273015, 1.]]), 
+    'gamma': array([[0.99696041], [0.99913161]])}
+
+{0: lognorm(0.02, -203.22, 206.18), 1: lognorm(0.04, -110.89, 115.4)}
+```
+<p align="center">
+    <img width=50% src="https://github.com/tfm000/sklarpy/blob/master/media/PDF_Gh_Copula_PDF_Plot_Plot.png">
+    <img width=50% src="https://github.com/tfm000/sklarpy/blob/master/media/Copula_PDF_Gh_Copula_PDF_Plot_Plot.png">
+</p>
+
+
+Further examples can be found <a href="https://github.com/tfm000/sklarpy/tree/main/examples"> here</a>.
+
+## Why we are better
+- Unlike other Python implementations of copulas, we implement more than the Gaussian and Archimedean copulas. A full list of our implementated copula models can be found <a href="https://github.com/tfm000/sklarpy/tree/main/sklarpy/copulas"> here </a>, though it includes many normal mean-variance mixture models as well as Archimedean and non-parametric models.
+- We allow for easy parameter fitting of both the univariate marginals and the multivariate copula distribution.
+- We allow for easy plotting of all our distributions, allowing you to visualize your models.
+- We use scipy.stats as a backend for all our univariate models, meaning as scipy expands and improves their model selection, so will ours!
+- We provide multivariate and univariate distributions, in addition to our copula models, meaning SklarPy can act as a one-stop-shop for all probability distribution fitting.
+
+## Testing
+All tests are written using pytest and cover all user accessible code.
+Some tests may be commented out or scaled back if they are likely to cause a memory error when run using github actions, however these have been extensively tested locally across multiple different Python versions and OS.
