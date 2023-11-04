@@ -1,0 +1,77 @@
+[project]
+name = "sklarpy"
+version = "1.0.0"
+description="Copula, Multivariate and Univariate probability distribution fitting in Python."
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE.txt"}
+keywords=[
+    "SklarPy",
+    "Sklar",
+    "Copula",
+    "Copulas",
+    "Copulae",
+    "Probability",
+    "Distribution",
+    "Univariate",
+    "Bivariate",
+    "Multivariate",
+    "Joint",
+    "CDF",
+    "PDF",
+    "Modeling",
+    "Quantitative",
+    "Fitting",
+    "SciPy",
+    "Statistics",
+    "Mathematics",
+    "Science",
+    "Scientific",
+    "Finance",
+    "Risk",
+    "VaR",
+    "Machine Learning",
+    "Variables",
+]
+authors = [
+    {name = "Tyler Mitchell", email = "tylerfmitchell1999@gmail.com"}
+]
+maintainers = [
+    {name = "Tyler Mitchell", email = "tylerfmitchell1999@gmail.com"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "scipy>=1.11.0",
+    "numpy>=1.24.3",
+    "pandas>=2.0.2",
+    "matplotlib>=3.7.1",
+    "tqdm>=4.65.0",
+    "dill>=0.3.6",
+    "seaborn>=0.12.2"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==7.1.2",
+    "tox==3.25.1",
+]
+
+[project.urls]  # Optional
+"Homepage" = "https://github.com/tfm000/sklarpy"
+"Bug Reports" = "https://github.com/tfm000/sklarpy/issues"
+"Source" = "https://github.com/tfm000/sklarpy"
+
+[build-system]
+requires = ["setuptools>=63.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
