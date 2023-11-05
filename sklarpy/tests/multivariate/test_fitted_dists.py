@@ -136,7 +136,7 @@ def test_fitted_plots(params_2d, params_3d, mvt_continuous_data):
         size=(mvt_continuous_data.shape[0], 3))
     kwargs: dict = {'num_points': 2, 'num_generate': 10, 'mc_num_generate': 10,
                     'show': False, 'show_progress': False}
-    for name in ('multivariate_normal', ):
+    for name in ('mvt_normal', ):
         _, fitted_2d, _ = get_dist(name, params_2d, mvt_continuous_data)
         _, fitted_3d, _ = get_dist(name, params_3d, mvt_continuous_data_3d)
         for func_str in ('marginal_pairplot', 'pdf_plot',

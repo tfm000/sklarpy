@@ -269,7 +269,7 @@ def test_prefit_plots(params_2d, params_3d, mvt_continuous_data):
         size=(mvt_continuous_data.shape[0], 3))
     kwargs: dict = {'num_points': 2, 'num_generate': 10, 'mc_num_generate': 10,
                     'show': False, 'show_progress': False}
-    for name in ('multivariate_normal', ):
+    for name in ('mvt_normal', ):
         dist, _, dist_params_2d = get_dist(name, params_2d,
                                            mvt_continuous_data)
         _, _, dist_params_3d = get_dist(name, params_3d,
