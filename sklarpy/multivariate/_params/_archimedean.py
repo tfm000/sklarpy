@@ -1,11 +1,11 @@
 # Contains code for holding Archimedean copula parameters
 from sklarpy._utils import Params
 
-__all__ = ['MultivariateClaytonParams', 'MultivariateGumbelParams',
-           'BivariateFrankParams']
+__all__ = ['MvtClaytonParams', 'MvtGumbelParams',
+           'BvtFrankParams']
 
 
-class MultivariateArchimedeanParamsBase(Params):
+class MvtArchimedeanParamsBase(Params):
     """Base class containing the fitted parameters of an Archimedean Copula."""
     @property
     def theta(self) -> float:
@@ -32,13 +32,13 @@ class MultivariateArchimedeanParamsBase(Params):
         return self.to_dict['d']
 
 
-class MultivariateClaytonParams(MultivariateArchimedeanParamsBase):
+class MvtClaytonParams(MvtArchimedeanParamsBase):
     """Contains the fitted parameters of a Clayton Copula."""
 
 
-class MultivariateGumbelParams(MultivariateArchimedeanParamsBase):
+class MvtGumbelParams(MvtArchimedeanParamsBase):
     """Contains the fitted parameters of a Gumbel Copula."""
 
 
-class BivariateFrankParams(MultivariateArchimedeanParamsBase):
+class BvtFrankParams(MvtArchimedeanParamsBase):
     """Contains the fitted parameters of a Frank Copula."""

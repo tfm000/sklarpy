@@ -1,12 +1,12 @@
 # Contains code for holding Student-T parameters
 import numpy as np
 
-from sklarpy.multivariate._params._normal import MultivariateNormalParams
+from sklarpy.multivariate._params._normal import MvtNormalParams
 
-__all__ = ['MultivariateStudentTParams']
+__all__ = ['MvtStudentTParams']
 
 
-class MultivariateStudentTParams(MultivariateNormalParams):
+class MvtStudentTParams(MvtNormalParams):
     """Contains the fitted parameters of a Multivariate Student-T
     distribution."""
 

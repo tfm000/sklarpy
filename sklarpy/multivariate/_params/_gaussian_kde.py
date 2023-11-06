@@ -1,10 +1,10 @@
 # Contains code for holding Gaussian KDE parameters.
 from sklarpy._utils import Params
 
-__all__ = ['MultivariateGaussianKDEParams']
+__all__ = ['MvtGaussianKDEParams']
 
 
-class MultivariateGaussianKDEParams(Params):
+class MvtGaussianKDEParams(Params):
     """Contains the fitted parameters of a Multivariate Gaussian KDE
     distribution."""
     @property

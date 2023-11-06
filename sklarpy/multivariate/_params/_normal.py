@@ -3,10 +3,10 @@ import numpy as np
 
 from sklarpy._utils import Params
 
-__all__ = ['MultivariateNormalParams']
+__all__ = ['MvtNormalParams']
 
 
-class MultivariateNormalParams(Params):
+class MvtNormalParams(Params):
     """Contains the fitted parameters of a Multivariate Gaussian / Normal
     distribution."""
 

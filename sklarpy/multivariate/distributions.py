@@ -23,136 +23,129 @@ from sklarpy.multivariate._distributions._archimedean import \
     multivariate_clayton_gen, multivariate_gumbel_gen, bivariate_frank_gen
 
 from sklarpy.multivariate._params._gaussian_kde import \
-    MultivariateGaussianKDEParams
+    MvtGaussianKDEParams
 from sklarpy.multivariate._params._generalized_hyperbolic import \
-    MultivariateGenHyperbolicParams
+    MvtGHParams
 from sklarpy.multivariate._params._hyperbolics import \
-    MultivariateMarginalHyperbolicParams, MultivariateHyperbolicParams, \
-    MultivariateNIGParams
-from sklarpy.multivariate._params._normal import MultivariateNormalParams
-from sklarpy.multivariate._params._skewed_t import MultivariateSkewedTParams
-from sklarpy.multivariate._params._student_t import MultivariateStudentTParams
+    MvtMHParams, MvtHyperbolicParams, \
+    MvtNIGParams
+from sklarpy.multivariate._params._normal import MvtNormalParams
+from sklarpy.multivariate._params._skewed_t import MvtSkewedTParams
+from sklarpy.multivariate._params._student_t import MvtStudentTParams
 from sklarpy.multivariate._params._symmetric_generalized_hyperbolic import \
-    MultivariateSymGenHyperbolicParams
+    MvtSGHParams
 from sklarpy.multivariate._params._symmetric_hyperbolics import \
-    MultivariateSymMarginalHyperbolicParams, MultivariateSymHyperbolicParams, \
-    MultivariateSymNIGParams
-from sklarpy.multivariate._params._archimedean import \
-    MultivariateClaytonParams, MultivariateGumbelParams, BivariateFrankParams
+    MvtSMHParams, MvtSHyperbolicParams, \
+    MvtSNIGParams
+from sklarpy.multivariate._params._archimedean import (
+    MvtClaytonParams, MvtGumbelParams, BvtFrankParams)
 
 __all__ = [
-    'multivariate_gaussian_kde',
-    'multivariate_gen_hyperbolic',
-    'multivariate_marginal_hyperbolic',
-    'multivariate_hyperbolic',
-    'multivariate_nig',
-    'multivariate_normal',
-    'multivariate_skewed_t',
-    'multivariate_student_t',
-    'multivariate_sym_gen_hyperbolic',
-    'multivariate_sym_marginal_hyperbolic',
-    'multivariate_sym_hyperbolic',
-    'multivariate_sym_nig'
+    'mvt_gaussian_kde',
+    'mvt_gh',
+    'mvt_mh',
+    'mvt_hyperbolic',
+    'mvt_nig',
+    'mvt_normal',
+    'mvt_skewed_t',
+    'mvt_student_t',
+    'mvt_sgh',
+    'mvt_smh',
+    'mvt_shyperbolic',
+    'mvt_snig'
 ]
 
 
 ###############################################################################
 # Numerical/Non-Parametric
 ###############################################################################
-multivariate_gaussian_kde: multivariate_gaussian_kde_gen = \
+mvt_gaussian_kde: multivariate_gaussian_kde_gen = \
     multivariate_gaussian_kde_gen(
-        name='multivariate_gaussian_kde',
-        params_obj=MultivariateGaussianKDEParams,
+        name='mvt_gaussian_kde',
+        params_obj=MvtGaussianKDEParams,
         num_params=1, max_num_variables=np.inf
     )
 
 ###############################################################################
 # Continuous (Parametric)
 ###############################################################################
-multivariate_gen_hyperbolic: multivariate_gen_hyperbolic_gen = \
-    multivariate_gen_hyperbolic_gen(
-        name="multivariate_gen_hyperbolic",
-        params_obj=MultivariateGenHyperbolicParams,
-        num_params=6, max_num_variables=np.inf
+mvt_gh: multivariate_gen_hyperbolic_gen = multivariate_gen_hyperbolic_gen(
+    name="mvt_gh",
+    params_obj=MvtGHParams,
+    num_params=6, max_num_variables=np.inf
     )
 
-multivariate_marginal_hyperbolic: multivariate_marginal_hyperbolic_gen = \
+mvt_mh: multivariate_marginal_hyperbolic_gen = (
     multivariate_marginal_hyperbolic_gen(
-        name='multivariate_marginal_hyperbolic',
-        params_obj=MultivariateMarginalHyperbolicParams,
+        name='mvt_mh',
+        params_obj=MvtMHParams,
         num_params=5, max_num_variables=np.inf
-    )
+    ))
 
-multivariate_hyperbolic: multivariate_hyperbolic_gen = \
+mvt_hyperbolic: multivariate_hyperbolic_gen = \
     multivariate_hyperbolic_gen(
-        name='multivariate_hyperbolic',
-        params_obj=MultivariateHyperbolicParams, num_params=5,
+        name='mvt_hyperbolic',
+        params_obj=MvtHyperbolicParams, num_params=5,
         max_num_variables=np.inf
     )
 
-multivariate_nig: multivariate_nig_gen = multivariate_nig_gen(
-    name='multivariate_nig', params_obj=MultivariateNIGParams,
+mvt_nig: multivariate_nig_gen = multivariate_nig_gen(
+    name='mvt_nig', params_obj=MvtNIGParams,
     num_params=5, max_num_variables=np.inf
 )
 
-multivariate_normal: multivariate_normal_gen = multivariate_normal_gen(
-    name="multivariate_normal", params_obj=MultivariateNormalParams,
+mvt_normal: multivariate_normal_gen = multivariate_normal_gen(
+    name="mvt_normal", params_obj=MvtNormalParams,
     num_params=2, max_num_variables=np.inf
 )
 
-multivariate_student_t: multivariate_student_t_gen = \
-    multivariate_student_t_gen(
-        name="multivariate_student_t", params_obj=MultivariateStudentTParams,
-        num_params=3, max_num_variables=np.inf
+mvt_student_t: multivariate_student_t_gen = multivariate_student_t_gen(
+    name="mvt_student_t", params_obj=MvtStudentTParams,
+    num_params=3, max_num_variables=np.inf
     )
 
-multivariate_skewed_t: multivariate_skewed_t_gen = multivariate_skewed_t_gen(
-    name='multivariate_skewed_t', params_obj=MultivariateSkewedTParams,
-    num_params=4, max_num_variables=np.inf, mvt_t=multivariate_student_t
+mvt_skewed_t: multivariate_skewed_t_gen = multivariate_skewed_t_gen(
+    name='mvt_skewed_t', params_obj=MvtSkewedTParams,
+    num_params=4, max_num_variables=np.inf, mvt_t=mvt_student_t
 )
 
-
-multivariate_sym_gen_hyperbolic: multivariate_sym_gen_hyperbolic_gen = \
+mvt_sgh: multivariate_sym_gen_hyperbolic_gen = (
     multivariate_sym_gen_hyperbolic_gen(
-        name="multivariate_sym_gen_hyperbolic",
-        params_obj=MultivariateSymGenHyperbolicParams, num_params=5,
-        max_num_variables=np.inf
-    )
+        name="mvt_sgh", params_obj=MvtSGHParams,
+        num_params=5, max_num_variables=np.inf
+    ))
 
-multivariate_sym_marginal_hyperbolic: \
-    multivariate_sym_marginal_hyperbolic_gen = \
+mvt_smh: multivariate_sym_marginal_hyperbolic_gen = (
     multivariate_sym_marginal_hyperbolic_gen(
-        name='multivariate_sym_marginal_hyperbolic',
-        params_obj=MultivariateSymMarginalHyperbolicParams, num_params=4,
-        max_num_variables=np.inf
-    )
+        name='mvt_smh', params_obj=MvtSMHParams,
+        num_params=4, max_num_variables=np.inf
+    ))
 
-multivariate_sym_hyperbolic: multivariate_sym_hyperbolic_gen = \
+mvt_shyperbolic: multivariate_sym_hyperbolic_gen = (
     multivariate_sym_hyperbolic_gen(
-        name='multivariate_sym_hyperbolic',
-        params_obj=MultivariateSymHyperbolicParams, num_params=4,
-        max_num_variables=np.inf
-    )
+        name='mvt_shyperbolic', params_obj=MvtSHyperbolicParams,
+        num_params=4, max_num_variables=np.inf
+    ))
 
-multivariate_sym_nig: multivariate_sym_nig_gen = multivariate_sym_nig_gen(
-    name='multivariate_sym_nig', params_obj=MultivariateSymNIGParams,
+mvt_snig: multivariate_sym_nig_gen = multivariate_sym_nig_gen(
+    name='mvt_snig', params_obj=MvtSNIGParams,
     num_params=4, max_num_variables=np.inf
 )
 
 ###############################################################################
 # Copula Only
 ###############################################################################
-multivariate_clayton: multivariate_clayton_gen = multivariate_clayton_gen(
-    name='multivariate_clayton', params_obj=MultivariateClaytonParams,
+mvt_clayton: multivariate_clayton_gen = multivariate_clayton_gen(
+    name='mvt_clayton', params_obj=MvtClaytonParams,
     num_params=2, max_num_variables=np.inf
 )
 
-multivariate_gumbel: multivariate_gumbel_gen = multivariate_gumbel_gen(
-    name='multivariate_gumbel', params_obj=MultivariateGumbelParams,
+mvt_gumbel: multivariate_gumbel_gen = multivariate_gumbel_gen(
+    name='mvt_gumbel', params_obj=MvtGumbelParams,
     num_params=2, max_num_variables=sys.getrecursionlimit()
 )
 
-bivariate_frank: bivariate_frank_gen = bivariate_frank_gen(
-    name='bivariate_frank', params_obj=BivariateFrankParams,
+bvt_frank: bivariate_frank_gen = bivariate_frank_gen(
+    name='bvt_frank', params_obj=BvtFrankParams,
     num_params=2, max_num_variables=2
 )

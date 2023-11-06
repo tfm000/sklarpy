@@ -2,14 +2,14 @@
 import numpy as np
 
 from sklarpy.multivariate._params._symmetric_generalized_hyperbolic import \
-    MultivariateSymGenHyperbolicParams
+    MvtSGHParams
 from sklarpy.multivariate._distributions._generalized_hyperbolic import \
     multivariate_gen_hyperbolic_gen
 
-__all__ = ['MultivariateGenHyperbolicParams']
+__all__ = ['MvtGHParams']
 
 
-class MultivariateGenHyperbolicParams(MultivariateSymGenHyperbolicParams):
+class MvtGHParams(MvtSGHParams):
     """Contains the fitted parameters of a Multivariate Generalized Hyperbolic
     distribution."""
     _DIST_GENERATOR = multivariate_gen_hyperbolic_gen

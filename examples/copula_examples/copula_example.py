@@ -1,6 +1,6 @@
 # This file contains examples of how to use copula distributions in SklarPy.
-# Here we use the skewed-t copula, though all methods and attributes are
-# generalized.
+# Here we use the generalized hyperbolic copula, though all methods and
+# attributes are generalized.
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -15,18 +15,18 @@ my_gamma = np.array([2.3, -4.3], dtype=float)
 my_params = (my_chi, my_psi, my_loc, my_shape, my_gamma)
 
 # generating multivariate hyperbolic random variables
-from sklarpy.multivariate import multivariate_hyperbolic
+from sklarpy.multivariate import mvt_hyperbolic
 
 num_generate: int = 1000
-rvs: np.ndarray = multivariate_hyperbolic.rvs(num_generate, my_params)
+rvs: np.ndarray = mvt_hyperbolic.rvs(num_generate, my_params)
 rvs_df: pd.DataFrame = pd.DataFrame(rvs, columns=['Process A', 'Process B'],
                                     dtype=float)
 
-# fitting a skewed-t copula to our generated data using
+# fitting a generalized hyperbolic copula to our generated data using
 # Maximum Likelihood Estimation
-from sklarpy.copulas import skewed_t_copula
+from sklarpy.copulas import gh_copula
 
-fitted_copula = skewed_t_copula.fit(
+fitted_copula = gh_copula.fit(
     data=rvs_df, method='mle',
     univariate_fitter_options={'significant': False}, show_progress=True)
 
@@ -51,5 +51,5 @@ fitted_copula.save()
 # we can then easily load this object
 from sklarpy import load
 
-loaded_copula = load('skewed_t.pickle')
+loaded_copula = load('gh.pickle')
 print(loaded_copula.summary)
