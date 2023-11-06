@@ -3,7 +3,7 @@
         <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg"
             alt="MIT license"></a> &nbsp;
     <a href="https://github.com/tfm000/sklarpy/actions/workflows/tests.yml">
-        <img src="https://github.com/sklarpy/sklarpy/actions/workflows/tests.yml/badge.svg"
+        <img src="https://github.com/tfm000/sklarpy/actions/workflows/tests.yml/badge.svg"
             alt="build"></a> &nbsp;
     <a href="https://pepy.tech/project/sklarpy">
         <img src="https://static.pepy.tech/personalized-badge/sklarpy?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads"
