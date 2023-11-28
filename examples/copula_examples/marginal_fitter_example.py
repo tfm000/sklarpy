@@ -13,9 +13,9 @@ my_cov: np.ndarray = np.diag(my_sig) @ my_corr @ np.diag(my_sig)
 my_mvn_params: tuple = (my_mu, my_cov)
 
 # generating multivariate random normal variables
-from sklarpy.multivariate import multivariate_normal
+from sklarpy.multivariate import mvt_normal
 
-rvs: np.ndarray = multivariate_normal.rvs(num_generate, my_mvn_params)
+rvs: np.ndarray = mvt_normal.rvs(num_generate, my_mvn_params)
 rvs_df: pd.DataFrame = pd.DataFrame(rvs, columns=['Wife Age', 'Husband Age'
                                                   ], dtype=float)
 
@@ -26,6 +26,9 @@ mfitter: MarginalFitter = MarginalFitter(rvs_df)
 mfitter.fit({'pvalue': 0.01})
 
 # printing out a summary of our fits
+from sklarpy import print_full
+print_full()
+
 print(mfitter.summary)
 print(mfitter.marginals)
 

@@ -1,5 +1,9 @@
 <p align="center">
-    <a href="https://opensource.org/licenses/MIT">
+    <img width=60% src="https://github.com/tfm000/sklarpy/blob/main/media/logo.png?raw=true" alt="SklarPy logo">
+</p>
+
+<p align="center">
+    <a href="https://github.com/tfm000/sklarpy/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg"
             alt="MIT license"></a> &nbsp;
     <a href="https://github.com/tfm000/sklarpy/actions/workflows/tests.yml">
@@ -8,6 +12,18 @@
     <a href="https://pepy.tech/project/sklarpy">
         <img src="https://static.pepy.tech/personalized-badge/sklarpy?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads"
             alt="downloads"></a> &nbsp;
+    <a href="https://pypi.org/project/sklarpy/">
+        <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg"
+            alt="maintained"></a>
+</p>
+
+<p align="center">
+    <a href="https://pypi.org/project/sklarpy/">
+        <img src="https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=apple&logoColor=white"
+            alt="mac os"></a>
+    <a href="https://pypi.org/project/sklarpy/">
+        <img src="https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"
+            alt="windows"></a>
 </p>
 
 
@@ -72,19 +88,19 @@ plt.show()
 {0: lognorm(0.02, -203.22, 206.18), 1: lognorm(0.04, -110.89, 115.4)}
 ```
 <p align="center">
-    <img width=50% src="https://github.com/tfm000/sklarpy/blob/main/media/PDF_Gh_PDF_Plot_Plot.png?raw=true">
-    <img width=50% src="https://github.com/tfm000/sklarpy/blob/main/media/Copula_PDF_Gh_Copula_PDF_Plot_Plot.png?raw=true">
+    <img width=60% src="https://github.com/tfm000/sklarpy/blob/main/media/PDF_Gh_PDF_Plot_Plot.png?raw=true">
+    <img width=60% src="https://github.com/tfm000/sklarpy/blob/main/media/Copula_PDF_Gh_Copula_PDF_Plot_Plot.png?raw=true">
 </p>
 
 
 Further examples can be found <a href="https://github.com/tfm000/sklarpy/tree/main/examples"> here</a>.
 
 ## Why we are better
-- Unlike other Python implementations of copulas, we implement more than the Gaussian and Archimedean copulas. A full list of our implementated copula models can be found <a href="https://github.com/tfm000/sklarpy/tree/main/sklarpy/copulas"> here </a>, though it includes many normal mean-variance mixture models as well as Archimedean and non-parametric models.
+- Unlike other Python implementations of copulas, we implement more than the Gaussian and Archimedean copulas. A full list of our implementated copula models can be found <a href="https://github.com/tfm000/sklarpy/tree/main/sklarpy/copulas"> here</a>, though it includes many normal mean-variance mixture models as well as Archimedean and non-parametric models.
 - We allow for easy parameter fitting of both the univariate marginals and the multivariate copula distribution.
 - We allow for easy plotting of all our distributions, allowing you to visualize your models.
 - We use scipy.stats as a backend for all our univariate models, meaning as scipy expands and improves their model selection, so will ours!
-- We provide multivariate and univariate distributions, in addition to our copula models, meaning SklarPy can act as a one-stop-shop for all probability distribution fitting.
+- We provide multivariate and univariate distributions, in addition to our copula models, meaning SklarPy can act as a one-stop-shop for all probability distribution fitting. A full list of our implemented multivariate distributions can be found <a href="https://github.com/tfm000/sklarpy/tree/main/sklarpy/multivariate"> here</a>.
 
 ## Testing
 All tests are written using pytest and cover all user accessible code.
