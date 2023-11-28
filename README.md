@@ -1,4 +1,8 @@
 <p align="center">
+    <img width=60% src="https://github.com/tfm000/sklarpy/blob/main/media/logo.png?raw=true" alt="SklarPy logo">
+</p>
+
+<p align="center">
     <a href="https://opensource.org/licenses/MIT">
         <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg"
             alt="MIT license"></a> &nbsp;
@@ -72,8 +76,8 @@ plt.show()
 {0: lognorm(0.02, -203.22, 206.18), 1: lognorm(0.04, -110.89, 115.4)}
 ```
 <p align="center">
-    <img width=50% src="https://github.com/tfm000/sklarpy/blob/main/media/PDF_Gh_PDF_Plot_Plot.png?raw=true">
-    <img width=50% src="https://github.com/tfm000/sklarpy/blob/main/media/Copula_PDF_Gh_Copula_PDF_Plot_Plot.png?raw=true">
+    <img width=60% src="https://github.com/tfm000/sklarpy/blob/main/media/PDF_Gh_PDF_Plot_Plot.png?raw=true">
+    <img width=60% src="https://github.com/tfm000/sklarpy/blob/main/media/Copula_PDF_Gh_Copula_PDF_Plot_Plot.png?raw=true">
 </p>
 
 
