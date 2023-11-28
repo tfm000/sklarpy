@@ -138,7 +138,7 @@ And plot our fitted distribution::
 
     fitted_gamma.plot()
 
-.. image:: media/univariate_continuous_example_figure1.png
+.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/univariate_continuous_example_figure1.png?raw=true
     :alt: gamma plot
     :align: center
 
