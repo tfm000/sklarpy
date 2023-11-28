@@ -84,11 +84,11 @@ plt.show()
 Further examples can be found <a href="https://github.com/tfm000/sklarpy/tree/main/examples"> here</a>.
 
 ## Why we are better
-- Unlike other Python implementations of copulas, we implement more than the Gaussian and Archimedean copulas. A full list of our implementated copula models can be found <a href="https://github.com/tfm000/sklarpy/tree/main/sklarpy/copulas"> here </a>, though it includes many normal mean-variance mixture models as well as Archimedean and non-parametric models.
+- Unlike other Python implementations of copulas, we implement more than the Gaussian and Archimedean copulas. A full list of our implementated copula models can be found <a href="https://github.com/tfm000/sklarpy/tree/main/sklarpy/copulas"> here</a>, though it includes many normal mean-variance mixture models as well as Archimedean and non-parametric models.
 - We allow for easy parameter fitting of both the univariate marginals and the multivariate copula distribution.
 - We allow for easy plotting of all our distributions, allowing you to visualize your models.
 - We use scipy.stats as a backend for all our univariate models, meaning as scipy expands and improves their model selection, so will ours!
-- We provide multivariate and univariate distributions, in addition to our copula models, meaning SklarPy can act as a one-stop-shop for all probability distribution fitting.
+- We provide multivariate and univariate distributions, in addition to our copula models, meaning SklarPy can act as a one-stop-shop for all probability distribution fitting. A full list of our implemented multivariate distributions can be found <a href="https://github.com/tfm000/sklarpy/tree/main/sklarpy/multivariate"> here</a>.
 
 ## Testing
 All tests are written using pytest and cover all user accessible code.
