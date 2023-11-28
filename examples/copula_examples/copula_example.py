@@ -31,6 +31,9 @@ fitted_copula = gh_copula.fit(
     univariate_fitter_options={'significant': False}, show_progress=True)
 
 # prining our fitted parameters
+from sklarpy import print_full
+print_full()
+
 print(fitted_copula.copula_params.to_dict)
 print(fitted_copula.mdists)
 print(fitted_copula.copula_params.cov)

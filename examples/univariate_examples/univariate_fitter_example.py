@@ -19,6 +19,9 @@ ufitter: UnivariateFitter = UnivariateFitter(rvs)
 ufitter.fit()
 
 # printing out the summary of our fits
+from sklarpy import print_full
+print_full()
+
 print(ufitter.get_summary())
 
 # finding our best fit
