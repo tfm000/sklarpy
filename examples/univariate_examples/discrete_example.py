@@ -8,7 +8,7 @@ import pandas as pd
 # generating random variables
 from sklarpy.univariate import poisson
 
-num_generate: int = 10000
+num_generate: int = 100
 poisson_rvs: np.ndarray = poisson.rvs((num_generate, ), (4,))
 rvs_df: pd.DataFrame = pd.DataFrame(poisson_rvs, columns=['rvs'], dtype=int)
 

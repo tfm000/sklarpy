@@ -153,3 +153,116 @@ We can then easily reload our saved model::
 
     loaded_fitted_gamma = load('gamma.pickle')
 
+
+
+Discrete Example
+---------------------
+Here we use the poisson distribution, though all methods and attributes are generalized.
+We see this works in exactly the same way as continuous distributions.::
+
+    import numpy as np
+    import pandas as pd
+
+    # generating random variables
+    from sklarpy.univariate import poisson
+
+    num_generate: int = 10000
+    poisson_rvs: np.ndarray = poisson.rvs((num_generate, ), (4,))
+    rvs_df: pd.DataFrame = pd.DataFrame(poisson_rvs, columns=['rvs'], dtype=int)
+
+    # fitting a poisson distribution to a dataframe of rvs
+    fitted_poisson = poisson.fit(rvs_df)
+
+    # we can easily retrieve the fitted parameters
+    fitted_poisson_params: tuple = fitted_poisson.params
+    print(fitted_poisson_params)
+
+.. code-block:: text:
+
+    (3.992,)
+
+We can also print a summary of our fit::
+
+    summary: pd.DataFrame = fitted_poisson.summary
+    print(summary)
+
+.. code-block:: text:
+
+                                   summary
+    Parametric/Non-Parametric   Parametric
+    Discrete/Continuous           discrete
+    Distribution                   poisson
+    #Params                              1
+    param0                           3.985
+    Support                       (0, inf)
+    Fitted Domain                  (0, 12)
+    chi-square statistic          7.059903
+    chi-square p-value                 1.0
+    chi-square @ 10%                  True
+    chi-square @ 5%                   True
+    chi-square @ 1%                   True
+    Likelihood                         0.0
+    Log-Likelihood            -2100.955867
+    AIC                        4203.911734
+    BIC                        4208.819489
+    Sum of Squared Error          0.044802
+    #Fitted Data Points               1000
+
+And plot our fitted distribution::
+
+    fitted_poisson.plot()
+
+.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/univariate_discrete_example_figure1.png?raw=true
+    :alt: poisson plot
+    :align: center
+
+And save::
+
+    fitted_poisson.save()
+
+
+We can then easily reload our saved model::
+
+    from sklarpy import load
+
+    loaded_fitted_poisson = load('poisson.pickle')
+
+UnivariateFitter Example
+-------------------------
+Here we use the UnivariateFitter object to fit a distribution to a dataset.::
+
+    import numpy as np
+
+    # generating random variables
+    from sklarpy.univariate import normal
+
+    num_generate: int = 10000
+    # generating a 1d array of N(1, 1) random variables
+    normal_rvs1: np.ndarray = normal.rvs((num_generate,), (1, 1))
+    # generating a 1d array of N(2, 3) random variables
+    normal_rvs2: np.ndarray = normal.rvs((num_generate,), (0, 3))
+    rvs = normal_rvs1 * normal_rvs2
+
+    # applying UnivariateFitter to our product of normal random variables
+    from sklarpy.univariate import UnivariateFitter
+
+    ufitter: UnivariateFitter = UnivariateFitter(rvs)
+    ufitter.fit()
+
+    # finding our best fit
+    best_fit = ufitter.get_best(significant=False)
+    best_fit.plot()
+
+.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/univariate_fitter_example_figure1.png?raw=true
+    :alt: poisson plot
+    :align: center
+
+We can also save our UnivariateFitter object::
+
+    ufitter.save()
+
+We can then easily reload this::
+    from sklarpy import load
+
+    loaded_ufitter = load('UnivariateFitter.pickle')
+    loaded_best_fit = loaded_ufitter.get_best(significant=False)
