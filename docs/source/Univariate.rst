@@ -79,7 +79,7 @@ Here we use the normal and gamma distributions, though all methods and attribute
     # generating random variables
     from sklarpy.univariate import normal
 
-    num_generate: int = 100
+    num_generate: int = 1000
 
     # generating a 1d array of N(1, 1) random variables
     normal_rvs1: np.ndarray = normal.rvs((num_generate,), (1, 1))
