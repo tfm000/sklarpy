@@ -68,3 +68,88 @@ So you have a lot to choose from!
 .. automodule:: sklarpy.univariate._fitted_dists
     :members:
     :exclude-members: FittedUnivariateBase
+
+Continuous Example
+---------------------
+Here we use the normal and gamma distributions, though all methods and attributes are generalized.::
+
+    import numpy as np
+    import pandas as pd
+
+    # generating random variables
+    from sklarpy.univariate import normal
+
+    num_generate: int = 100
+
+    # generating a 1d array of N(1, 1) random variables
+    normal_rvs1: np.ndarray = normal.rvs((num_generate,), (1, 1))
+    # generating a 1d array of N(2, 3) random variables
+    normal_rvs2: np.ndarray = normal.rvs((num_generate,), (0, 3))
+    rvs = normal_rvs1 * normal_rvs2
+
+    # fitting a gamma distribution to our product of normal random variables
+    from sklarpy.univariate import gamma
+
+    fitted_gamma = gamma.fit(rvs)
+
+    # we can easily retrieve the fitted parameters
+    fitted_gamma_params: tuple = fitted_gamma.params
+    print(fitted_gamma_params)
+
+.. code-block:: text:
+
+    (9754.44976841112, -411.8704014945831, 0.042211986922603084)
+
+We can also print a summary of our fit::
+
+    summary: pd.DataFrame = fitted_gamma.summary
+    print(summary)
+
+.. code-block:: text:
+
+                                                                  summary
+    Parametric/Non-Parametric                                  Parametric
+    Discrete/Continuous                                        continuous
+    Distribution                                                    gamma
+    #Params                                                             3
+    param0                                                    9754.449768
+    param1                                                    -411.870401
+    param2                                                       0.042212
+    Support                                     (-411.8704014945831, inf)
+    Fitted Domain                 (-20.13664960054484, 17.86802768972715)
+    Cramér-von Mises statistic                                   3.411862
+    Cramér-von Mises p-value                                          0.0
+    Cramér-von Mises @ 10%                                          False
+    Cramér-von Mises @ 5%                                           False
+    Cramér-von Mises @ 1%                                           False
+    Kolmogorov-Smirnov statistic                                 0.094371
+    Kolmogorov-Smirnov p-value                                        0.0
+    Kolmogorov-Smirnov @ 10%                                        False
+    Kolmogorov-Smirnov @ 5%                                         False
+    Kolmogorov-Smirnov @ 1%                                         False
+    Likelihood                                                        0.0
+    Log-Likelihood                                           -2846.513514
+    AIC                                                       5699.027028
+    BIC                                                       5713.750294
+    Sum of Squared Error                                        12.319097
+    #Fitted Data Points                                              1000
+
+And plot our fitted distribution::
+
+    fitted_gamma.plot()
+
+.. image:: media/univariate_continuous_example_figure1.png
+    :alt: gamma plot
+    :align: center
+
+And save::
+
+    fitted_gamma.save()
+
+
+We can then easily reload our saved model::
+
+    from sklarpy import load
+
+    loaded_fitted_gamma = load('gamma.pickle')
+
