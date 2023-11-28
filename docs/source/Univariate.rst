@@ -17,7 +17,7 @@ If you try::
 
     from sklarpy.univariate import normal
 
-You will likely find that your interpreter flags an error along the lines of "cannot find reference 'normal' in __init__.py"
+You will likely find that your interpreter flags an error along the lines of "cannot find reference 'normal' in __init__.py".
 Do not worry, this is to be expected an a side effect of the dynamic way SklarPy univariate distributions are created from scipy.stats distributions.
 At runtime, *your code will work without any errors*!
 
@@ -36,7 +36,7 @@ For scipy version 1.11.4 you should get an output along the lines of:
 
 So you have a lot to choose from!
 
-.. automodule:: sklarpy.univariate
+.. automodule:: sklarpy.univariate.univariate_fitter
     :members:
     :exclude-members: UnivariateFitter
 
@@ -51,7 +51,15 @@ So you have a lot to choose from!
 
         If 'use_processpoolexecutor' is set to True, the UnivariateFitter object will use the ProcessPoolExecutor to parallelize the fitting process. However, if the code is ran outside 'if __name__ == "__main__":', you may receive a runtime error.
 
+    .. automethod:: get_summary
+
+    .. automethod:: get_best
+
     .. automethod:: plot
 
     .. automethod:: fitted_distributions
 
+
+.. automodule:: sklarpy.univariate._prefit
+    :members:
+    :exclude-members: PreFitUnivariateBase, PreFitNumericalUnivariateBase

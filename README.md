@@ -37,6 +37,8 @@ Named after Sklar's theorem and Abe Sklar, the American mathematician who proved
 
 This library has many different possible use cases, ranging from machine learning to finance.
 
+## Read the Docs
+Official SklarPy documentation can be found <a href="https://sklarpy.readthedocs.io/en/latest/"> here</a>.
 
 ## Table of contents
 
