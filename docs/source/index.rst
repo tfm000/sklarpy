@@ -17,6 +17,9 @@
             <a href="https://github.com/tfm000/sklarpy/actions/workflows/tests.yml">
                 <img src="https://github.com/tfm000/sklarpy/actions/workflows/tests.yml/badge.svg"
                     alt="build"></a> &nbsp;
+            <a href="https://sklarpy.readthedocs.io/en/latest/?badge=latest">
+                <img src="https://readthedocs.org/projects/sklarpy/badge/?version=latest"
+                    alt="build"></a> &nbsp;
             <a href="https://pepy.tech/project/sklarpy">
                 <img src="https://static.pepy.tech/personalized-badge/sklarpy?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads"
                     alt="downloads"></a> &nbsp;
