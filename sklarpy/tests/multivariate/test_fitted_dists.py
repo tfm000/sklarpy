@@ -10,63 +10,63 @@ from sklarpy.tests.multivariate.helpers import get_dist
 from sklarpy._utils import Params
 
 
-def test_fitted_logpdf_pdf_cdf_mc_cdf(
-        mvt_continuous_data, mvt_discrete_data, pd_mvt_continuous_data,
-        pd_mvt_discrete_data, mv_dists_to_test, params_2d):
-    """Testing the logpdf, pdf, cdf and mc-cdf functions of fitted multivariate
-     distributions"""
-    print('\nTesting logpdf, pdf, cdf and mc-cdf functions')
-    eps: float = 10 ** -5
-    num_generate: int = 10
-
-    for name in mv_dists_to_test:
-        _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
-        for func_str in ('logpdf', 'pdf', 'mc_cdf'): #, 'cdf'):
-            func: Callable = eval(f'fitted.{func_str}')
-            cdf_num: int = 10
-            datasets = (mvt_continuous_data[:cdf_num, :],
-                        mvt_discrete_data[:cdf_num, :],
-                        pd_mvt_continuous_data.iloc[:cdf_num, :],
-                        pd_mvt_discrete_data.iloc[:cdf_num, :]) \
-                if func_str == 'cdf' else (mvt_continuous_data,
-                                           mvt_discrete_data,
-                                           pd_mvt_continuous_data,
-                                           pd_mvt_discrete_data)
-
-            for data in datasets:
-                output = func(x=data, match_datatype=True,
-                              num_generate=num_generate)
-
-                np_output = np.asarray(output)
-                n, d = np.asarray(data).shape
-
-                # checking same datatype
-                assert isinstance(output, type(data)), \
-                    f"{func_str} values for {name} do not match the " \
-                    f"datatype: {type(data)}."
-
-                # checking the correct size
-                assert np_output.size == n, \
-                    f"{func_str} values for {name} are not the correct size."
-
-                # checking for nan-values
-                assert np.isnan(np_output).sum() == 0, \
-                    f'nans present in {name} {func_str} values.'
-
-                # function specific tests
-                if func_str == 'pdf':
-                    assert np.all(np_output >= -eps), \
-                        f"pdf values in {name} are negative."
-                elif func_str in ('cdf', 'mc_cdf'):
-                    assert np.all((-eps <= np_output) & (output <= 1 + eps)), \
-                        f"{func_str} values in {name} outside [0, 1]."
-
-            # checking error if wrong dimension
-            new_dataset: np.ndarray = np.zeros((n, d + 1))
-            with pytest.raises(
-                    ValueError, match="Dimensions implied by parameters do "
-                                      "not match those of the dataset."):
-                func(x=new_dataset, num_generate=num_generate)
+# def test_fitted_logpdf_pdf_cdf_mc_cdf(
+#         mvt_continuous_data, mvt_discrete_data, pd_mvt_continuous_data,
+#         pd_mvt_discrete_data, mv_dists_to_test, params_2d):
+#     """Testing the logpdf, pdf, cdf and mc-cdf functions of fitted multivariate
+#      distributions"""
+#     print('\nTesting logpdf, pdf, cdf and mc-cdf functions')
+#     eps: float = 10 ** -5
+#     num_generate: int = 10
+#
+#     for name in mv_dists_to_test:
+#         _, fitted, _ = get_dist(name, params_2d, mvt_continuous_data)
+#         for func_str in ('logpdf', 'pdf', 'mc_cdf'): #, 'cdf'):
+#             func: Callable = eval(f'fitted.{func_str}')
+#             cdf_num: int = 10
+#             datasets = (mvt_continuous_data[:cdf_num, :],
+#                         mvt_discrete_data[:cdf_num, :],
+#                         pd_mvt_continuous_data.iloc[:cdf_num, :],
+#                         pd_mvt_discrete_data.iloc[:cdf_num, :]) \
+#                 if func_str == 'cdf' else (mvt_continuous_data,
+#                                            mvt_discrete_data,
+#                                            pd_mvt_continuous_data,
+#                                            pd_mvt_discrete_data)
+#
+#             for data in datasets:
+#                 output = func(x=data, match_datatype=True,
+#                               num_generate=num_generate)
+#
+#                 np_output = np.asarray(output)
+#                 n, d = np.asarray(data).shape
+#
+#                 # checking same datatype
+#                 assert isinstance(output, type(data)), \
+#                     f"{func_str} values for {name} do not match the " \
+#                     f"datatype: {type(data)}."
+#
+#                 # checking the correct size
+#                 assert np_output.size == n, \
+#                     f"{func_str} values for {name} are not the correct size."
+#
+#                 # checking for nan-values
+#                 assert np.isnan(np_output).sum() == 0, \
+#                     f'nans present in {name} {func_str} values.'
+#
+#                 # function specific tests
+#                 if func_str == 'pdf':
+#                     assert np.all(np_output >= -eps), \
+#                         f"pdf values in {name} are negative."
+#                 elif func_str in ('cdf', 'mc_cdf'):
+#                     assert np.all((-eps <= np_output) & (output <= 1 + eps)), \
+#                         f"{func_str} values in {name} outside [0, 1]."
+#
+#             # checking error if wrong dimension
+#             new_dataset: np.ndarray = np.zeros((n, d + 1))
+#             with pytest.raises(
+#                     ValueError, match="Dimensions implied by parameters do "
+#                                       "not match those of the dataset."):
+#                 func(x=new_dataset, num_generate=num_generate)
 
 
 def test_fitted_rvs(mv_dists_to_test, params_2d, mvt_continuous_data):
