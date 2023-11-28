@@ -7,7 +7,7 @@
         <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg"
             alt="MIT license"></a> &nbsp;
     <a href="https://github.com/tfm000/sklarpy/actions/workflows/tests.yml">
-        <img src="https://github.com/tfm000/sklarpy/actions/workflows/tests.yml/badge.svg"
+        <img src="https://github.com/tfm000/sklarpy/actions/workflows/tests.yml/badge.svg?branch=main"
             alt="build"></a> &nbsp;
     <a href="https://pepy.tech/project/sklarpy">
         <img src="https://static.pepy.tech/personalized-badge/sklarpy?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads"
@@ -29,8 +29,10 @@
 
 SklarPy (pronounced 'Sky-Lar-Pee' or 'Sky-La-Pie') is an open-source software for probability distribution fitting.
 It contains useful tools for fitting Copula, Multivariate and Univariate probability distributions.
-In addition to over 100 univariate distributions, we implement many multivariate normal mixture distributions and their copulas, including Gaussian, Student-T, Skewed-T and Generalized Hyperbolic distributions and copulas.
+In addition to over 100 univariate distributions, we implement many multivariate normal mixture distributions and their copulas, including Gaussian, Student-T, Skewed-T and Generalized Hyperbolic distributions.
 Named after Sklar's theorem and Abe Sklar, the American mathematician who proved that multivariate cumulative distribution functions can be expressed in terms of copulas and their marginals.
+
+This library has many different possible use cases, ranging from machine learning to finance.
 
 
 ## Table of contents
@@ -101,6 +103,7 @@ Further examples can be found <a href="https://github.com/tfm000/sklarpy/tree/ma
 - We allow for easy plotting of all our distributions, allowing you to visualize your models.
 - We use scipy.stats as a backend for all our univariate models, meaning as scipy expands and improves their model selection, so will ours!
 - We provide multivariate and univariate distributions, in addition to our copula models, meaning SklarPy can act as a one-stop-shop for all probability distribution fitting. A full list of our implemented multivariate distributions can be found <a href="https://github.com/tfm000/sklarpy/tree/main/sklarpy/multivariate"> here</a>.
+- We are continuing to expand our library, and are open to suggestions for new models to implement. If you have a model you would like to see implemented, please open an issue on our <a href="https://github.com/tfm000/sklarpy/issues">GitHub page</a>.
 
 ## Testing
 All tests are written using pytest and cover all user accessible code.

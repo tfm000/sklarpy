@@ -66,6 +66,9 @@ dev = [
     "pytest==7.1.2",
     "tox==3.25.1",
 ]
+docs = [
+    "sphinx~=4.2.0",
+]
 
 [project.urls]  # Optional
 "Homepage" = "https://github.com/tfm000/sklarpy"

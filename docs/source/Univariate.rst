@@ -1,0 +1,6 @@
+.. _univariate:
+
+#########################
+Univariate Distributions
+#########################
+
