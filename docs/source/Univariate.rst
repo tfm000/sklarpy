@@ -60,6 +60,11 @@ So you have a lot to choose from!
     .. automethod:: fitted_distributions
 
 
-.. automodule:: sklarpy.univariate._prefit
+.. automodule:: sklarpy.univariate._prefit_dists
     :members:
     :exclude-members: PreFitUnivariateBase, PreFitNumericalUnivariateBase
+
+
+.. automodule:: sklarpy.univariate._fitted_dists
+    :members:
+    :exclude-members: FittedUnivariateBase
