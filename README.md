@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-    <a href="https://opensource.org/licenses/MIT">
+    <a href="https://github.com/tfm000/sklarpy/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg"
             alt="MIT license"></a> &nbsp;
     <a href="https://github.com/tfm000/sklarpy/actions/workflows/tests.yml">
@@ -12,6 +12,18 @@
     <a href="https://pepy.tech/project/sklarpy">
         <img src="https://static.pepy.tech/personalized-badge/sklarpy?period=total&units=international_system&left_color=black&right_color=orange&left_text=Downloads"
             alt="downloads"></a> &nbsp;
+    <a href="https://pypi.org/project/sklarpy/">
+        <img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg"
+            alt="maintained"></a>
+</p>
+
+<p align="center">
+    <a href="https://pypi.org/project/sklarpy/">
+        <img src="https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=apple&logoColor=white"
+            alt="mac os"></a>
+    <a href="https://pypi.org/project/sklarpy/">
+        <img src="https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white"
+            alt="windows"></a>
 </p>
 
 
