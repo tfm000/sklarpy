@@ -40,7 +40,9 @@ This is the base class for all multivariate distributions. It implements the fol
 - num_scalar_params (The number of scalar values across all parameters in the distribution)
 - fit (fitting the distribution to data)
 
-mc_cdf is a numerical approximation of the cumulative distribution function. This is usually necessary for distributions that do not have a closed form cumulative density function, as the numerical integration alternative is computationally expensive.
+mc_cdf is a numerical approximation of the cumulative distribution function.
+This is usually necessary for distributions that do not have a closed form cumulative distribution function,
+as the numerical integration alternative is computationally expensive.
 
 num_params is the number of parameter objects in the distribution, i.e. a vector / matrix is counted as 1.
 num_scalar_params counts the number of unique scalar values across all parameter objects.
@@ -62,7 +64,8 @@ It also implements the following additional methods and attributes:
 
 Multivariate Example
 ---------------------
-Here we use the multivariate normal and multivariate symmetric hyperbolic distributions, though all methods and attributes are generalized.::
+Here we use the multivariate normal and multivariate symmetric hyperbolic
+distributions, though all methods and attributes are generalized::
 
     import numpy as np
     import pandas as pd

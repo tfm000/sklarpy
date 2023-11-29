@@ -18,7 +18,7 @@ If you try::
     from sklarpy.univariate import normal
 
 You will likely find that your interpreter flags an error along the lines of "cannot find reference 'normal' in __init__.py".
-Do not worry, this is to be expected an a side effect of the dynamic way SklarPy univariate distributions are created from scipy.stats distributions.
+Do not worry, this is to be expected as a side effect of the dynamic way SklarPy univariate distributions are created from scipy.stats distributions.
 At runtime, *your code will work without any errors*!
 
 But how do I know which distributions are available?
@@ -50,7 +50,7 @@ PreFitUnivariateBase
 This class and its subclasses contain the following methods / functions:
 
 - pdf (probability density function)
-- cdf (cumulative density function)
+- cdf (cumulative distribution function)
 - ppf (percent point function / cumulative inverse function)
 - support
 - ppf_approx (approximate ppf)
@@ -67,6 +67,7 @@ This class and its subclasses contain the following methods / functions:
 - fit (fitting the distribution to data)
 
 Many / all of these methods take params as an argument. This is a tuple containing the parameters of the associated scipy.stats distribution object.
+
 ppf_approx and cdf_approx are approximations of the ppf and cdf functions respectively, which may be useful for distributions where the cdf and therefore ppf functions require numerical integration to evaluate.
 
 FittedUnivariateBase
@@ -116,7 +117,7 @@ It also implements the following additional methods and attributes:
 
 Continuous Example
 ---------------------
-Here we use the normal and gamma distributions, though all methods and attributes are generalized.::
+Here we use the normal and gamma distributions, though all methods and attributes are generalized::
 
     import numpy as np
     import pandas as pd
@@ -274,7 +275,7 @@ We can then easily reload our saved model::
 
 UnivariateFitter Example
 -------------------------
-Here we use the UnivariateFitter object to fit a distribution to a dataset.::
+Here we use the UnivariateFitter object to fit a distribution to a dataset::
 
     import numpy as np
 

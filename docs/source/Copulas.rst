@@ -10,10 +10,12 @@ Unlike univariate distributions, these are not wrappers of scipy objects.
 All implemented copula models are able to be fitted to both multivariate numpy and pandas data and contain easy saving and plotting methods.
 
 An important concept to remember when using these models that they are composed of 2 overall parts:
+
 1. The marginal distributions. These are univariate distributions of each random variable.
 2. The copula distribution. This multivariate model captures the dependence structure between the variables.
 
-The overall multivariate joint distribution is created by combining these two parts.
+The overall multivariate joint distribution is created by combining these two parts,
+which is handled by SklarPy's copula models.
 
 Which copula models are implemented?
 ------------------------------------
@@ -208,7 +210,7 @@ Producing a pairplot of the marginals::
 
 Copula Example
 --------------
-Here we use the generalized hyperbolic copula, though all methods and attributes are generalized.::
+Here we use the generalized hyperbolic copula, though all methods and attributes are generalized::
 
     import numpy as np
     import pandas as pd
@@ -270,7 +272,7 @@ Printing covariance parameters::
     [[ 0.39404386 -0.18821382]
     [-0.18821382  0.3928638 ]]
 
-Printing a summargy of our joint fit::
+Printing a summary of our joint fit::
 
     print(fitted_copula.summary)
 
