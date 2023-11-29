@@ -5,11 +5,11 @@ Multivariate Distributions
 ############################
 
 This SklarPy package contains many different multivariate distributions.
-Unlike univariate distribution, these are not wrappers of scipy objects (with the exceptions of mvt_normal and mvt_student_t).
+Unlike univariate distributions, these are not wrappers of scipy objects (with the exceptions of mvt_normal and mvt_student_t).
 
 All implemented multivariate distributions are able to be fitted to both multivariate numpy and pandas data and contain easy saving and plotting methods.
 
-What multivariate distributions are implemented?
+Which multivariate distributions are implemented?
 ------------------------------------------------
 Currently, the following multivariate distributions are implemented:
 
@@ -17,14 +17,16 @@ Currently, the following multivariate distributions are implemented:
     :file: mvt_table.csv
     :header-rows: 1
 
+All Normal-Mixture models use the parameterization specified by McNeil, Frey and Embrechts (2005).
+
 PreFitContinuousMultivariate
 ----------------------------
 This is the base class for all multivariate distributions. It implements the following methods and attributes:
 
 - logpdf (log of the probability density function)
 - pdf (probability density function)
-- cdf (cumulative density function)
-- mc_cdf (Monte Carlo approximation of the cumulative density function)
+- cdf (cumulative distribution function)
+- mc_cdf (Monte Carlo approximation of the cumulative distribution function)
 - rvs (random variate generator / sampler)
 - likelihood (likelihood function)
 - loglikelihood (log of the likelihood function)
@@ -32,16 +34,18 @@ This is the base class for all multivariate distributions. It implements the fol
 - bic (Bayesian Information Criterion)
 - marginal_pairplot (pairplot of the marginal distributions)
 - pdf_plot (plot of the probability density function)
-- cdf_plot (plot of the cumulative density function)
-- mc_cdf_plot (plot of the Monte Carlo approximation of the cumulative density function)
+- cdf_plot (plot of the cumulative distribution function)
+- mc_cdf_plot (plot of the Monte Carlo approximation of the cumulative distribution function)
 - num_params (The number of parameters in the distribution)
 - num_scalar_params (The number of scalar values across all parameters in the distribution)
 - fit (fitting the distribution to data)
 
-mc_cdf is a numerical approximation of the cumulative density function. This is usually necessary for distributions that do not have a closed form cumulative density function, as the numerical integration alternative is computationally expensive.
+mc_cdf is a numerical approximation of the cumulative distribution function. This is usually necessary for distributions that do not have a closed form cumulative density function, as the numerical integration alternative is computationally expensive.
 
 num_params is the number of parameter objects in the distribution, i.e. a vector / matrix is counted as 1.
 num_scalar_params counts the number of unique scalar values across all parameter objects.
+
+Also note that pdf and cdf plots are only implemented for 2-dimensional distributions.
 
 FittedContinuousMultivariate
 ----------------------------
