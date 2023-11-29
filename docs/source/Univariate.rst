@@ -36,6 +36,41 @@ For scipy version 1.11.4 you should get an output along the lines of:
 
 So you have a lot to choose from!
 
+PreFitUnivariateBase
+---------------------
+This class and its subclasses contain the following methods / functions:
+
+- pdf (probability density function)
+- cdf (cumulative density function)
+- ppf (percent point function / cumulative inverse function)
+- support
+- ppf_approx (approximate ppf)
+- cdf_approx (approximate cdf)
+- rvs (random variate generator / sampler)
+- logpdf (log of the probability density function)
+- likelihood (likelihood function)
+- loglikelihood (log of the likelihood function)
+- aic (Akaike information criterion)
+- bic (Bayesian information criterion)
+- sse (Sum of squared errors)
+- gof (goodness of fit)
+- plot (plotting)
+- fit (fitting the distribution to data)
+
+Many / all of these methods take params as an argument. This is a tuple containing the parameters of the associated scipy.stats distribution object.
+ppf_approx and cdf_approx are approximations of the ppf and cdf functions respectively, which may be useful for distributions where the cdf and therefore ppf functions require numerical integration to evaluate.
+
+FittedUnivariateBase
+---------------------
+This class is the fitted version of PreFitUnivariateBase's subclasses.
+It implements the same methods as PreFitUnivariateBase, but does not require params as an argument in addition to the following:
+
+- summary (summary of the distribution fit)
+- params (the fitted parameters)
+- fitted domain (the domain over which the distribution is fitted)
+- fitted_num_data_points (the number of data points used to fit the distribution)
+- save (save the fitted distribution to a pickle file)
+
 .. automodule:: sklarpy.univariate.univariate_fitter
     :members:
     :exclude-members: UnivariateFitter
@@ -96,7 +131,7 @@ Here we use the normal and gamma distributions, though all methods and attribute
     fitted_gamma_params: tuple = fitted_gamma.params
     print(fitted_gamma_params)
 
-.. code-block:: text:
+.. code-block:: text
 
     (9754.44976841112, -411.8704014945831, 0.042211986922603084)
 
@@ -105,7 +140,7 @@ We can also print a summary of our fit::
     summary: pd.DataFrame = fitted_gamma.summary
     print(summary)
 
-.. code-block:: text:
+.. code-block:: text
 
                                                                   summary
     Parametric/Non-Parametric                                  Parametric
@@ -177,7 +212,7 @@ We see this works in exactly the same way as continuous distributions.::
     fitted_poisson_params: tuple = fitted_poisson.params
     print(fitted_poisson_params)
 
-.. code-block:: text:
+.. code-block:: text
 
     (3.992,)
 
@@ -186,7 +221,7 @@ We can also print a summary of our fit::
     summary: pd.DataFrame = fitted_poisson.summary
     print(summary)
 
-.. code-block:: text:
+.. code-block:: text
 
                                    summary
     Parametric/Non-Parametric   Parametric
@@ -249,9 +284,57 @@ Here we use the UnivariateFitter object to fit a distribution to a dataset.::
     ufitter: UnivariateFitter = UnivariateFitter(rvs)
     ufitter.fit()
 
-    # finding our best fit
+    # printing out the summary of our fits
+    from sklarpy import print_full
+    print_full()
+
+    print(ufitter.get_summary())
+
+.. code-block:: text
+
+             Parametric/Non-Parametric Discrete/Continuous Distribution #Params      param0      param1      param2                                    Support                              Fitted Domain Cramér-von Mises statistic Cramér-von Mises p-value Cramér-von Mises @ 10% Cramér-von Mises @ 5% Cramér-von Mises @ 1% Kolmogorov-Smirnov statistic Kolmogorov-Smirnov p-value Kolmogorov-Smirnov @ 10% Kolmogorov-Smirnov @ 5% Kolmogorov-Smirnov @ 1% Likelihood Log-Likelihood          AIC          BIC Sum of Squared Error #Fitted Data Points
+    chi2                    Parametric          continuous         chi2       3  448.683161  -68.423622     0.15222                  (-68.42362151895298, inf)  (-24.241200503425766, 21.971575538054054)                   3.955007                      0.0                  False                 False                 False                     0.099469                        0.0                    False                   False                   False        0.0   -2916.834582  5839.669164   5854.39243             12.84073                1000
+    powerlaw                Parametric          continuous     powerlaw       3    1.485383  -24.284621   46.256197    (-24.28462141839885, 21.97157553805406)  (-24.241200503425766, 21.971575538054054)                  53.515366                      0.0                  False                 False                 False                     0.393459                        0.0                    False                   False                   False        0.0   -3765.295723  7536.591446  7551.314712              23.1246                1000
+    cauchy                  Parametric          continuous       cauchy       2   -0.141171    1.744522         NaN                                (-inf, inf)  (-24.241200503425766, 21.971575538054054)                   0.223919                 0.225566                   True                  True                  True                      0.03747                   0.117619                     True                    True                    True        0.0   -2848.628202  5701.256403  5711.071914             7.057125                1000
+    expon                   Parametric          continuous        expon       2  -24.241201   24.121323         NaN                 (-24.241200503425766, inf)  (-24.241200503425766, 21.971575538054054)                  68.507136                      0.0                  False                 False                 False                     0.465333                        0.0                    False                   False                   False        0.0    -4183.09624   8370.19248  8380.007991            24.962541                1000
+    lognorm                 Parametric          continuous      lognorm       3    0.024195 -185.928209  185.754474                 (-185.92820884247777, inf)  (-24.241200503425766, 21.971575538054054)                   3.726801                      0.0                  False                 False                 False                     0.093801                        0.0                    False                   False                   False        0.0   -2910.878606  5827.757211  5842.480477            12.702458                1000
+    rayleigh                Parametric          continuous     rayleigh       2  -24.268255   17.360527         NaN                    (-24.268254515672, inf)  (-24.241200503425766, 21.971575538054054)                  45.036613                      0.0                  False                 False                 False                     0.364332                        0.0                    False                   False                   False        0.0   -3548.608918  7101.217836  7111.033346            21.635708                1000
+    gamma                   Parametric          continuous        gamma       3  614.186953 -110.593183    0.179857                  (-110.5931825074225, inf)  (-24.241200503425766, 21.971575538054054)                   3.612011                      0.0                  False                 False                 False                     0.094024                        0.0                    False                   False                   False        0.0   -2911.657958  5829.315916  5844.039182            12.618159                1000
+    uniform                 Parametric          continuous      uniform       2  -24.241201   46.212776         NaN  (-24.241200503425766, 21.971575538054054)  (-24.241200503425766, 21.971575538054054)                  43.325309                      0.0                  False                 False                 False                     0.328626                        0.0                    False                   False                   False        0.0   -3833.256298  7670.512595  7680.328106            23.507262                1000
+
+finding our best fit::
+
     best_fit = ufitter.get_best(significant=False)
+    print(best_fit.summary)
     best_fit.plot()
+
+.. code-block:: text
+
+                                                                   summary
+    Parametric/Non-Parametric                                   Parametric
+    Discrete/Continuous                                         continuous
+    Distribution                                                    cauchy
+    #Params                                                              2
+    param0                                                       -0.070741
+    param1                                                        1.642212
+    Support                                                    (-inf, inf)
+    Fitted Domain                 (-16.627835918238397, 20.41344998969709)
+    Cramér-von Mises statistic                                    0.272381
+    Cramér-von Mises p-value                                      0.162046
+    Cramér-von Mises @ 10%                                            True
+    Cramér-von Mises @ 5%                                             True
+    Cramér-von Mises @ 1%                                             True
+    Kolmogorov-Smirnov statistic                                  0.034967
+    Kolmogorov-Smirnov p-value                                    0.169277
+    Kolmogorov-Smirnov @ 10%                                          True
+    Kolmogorov-Smirnov @ 5%                                           True
+    Kolmogorov-Smirnov @ 1%                                           True
+    Likelihood                                                         0.0
+    Log-Likelihood                                            -2791.769256
+    AIC                                                        5587.538511
+    BIC                                                        5597.354022
+    Sum of Squared Error                                           9.18869
+    #Fitted Data Points                                               1000
 
 .. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/univariate_fitter_example_figure1.png?raw=true
     :alt: poisson plot
@@ -262,6 +345,7 @@ We can also save our UnivariateFitter object::
     ufitter.save()
 
 We can then easily reload this::
+
     from sklarpy import load
 
     loaded_ufitter = load('UnivariateFitter.pickle')

@@ -28,13 +28,13 @@ from sklarpy.multivariate import mvt_shyperbolic
 fitted_msh = mvt_shyperbolic.fit(rvs_df, method='mle', show_progress=True)
 
 # printing our fitted parameters
-print(fitted_msh.params.to_dict)
-print(fitted_msh.params.cov)
+# print(fitted_msh.params.to_dict)
+# print(fitted_msh.params.cov)
 
 # printing a summary of our fit
-print(fitted_msh.summary)
-
-# can plot
+# print(fitted_msh.summary)
+#
+# # can plot
 fitted_msh.pdf_plot(show=False)
 fitted_msh.mc_cdf_plot(show=False)
 fitted_msh.marginal_pairplot(show=False)
