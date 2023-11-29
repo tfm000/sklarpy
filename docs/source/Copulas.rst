@@ -323,7 +323,7 @@ Plotting our fit::
    :scale: 60%
    :align: center
 
-.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/MC_CDF_Gh_MC_PDF_Plot_Plot2.png?raw=true
+.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/MC_CDF_Gh_MC_CDF_Plot_Plot2.png?raw=true
    :alt: Generalized Hyperbolic CDF
    :scale: 60%
    :align: center
