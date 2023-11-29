@@ -1,0 +1,6 @@
+﻿SciPy Stats,SklarPy Univariate
+norm,normal
+t,student_t
+dlaplace,discrete_laplace
+randint,discrete_uniform
+geom,geometric

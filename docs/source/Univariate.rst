@@ -36,6 +36,15 @@ For scipy version 1.11.4 you should get an output along the lines of:
 
 So you have a lot to choose from!
 
+Name differences between SklarPy and SciPy
+-------------------------------------------
+Whilst we have generally kept most of the distribution names consistent with SciPy, there are a few notable exceptions.
+These are:
+
+.. csv-table:: Distribution Name Discrepancies
+    :file: univariate_table.csv
+    :header-rows: 1
+
 PreFitUnivariateBase
 ---------------------
 This class and its subclasses contain the following methods / functions:
