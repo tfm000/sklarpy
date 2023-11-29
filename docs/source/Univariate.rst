@@ -63,7 +63,8 @@ ppf_approx and cdf_approx are approximations of the ppf and cdf functions respec
 FittedUnivariateBase
 ---------------------
 This class is the fitted version of PreFitUnivariateBase's subclasses.
-It implements the same methods as PreFitUnivariateBase, but does not require params as an argument in addition to the following:
+It implements the same methods as PreFitUnivariateBase, but does not require params as an argument.
+It also implements the following additional methods and attributes:
 
 - summary (summary of the distribution fit)
 - params (the fitted parameters)
