@@ -393,7 +393,7 @@ class FittedUnivariateBase(Savable):
                                 "no empirical data to display.")
 
         # getting xrange and qrange
-        eps: float = 10 ** -4
+        eps: float = 0.05
         prob_bounds: tuple = (eps, 1 - eps)
         if xrange is None:
             if not (isinstance(num_to_plot, int) and num_to_plot >= 1):
@@ -446,8 +446,10 @@ class FittedUnivariateBase(Savable):
                        alpha=empirical_alpha, label=empirical_label)
             ax[3].plot(xrange, xrange, color=qqplot_yx_color,
                        alpha=qqplot_yx_alpha, label='y=x')
-            ax[3].plot(self.ppf(qrange), empirical_ppf_values, color=color,
+            ppf_values = self.ppf(qrange)
+            ax[3].plot(ppf_values, empirical_ppf_values, color=color,
                        alpha=alpha, label=self.name)
+            ax[3].set_xlim([ppf_values.min(), ppf_values.max()])
 
         # plotting distribution
         ax[0].plot(xrange, self.pdf(xrange), color=color,

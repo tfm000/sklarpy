@@ -34,7 +34,7 @@ print(fitted_msh.params.cov)
 # printing a summary of our fit
 print(fitted_msh.summary)
 
-# can plot
+# # can plot
 fitted_msh.pdf_plot(show=False)
 fitted_msh.mc_cdf_plot(show=False)
 fitted_msh.marginal_pairplot(show=False)

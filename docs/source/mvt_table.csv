@@ -1,0 +1,13 @@
+﻿Family,Name,SklarPy Model
+Normal Mixture,Normal / Gaussian,mvt_normal
+Normal Mixture,Student-T,mvt_student_t
+Normal Mixture,Skewed-T,mvt_skewed_t
+Normal Mixture,Generalized Hyperbolic,mvt_gh
+Normal Mixture,Symmetric Generalized Hyperbolic,mvt_sgh
+Normal Mixture,Hyperbolic,mvt_hyperbolic
+Normal Mixture,Symmetric Hyperbolic,mvt_shyperbolic
+Normal Mixture,Normal-Inverse Gaussian (NIG),mvt_nig
+Normal Mixture,Symmetric Normal-Inverse Gaussian,mvt_snig
+Normal Mixture,Marginal Hyperbolic,mvt_mh
+Normal Mixture,Symmetric Marginal Hyperbolic,mvt_smh
+Numerical,Gaussian KDE,mvt_gaussian_kde

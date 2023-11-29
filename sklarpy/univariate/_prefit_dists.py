@@ -598,7 +598,7 @@ class PreFitUnivariateBase:
                                 "show are all boolean.")
 
         # getting xrange and qrange
-        eps: float = 10 ** -4
+        eps: float = 0.05
         prob_bounds: tuple = (eps, 1 - eps)
         if xrange is None:
             if not (isinstance(num_to_plot, int) and num_to_plot >= 1):

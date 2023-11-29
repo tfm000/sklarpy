@@ -5,7 +5,7 @@ import numpy as np
 # generating random variables
 from sklarpy.univariate import normal
 
-num_generate: int = 10000
+num_generate: int = 1000
 # generating a 1d array of N(1, 1) random variables
 normal_rvs1: np.ndarray = normal.rvs((num_generate,), (1, 1))
 # generating a 1d array of N(2, 3) random variables
