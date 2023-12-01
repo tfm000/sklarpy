@@ -803,13 +803,13 @@ class PreFitCopula(NotImplementedBase):
         raw_mv_rvs: np.ndarray = self._mv_object.rvs(size, copula_params)
 
         # bounding these above and below
-        eps: float = 10 ** -5
-        rvs_df: pd.DataFrame = pd.DataFrame(raw_mv_rvs)
-        rvs_df[rvs_df < 0] = eps
-        rvs_df[rvs_df > 1] = 1 - eps
-        mv_rvs: np.ndarray = rvs_df.to_numpy()
+        # eps: float = 10 ** -5
+        # rvs_df: pd.DataFrame = pd.DataFrame(raw_mv_rvs)
+        # rvs_df[rvs_df < 0] = eps
+        # rvs_df[rvs_df > 1] = 1 - eps
+        # mv_rvs: np.ndarray = rvs_df.to_numpy()
 
-        return self._g_to_u(mv_rvs, copula_params)
+        return self._g_to_u(raw_mv_rvs, copula_params)
 
     def _get_components_summary(self,
                                 fitted_mv_object: FittedContinuousMultivariate,
