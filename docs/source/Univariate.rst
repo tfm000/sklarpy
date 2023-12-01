@@ -184,7 +184,7 @@ And plot our fitted distribution::
 
     fitted_gamma.plot()
 
-.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/univariate_continuous_example_figure1.png?raw=true
+.. image:: https://github.com/tfm000/sklarpy/blob/main/media/univariate_continuous_example_figure1.png?raw=true
     :alt: gamma plot
     :align: center
 
@@ -258,7 +258,7 @@ And plot our fitted distribution::
 
     fitted_poisson.plot()
 
-.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/univariate_discrete_example_figure1.png?raw=true
+.. image:: https://github.com/tfm000/sklarpy/blob/main/media/univariate_discrete_example_figure1.png?raw=true
     :alt: poisson plot
     :align: center
 
@@ -347,7 +347,7 @@ finding our best fit::
     Sum of Squared Error                                           9.18869
     #Fitted Data Points                                               1000
 
-.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/univariate_fitter_example_figure1.png?raw=true
+.. image:: https://github.com/tfm000/sklarpy/blob/main/media/univariate_fitter_example_figure1.png?raw=true
     :alt: poisson plot
     :align: center
 
