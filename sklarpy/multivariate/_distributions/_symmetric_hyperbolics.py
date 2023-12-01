@@ -5,7 +5,7 @@ from typing import Tuple, Union
 from sklarpy.multivariate._distributions._hyperbolics import \
     multivariate_hyperbolic_base_gen
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
-from sklarpy._utils import Params
+from sklarpy.utils._params import Params
 
 __all__ = ['multivariate_sym_marginal_hyperbolic_gen',
            'multivariate_sym_hyperbolic_base_gen', 'multivariate_sym_nig_gen']

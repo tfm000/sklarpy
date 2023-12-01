@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import warnings
 
-from sklarpy._utils import get_iterator
+from sklarpy.utils._iterator import get_iterator
 
 __all__ = ['threeD_plot']
 

@@ -1,7 +1,7 @@
 # Contains code for holding Gaussian / Normal parameters
 import numpy as np
 
-from sklarpy._utils import Params
+from sklarpy.utils._params import Params
 
 __all__ = ['MvtNormalParams']
 

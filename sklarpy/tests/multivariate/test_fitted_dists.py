@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import scipy.stats
 
 from sklarpy.tests.multivariate.helpers import get_dist
-from sklarpy._utils import Params
+from sklarpy.utils._params import Params
 
 
 # def test_fitted_logpdf_pdf_cdf_mc_cdf(

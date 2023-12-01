@@ -7,7 +7,7 @@ import os
 import matplotlib.pyplot as plt
 
 from sklarpy.tests.univariate.helpers import get_data, get_fitted_dict
-from sklarpy._utils import SaveError, FitError
+from sklarpy.utils._errors import SaveError, FitError
 from sklarpy.univariate import distributions_map
 from sklarpy.univariate._fitted_dists import FittedContinuousUnivariate, \
     FittedDiscreteUnivariate

@@ -4,7 +4,7 @@ from typing import Union, Callable
 
 from sklarpy.copulas._distributions._generalized_hyperbolic import \
     gen_hyperbolic_copula_gen
-from sklarpy._utils import Params
+from sklarpy.utils._params import Params
 from sklarpy.univariate.distributions import skewed_t
 
 __all__ = ['skewed_t_copula_gen']

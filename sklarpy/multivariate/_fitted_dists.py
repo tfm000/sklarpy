@@ -3,7 +3,10 @@ import numpy as np
 import pandas as pd
 from typing import Union, Iterable
 
-from sklarpy._utils import TypeKeeper, Savable, Copyable, Params
+from sklarpy.utils._params import Params
+from sklarpy.utils._type_keeper import TypeKeeper
+from sklarpy.utils._copy import Copyable
+from sklarpy.utils._serialize import Savable
 
 __all__ = ['FittedContinuousMultivariate']
 

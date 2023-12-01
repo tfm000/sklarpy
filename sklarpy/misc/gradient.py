@@ -4,7 +4,7 @@ import pandas as pd
 from typing import Callable, Union, Iterable
 from collections import deque
 
-from sklarpy._utils import check_univariate_data
+from sklarpy.utils._input_handlers import check_univariate_data
 
 __all__ = ['gradient_1d']
 

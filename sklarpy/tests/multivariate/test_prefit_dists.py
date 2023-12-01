@@ -8,7 +8,7 @@ import scipy.stats
 from sklarpy.multivariate import *
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
-from sklarpy._utils import Params
+from sklarpy.utils._params import Params
 from sklarpy.tests.multivariate.helpers import get_dist
 
 

@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 from sklarpy.copulas import *
 from sklarpy.copulas._prefit_dists import PreFitCopula
 from sklarpy.copulas._fitted_dists import FittedCopula
-from sklarpy._utils import Params, FitError
+from sklarpy.utils._errors import FitError
+from sklarpy.utils._params import Params
 from sklarpy.tests.copulas.helpers import get_dist
 
 

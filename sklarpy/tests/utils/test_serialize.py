@@ -5,7 +5,7 @@ import pytest
 
 from sklarpy import load
 from sklarpy.univariate import normal, poisson
-from sklarpy._utils import LoadError
+from sklarpy.utils._errors import LoadError
 
 
 def test_load():

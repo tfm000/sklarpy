@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from sklarpy.univariate import UnivariateFitter, distributions_map
 from sklarpy.univariate._fitted_dists import FittedContinuousUnivariate, \
     FittedDiscreteUnivariate
-from sklarpy._utils import FitError, SignificanceError
+from sklarpy.utils._errors import FitError, SignificanceError
 
 
 def test_init(discrete_data, continuous_data):

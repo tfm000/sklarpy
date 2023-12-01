@@ -7,8 +7,12 @@ from collections import deque
 import scipy.integrate
 from scipy.optimize import differential_evolution
 
-from sklarpy._utils import TypeKeeper, check_multivariate_data, get_iterator, \
-    FitError, Params, NotImplementedBase
+from sklarpy.utils._type_keeper import TypeKeeper
+from sklarpy.utils._iterator import get_iterator
+from sklarpy.utils._not_implemented import NotImplementedBase
+from sklarpy.utils._params import Params
+from sklarpy.utils._input_handlers import check_multivariate_data
+from sklarpy.utils._errors import FitError
 from sklarpy.plotting._pair_plot import pair_plot
 from sklarpy.plotting._threeD_plot import threeD_plot
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate

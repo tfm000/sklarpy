@@ -1,5 +1,5 @@
 # Contains code for holding Gaussian KDE parameters.
-from sklarpy._utils import Params
+from sklarpy.utils._params import Params
 
 __all__ = ['MvtGaussianKDEParams']
 

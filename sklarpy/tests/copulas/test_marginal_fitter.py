@@ -4,7 +4,7 @@ import pytest
 import numpy as np
 
 from sklarpy.copulas import MarginalFitter
-from sklarpy._utils import FitError
+from sklarpy.utils._errors import FitError
 
 
 def test_init(all_mvt_data):

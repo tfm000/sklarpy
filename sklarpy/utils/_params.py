@@ -1,7 +1,7 @@
 # Contains a base class for all distribution parameter objects
 from typing import Union
 
-from sklarpy._utils._serialize import Savable
+from sklarpy.utils._serialize import Savable
 
 __all__ = ['Params']
 
