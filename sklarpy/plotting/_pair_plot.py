@@ -2,6 +2,8 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+# from collections import deque
+# import math
 
 __all__ = ['pair_plot']
 
@@ -64,6 +66,16 @@ def pair_plot(plot_df: pd.DataFrame, title: str, color: str = 'royalblue',
             raise TypeError("invalid argument type in pair_plot. check grid, "
                             "plot_kde and show are boolean.")
 
+    # # getting plot limits
+    # lims: deque = deque()
+    # n, d = plot_df.shape
+    #
+    # lb: int = math.floor(n * 0.01)
+    # ub: int = math.ceil(n * 0.99)
+    # for i in range(d):
+    #     ordered_i = plot_df.iloc[:, i].sort_values()
+    #     lims.append((ordered_i.iloc[lb], ordered_i.iloc[ub]))
+
     # plotting
     sns.set_style("whitegrid", {'axes.grid': grid})
     g = sns.PairGrid(plot_df, corner=(not plot_kde))
@@ -73,6 +85,11 @@ def pair_plot(plot_df: pd.DataFrame, title: str, color: str = 'royalblue',
     g.map_diag(sns.histplot, color=color)
     g.fig.suptitle(title)
     plt.tight_layout()
+
+    # # setting limits
+    # for i in range(d):
+    #     g.axes[i, i].set_xlim(lims[i])
+    #     g.axes[i, i].set_ylim(lims[i])
 
     if show:
         plt.show()
