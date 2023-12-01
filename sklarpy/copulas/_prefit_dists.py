@@ -9,7 +9,8 @@ from sklarpy._utils import check_multivariate_data, TypeKeeper, Params, \
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate, \
     FittedContinuousMultivariate
 from sklarpy.univariate._fitted_dists import FittedUnivariateBase
-from sklarpy._plotting import pair_plot, threeD_plot
+from sklarpy.plotting._pair_plot import pair_plot
+from sklarpy.plotting._threeD_plot import threeD_plot
 from sklarpy.copulas._fitted_dists import FittedCopula
 
 __all__ = ['PreFitCopula']

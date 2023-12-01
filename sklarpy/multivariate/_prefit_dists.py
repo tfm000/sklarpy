@@ -9,7 +9,8 @@ from scipy.optimize import differential_evolution
 
 from sklarpy._utils import TypeKeeper, check_multivariate_data, get_iterator, \
     FitError, Params, NotImplementedBase
-from sklarpy._plotting import pair_plot, threeD_plot
+from sklarpy.plotting._pair_plot import pair_plot
+from sklarpy.plotting._threeD_plot import threeD_plot
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
 from sklarpy.misc import CorrelationMatrix
 

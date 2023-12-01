@@ -7,7 +7,7 @@ from typing import Union, Iterable
 from sklarpy._utils import FitError, TypeKeeper, check_multivariate_data, \
     get_iterator, Savable
 from sklarpy.univariate import UnivariateFitter
-from sklarpy._plotting import pair_plot
+from sklarpy.plotting._pair_plot import pair_plot
 
 __all__ = ['MarginalFitter']
 
