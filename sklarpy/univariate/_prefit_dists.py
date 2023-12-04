@@ -9,8 +9,9 @@ import scipy.interpolate
 
 from sklarpy.univariate._goodness_of_fit import continuous_gof, discrete_gof
 from sklarpy.univariate._inverse_transform import inverse_transform
-from sklarpy._utils import univariate_num_to_array, check_params, \
-    check_univariate_data, FitError, check_array_datatype
+from sklarpy.utils._input_handlers import univariate_num_to_array, \
+    check_univariate_data, check_array_datatype, check_params
+from sklarpy.utils._errors import FitError
 from sklarpy.univariate._fitted_dists import FittedContinuousUnivariate, \
     FittedDiscreteUnivariate
 from sklarpy.univariate._distributions import discrete_empirical_fit, \

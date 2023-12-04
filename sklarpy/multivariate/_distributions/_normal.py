@@ -7,7 +7,7 @@ from typing import Tuple, Union
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.misc import CorrelationMatrix
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
-from sklarpy._utils import Params
+from sklarpy.utils._params import Params
 
 __all__ = ['multivariate_normal_gen']
 

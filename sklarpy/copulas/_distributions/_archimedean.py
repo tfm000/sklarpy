@@ -5,7 +5,7 @@ from typing import Union
 
 from sklarpy.copulas._prefit_dists import PreFitCopula
 from sklarpy.copulas._fitted_dists import FittedCopula
-from sklarpy._utils import Params
+from sklarpy.utils._params import Params
 from sklarpy.copulas import MarginalFitter
 
 __all__ = ['clayton_copula_gen', 'gumbel_copula_gen', 'frank_copula_gen']

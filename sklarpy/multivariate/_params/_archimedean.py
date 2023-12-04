@@ -1,5 +1,5 @@
 # Contains code for holding Archimedean copula parameters
-from sklarpy._utils import Params
+from sklarpy.utils._params import Params
 
 __all__ = ['MvtClaytonParams', 'MvtGumbelParams',
            'BvtFrankParams']

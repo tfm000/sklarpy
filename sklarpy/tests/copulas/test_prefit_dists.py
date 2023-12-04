@@ -8,13 +8,13 @@ import matplotlib.pyplot as plt
 from sklarpy.copulas import *
 from sklarpy.copulas._prefit_dists import PreFitCopula
 from sklarpy.copulas._fitted_dists import FittedCopula
-from sklarpy._utils import Params, FitError
+from sklarpy.utils._errors import FitError
+from sklarpy.utils._params import Params
 from sklarpy.tests.copulas.helpers import get_dist
 
 
 def test_correct_type():
     """Testing copula distributions are all SklarPy objects."""
-    print("\nTesting correct type")
     for name in distributions_map['all']:
         copula = eval(name)
         assert issubclass(type(copula), PreFitCopula), \
@@ -23,7 +23,6 @@ def test_correct_type():
 
 def test_fit(all_mvt_data):
     """Testing we can fit copula distributions to data."""
-    print("\nTesting fit")
     for data in all_mvt_data.values():
         mfitter: MarginalFitter = MarginalFitter(data)
         mfitter.fit()
@@ -91,7 +90,6 @@ def test_prefit_logpdf_pdf_cdf_mc_cdfs(all_mvt_data, copula_params_2d,
                                        all_mdists_2d):
     """Testing the logpdf, pdf, cdf and mc-cdf functions of pre-fit copula
     models."""
-    print("\nTesting logpdf, pdf, cdf and mc-cdf functions")
     eps: float = 10 ** -5
     num_generate: int = 10
     cdf_num: int = 10
@@ -152,7 +150,6 @@ def test_prefit_copula_logpdf_pdf_cdf_mc_cdfs(all_mvt_uniform_data,
                                               copula_params_2d, all_mdists_2d):
     """Testing the copula-logpdf, copula-pdf, copula-cdf and copula-mc-cdf
     functions of pre-fit copula models."""
-    print("\nTesting copula logpdf, pdf, cdf and mc-cdf functions")
     eps: float = 10 ** -5
     num_generate: int = 10
     cdf_num: int = 10
@@ -212,8 +209,6 @@ def test_prefit_copula_logpdf_pdf_cdf_mc_cdfs(all_mvt_uniform_data,
 
 def test_prefit_rvs(all_mvt_data, copula_params_2d, all_mdists_2d):
     """Testing the rvs and copula-rvs functions of pre-fit copula models."""
-    print("\nTesting rvs and copula-rvs")
-
     eps: float = 10 ** -5
     dataset_name: str = 'mvt_mixed'
     data: np.ndarray = all_mvt_data[dataset_name]
@@ -251,8 +246,6 @@ def test_prefit_rvs(all_mvt_data, copula_params_2d, all_mdists_2d):
 def test_prefit_scalars(all_mvt_data, copula_params_2d, all_mdists_2d):
     """Testing the likelihood, loglikelihood, AIC and BIC functions of
     pre-fit copula models."""
-    print("\nTesting scalars")
-
     for dataset_name, data in all_mvt_data.items():
         mdists = all_mdists_2d[dataset_name]
         for name in distributions_map['all']:
@@ -293,8 +286,6 @@ def test_prefit_scalars(all_mvt_data, copula_params_2d, all_mdists_2d):
 def test_prefit_integers(all_mvt_data, copula_params_2d, all_mdists_2d):
     """Testing the num_marginal_params, num_copula_params,
     num_scalar_params and num_params functions of pre-fit copula models."""
-    print("\nTesting integers")
-
     dataset_name: str = 'mvt_mixed'
     data: np.ndarray = all_mvt_data[dataset_name]
     mdists = all_mdists_2d[dataset_name]
@@ -317,8 +308,6 @@ def test_prefit_plots(all_mvt_data, copula_params_2d, copula_params_3d,
     """Testing the marginal_pairplot, pdf_plot, cdf_plot, mc_cdf_plot,
     copula_pdf_plot, copula_cdf_plot and copula_mc_cdf_plot methods of
     pre-fit copula models."""
-    print("\nTesting plots")
-
     num_generate: int = 10
     mc_num_generate: int = num_generate
     num_points = 2
@@ -367,7 +356,6 @@ def test_prefit_plots(all_mvt_data, copula_params_2d, copula_params_3d,
 
 
 def test_prefit_names():
-    print("\nTesting name")
     for name in distributions_map['all']:
         copula = eval(name)
         assert isinstance(copula.name, str), f"name of {name} is not a string."

@@ -131,17 +131,17 @@ Plotting our fitted distribution::
     fitted_msh.marginal_pairplot(show=False)
     plt.show()
 
-.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/PDF_Mvt_Shyperbolic_PDF_Plot_Plot.png?raw=true
+.. image:: https://github.com/tfm000/sklarpy/blob/main/media/PDF_Mvt_Shyperbolic_PDF_Plot_Plot.png?raw=true
    :alt: Symmetric Hyperbolic PDF
    :scale: 60%
    :align: center
 
-.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/MC_CDF_Mvt_Shyperbolic_MC_CDF_Plot_Plot.png?raw=true
+.. image:: https://github.com/tfm000/sklarpy/blob/main/media/MC_CDF_Mvt_Shyperbolic_MC_CDF_Plot_Plot.png?raw=true
    :alt: Symmetric Hyperbolic PDF
    :scale: 60%
    :align: center
 
-.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/mvt_shyperbolic_marginal_pair_plot.png?raw=true
+.. image:: https://github.com/tfm000/sklarpy/blob/main/media/mvt_shyperbolic_marginal_pair_plot.png?raw=true
    :alt: Symmetric Hyperbolic PDF
    :scale: 60%
    :align: center

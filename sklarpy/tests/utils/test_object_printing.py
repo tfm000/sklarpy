@@ -7,7 +7,6 @@ from sklarpy import print_full
 
 def test_print_full():
     """Testing print_full function."""
-    print("\nTesting print full")
     num: int = 10 ** 5
 
     arrA: np.ndarray = np.linspace(0, 1000, num)

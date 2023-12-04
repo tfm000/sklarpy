@@ -13,7 +13,6 @@ def test_fitted_logpdf_pdf_cdf_mc_cdfs(all_mvt_data, copula_params_2d,
                                        all_mdists_2d):
     """Testing the logpdf, pdf, cdf and mc-cdf functions of fitted copula
     models."""
-    print("\nTesting logpdf, pdf, cdf and mc-cdf functions")
     eps: float = 10 ** -5
     num_generate: int = 10
     cdf_num: int = 10
@@ -72,7 +71,6 @@ def test_fitted_copula_logpdf_pdf_cdf_mc_cdfs(all_mvt_uniform_data,
                                               copula_params_2d, all_mdists_2d):
     """Testing the copula-logpdf, copula-pdf, copula-cdf and copula-mc-cdf
     functions of fitted copula models."""
-    print("\nTesting copula logpdf, pdf, cdf and mc-cdf functions")
     eps: float = 10 ** -5
     num_generate: int = 10
     cdf_num: int = 10
@@ -130,7 +128,6 @@ def test_fitted_copula_logpdf_pdf_cdf_mc_cdfs(all_mvt_uniform_data,
 
 def test_fitted_rvs(all_mvt_data, copula_params_2d, all_mdists_2d):
     """Testing the rvs and copula-rvs functions of fitted copula models."""
-    print("\nTesting rvs and copula-rvs")
     eps: float = 10 ** -5
     dataset_name: str = 'mvt_mixed'
     data: np.ndarray = all_mvt_data[dataset_name]
@@ -168,8 +165,6 @@ def test_fitted_rvs(all_mvt_data, copula_params_2d, all_mdists_2d):
 def test_fitted_scalars(all_mvt_data, copula_params_2d, all_mdists_2d):
     """Testing the likelihood, loglikelihood, AIC and BIC functions of
     fitted copula models."""
-    print("\nTesting scalars")
-
     for dataset_name, data in all_mvt_data.items():
         mdists = all_mdists_2d[dataset_name]
         for name in distributions_map['all']:
@@ -215,8 +210,6 @@ def test_fitted_scalars(all_mvt_data, copula_params_2d, all_mdists_2d):
 def test_fitted_integers(all_mvt_data, copula_params_2d, all_mdists_2d):
     """Testing the num_marginal_params, num_copula_params,
     num_scalar_params and num_params functions of fitted copula models."""
-    print("\nTesting integers")
-
     dataset_name: str = 'mvt_mixed'
     data: np.ndarray = all_mvt_data[dataset_name]
     mdists = all_mdists_2d[dataset_name]
@@ -239,8 +232,6 @@ def test_fitted_plots(all_mvt_data, copula_params_2d, copula_params_3d,
     """Testing the marginal_pairplot, pdf_plot, cdf_plot, mc_cdf_plot,
     copula_pdf_plot, copula_cdf_plot and copula_mc_cdf_plot methods of
     fitted copula models."""
-    print("\nTesting plots")
-
     num_generate: int = 10
     mc_num_generate: int = num_generate
     num_points = 2
@@ -287,8 +278,6 @@ def test_fitted_plots(all_mvt_data, copula_params_2d, copula_params_3d,
 
 
 def test_fitted_names(all_mvt_data, copula_params_2d, all_mdists_2d):
-    print("\nTesting name")
-
     dataset_name: str = 'mvt_mixed'
     data: np.ndarray = all_mvt_data[dataset_name]
     mdists = all_mdists_2d[dataset_name]

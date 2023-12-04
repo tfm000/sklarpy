@@ -4,7 +4,7 @@ import pandas as pd
 import warnings
 from typing import Tuple, Union
 
-from sklarpy._utils import check_multivariate_data
+from sklarpy.utils._input_handlers import check_multivariate_data
 
 __all__ = ['CorrelationMatrix']
 

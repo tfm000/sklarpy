@@ -3,7 +3,8 @@ import numpy as np
 import scipy.optimize
 import scipy.integrate
 
-from sklarpy._utils import check_params, FitError
+from sklarpy.utils._errors import FitError
+from sklarpy.utils._input_handlers import check_params
 
 __all__ = ['base_gen']
 

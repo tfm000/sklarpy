@@ -7,14 +7,13 @@ import os
 import matplotlib.pyplot as plt
 
 from sklarpy.tests.univariate.helpers import get_data, get_fitted_dict
-from sklarpy._utils import SaveError, FitError
+from sklarpy.utils._errors import SaveError, FitError
 from sklarpy.univariate import distributions_map
 from sklarpy.univariate._fitted_dists import FittedContinuousUnivariate, \
     FittedDiscreteUnivariate
 
 def test_fitted_pdfs(discrete_data, continuous_data, dists_to_test):
     """Testing the pdf functions of fitted univariate distributions."""
-    print("\nTesting pdfs")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -46,7 +45,6 @@ def test_fitted_pdfs(discrete_data, continuous_data, dists_to_test):
 
 def test_fitted_cdfs(discrete_data, continuous_data, dists_to_test):
     """Testing the cdf functions of fitted univariate distributions."""
-    print("\nTesting cdfs")
     eps: float = 10 ** -5
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
@@ -104,7 +102,6 @@ def test_fitted_cdfs(discrete_data, continuous_data, dists_to_test):
 def test_fitted_ppfs(uniform_data, discrete_data, continuous_data,
                     dists_to_test):
     """Testing the ppf functions of fitted univariate distributions."""
-    print("\nTesting ppfs")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -136,7 +133,6 @@ def test_fitted_ppfs(uniform_data, discrete_data, continuous_data,
 
 def test_fitted_supports(discrete_data, continuous_data, dists_to_test):
     """Testing the support functions of fitted univariate distributions."""
-    print("\nTesting supports")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -170,7 +166,6 @@ def test_fitted_supports(discrete_data, continuous_data, dists_to_test):
 
 def test_fitted_rvs(discrete_data, continuous_data, dists_to_test):
     """Testing the rvs functions of fitted univariate distributions."""
-    print("\nTesting rvs")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -202,7 +197,6 @@ def test_fitted_rvs(discrete_data, continuous_data, dists_to_test):
 
 def test_fitted_logpdfs(discrete_data, continuous_data, dists_to_test):
     """Testing the log-pdf functions of all fitted univariate distributions."""
-    print("\nTesting logpdfs")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -231,7 +225,6 @@ def test_fitted_logpdfs(discrete_data, continuous_data, dists_to_test):
 def test_fitted_scalars(discrete_data, continuous_data, dists_to_test):
     """Testing the likelihood, loglikelihood, AIC, BIC and SSE functions of
     fitted distributions."""
-    print("\nTesting scalars")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -259,7 +252,6 @@ def test_fitted_scalars(discrete_data, continuous_data, dists_to_test):
 
 def test_fitted_gofs(discrete_data, continuous_data, dists_to_test):
     """Testing the gof functions of fitted univariate distributions."""
-    print("\nTesting gofs")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -280,7 +272,6 @@ def test_fitted_gofs(discrete_data, continuous_data, dists_to_test):
 
 def test_fitted_plots(discrete_data, continuous_data, dists_to_test):
     """Testing the plot functions of fitted univariate distributions."""
-    print("\nTesting plots")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -297,7 +288,6 @@ def test_fitted_plots(discrete_data, continuous_data, dists_to_test):
 
 def test_fitted_saves(discrete_data, continuous_data, dists_to_test):
     """Testing the save functions of all fitted univariate distributions."""
-    print("\nTesting saves")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -319,7 +309,6 @@ def test_fitted_saves(discrete_data, continuous_data, dists_to_test):
 
 def test_fitted_names(discrete_data, continuous_data, dists_to_test):
     """Testing the names functions of fitted univariate distributions."""
-    print("\nTesting names")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -338,7 +327,6 @@ def test_fitted_names(discrete_data, continuous_data, dists_to_test):
 
 def test_fitted_summaries(discrete_data, continuous_data, dists_to_test):
     """Testing the summary functions of fitted univariate distributions."""
-    print("\nTesting summaries")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -362,7 +350,6 @@ def test_fitted_summaries(discrete_data, continuous_data, dists_to_test):
 def test_fitted_domains(discrete_data, continuous_data, dists_to_test):
     """Testing the fitted domain functions of fitted univariate distributions.
     """
-    print("\nTesting domains")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -401,7 +388,6 @@ def test_fitted_domains(discrete_data, continuous_data, dists_to_test):
 def test_fitted_fitted_to_data(discrete_data, continuous_data, dists_to_test):
     """Testing the fitted to data functions of fitted univariate distributions.
     """
-    print("\nTesting fitted to data")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -430,7 +416,6 @@ def test_fitted_integers(discrete_data, continuous_data, dists_to_test):
     """Testing the num_params and fitted_num_data_points functions of fitted
     univariate distributions.
     """
-    print("\nTesting integers")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -469,7 +454,6 @@ def test_fitted_continuous_or_discretes(discrete_data, continuous_data,
                                        dists_to_test):
     """Testing the continuous_or_discrete functions of fitted univariate
     distributions."""
-    print("\nTesting continuous or discrete")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:

@@ -13,8 +13,10 @@ import warnings
 
 from sklarpy.univariate.distributions import *
 from sklarpy.univariate.distributions_map import distributions_map
-from sklarpy._utils import check_univariate_data, check_array_datatype, \
-    FitError, SignificanceError, Savable
+from sklarpy.utils._errors import SignificanceError, FitError
+from sklarpy.utils._input_handlers import check_univariate_data, \
+    check_array_datatype
+from sklarpy.utils._serialize import Savable
 
 __all__ = ['UnivariateFitter']
 

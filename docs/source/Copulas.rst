@@ -203,7 +203,7 @@ Producing a pairplot of the marginals::
 
     mfitter2.pairplot()
 
-.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/mfitter_pairplot.png?raw=true
+.. image:: https://github.com/tfm000/sklarpy/blob/main/media/mfitter_pairplot.png?raw=true
    :alt: MarginalFitter Pair-Plot
    :scale: 60%
    :align: center
@@ -315,17 +315,17 @@ Plotting our fit::
     fitted_copula.mc_cdf_plot(show=False)
     plt.show()
 
-.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/PDF_Gh_PDF_Plot_Plot2.png?raw=true
+.. image:: https://github.com/tfm000/sklarpy/blob/main/media/PDF_Gh_PDF_Plot_Plot2.png?raw=true
    :alt: Generalized Hyperbolic PDF
    :scale: 60%
    :align: center
 
-.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/Copula_PDF_Gh_Copula_PDF_Plot_Plot2.png?raw=true
+.. image:: https://github.com/tfm000/sklarpy/blob/main/media/Copula_PDF_Gh_Copula_PDF_Plot_Plot2.png?raw=true
    :alt: Generalized Hyperbolic Copula PDF
    :scale: 60%
    :align: center
 
-.. image:: https://github.com/tfm000/sklarpy/blob/docs/readthedocs/media/MC_CDF_Gh_MC_CDF_Plot_Plot2.png?raw=true
+.. image:: https://github.com/tfm000/sklarpy/blob/main/media/MC_CDF_Gh_MC_CDF_Plot_Plot2.png?raw=true
    :alt: Generalized Hyperbolic CDF
    :scale: 60%
    :align: center

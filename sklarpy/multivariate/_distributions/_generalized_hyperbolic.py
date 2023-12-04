@@ -10,7 +10,7 @@ from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
 from sklarpy.univariate import gig
 from sklarpy.univariate._distributions import _gh
 from sklarpy.misc import CorrelationMatrix, kv
-from sklarpy._utils import Params
+from sklarpy.utils._params import Params
 
 __all__ = ['multivariate_gen_hyperbolic_gen']
 

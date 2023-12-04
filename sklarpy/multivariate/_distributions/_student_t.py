@@ -8,7 +8,7 @@ from typing import Tuple, Union
 
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate
 from sklarpy.multivariate._fitted_dists import FittedContinuousMultivariate
-from sklarpy._utils import Params
+from sklarpy.utils._params import Params
 from sklarpy.misc import CorrelationMatrix
 
 __all__ = ['multivariate_student_t_gen']

@@ -3,7 +3,7 @@ import dill
 import os
 from pathlib import Path
 
-from sklarpy._utils._errors import LoadError, SaveError
+from sklarpy.utils._errors import LoadError, SaveError
 
 __all__ = ['load', 'Savable']
 

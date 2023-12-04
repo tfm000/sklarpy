@@ -6,7 +6,7 @@ import scipy.interpolate
 
 from sklarpy.univariate._distributions._numerical_wrappers import \
     NumericalWrappers
-from sklarpy._utils import DiscreteError
+from sklarpy.utils._errors import DiscreteError
 
 __all__ = ['discrete_empirical_fit']
 

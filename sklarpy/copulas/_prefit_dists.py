@@ -2,14 +2,18 @@
 from typing import Union, Iterable, Callable, Dict, List
 import numpy as np
 import pandas as pd
+from collections import deque
 
 from sklarpy.copulas import MarginalFitter
-from sklarpy._utils import check_multivariate_data, TypeKeeper, Params, \
-    NotImplementedBase, get_mask
+from sklarpy.utils._input_handlers import check_multivariate_data, get_mask
+from sklarpy.utils._type_keeper import TypeKeeper
+from sklarpy.utils._params import Params
+from sklarpy.utils._not_implemented import NotImplementedBase
 from sklarpy.multivariate._prefit_dists import PreFitContinuousMultivariate, \
     FittedContinuousMultivariate
 from sklarpy.univariate._fitted_dists import FittedUnivariateBase
-from sklarpy._plotting import pair_plot, threeD_plot
+from sklarpy.plotting._pair_plot import pair_plot
+from sklarpy.plotting._threeD_plot import threeD_plot
 from sklarpy.copulas._fitted_dists import FittedCopula
 
 __all__ = ['PreFitCopula']
@@ -17,6 +21,8 @@ __all__ = ['PreFitCopula']
 
 class PreFitCopula(NotImplementedBase):
     """A pre-fit copula model"""
+    __MAX_RVS_LOOPS: int = 100
+
     def __init__(self, name: str, mv_object: PreFitContinuousMultivariate):
         """A pre-fit copula model.
 
@@ -796,17 +802,31 @@ class PreFitCopula(NotImplementedBase):
             distribution. These correspond to randomly sampled cdf /
             pseudo-observation values of the univariate marginals.
         """
-        # generating random variables from multivariate distribution
-        raw_mv_rvs: np.ndarray = self._mv_object.rvs(size, copula_params)
+        num_loops: int = 0
+        d: int = self._mv_object._get_dim(
+            self._mv_object._get_params(copula_params))
+        valid_copula_rvs: deque = deque()
+        while size > 0:
+            # generating random variables from multivariate distribution
+            mv_rvs: np.ndarray = self._mv_object.rvs(size, copula_params)
 
-        # bounding these above and below
-        eps: float = 10 ** -5
-        rvs_df: pd.DataFrame = pd.DataFrame(raw_mv_rvs)
-        rvs_df[rvs_df < 0] = eps
-        rvs_df[rvs_df > 1] = 1 - eps
-        mv_rvs: np.ndarray = rvs_df.to_numpy()
+            # converting to copula rvs
+            raw_copula_rvs: np.ndarray = self._g_to_u(mv_rvs, copula_params)
 
-        return self._g_to_u(mv_rvs, copula_params)
+            # filtering out invalid copula rvs (not in [0, 1]^d)
+            mask: np.ndarray = ((raw_copula_rvs > 0) & (raw_copula_rvs < 1)
+                                ).sum(axis=1) == d
+            copula_rvs = raw_copula_rvs[mask]
+            valid_copula_rvs.append(copula_rvs)
+
+            # repeating until sample size reached
+            size -= copula_rvs.shape[0]
+            num_loops += 1
+            if num_loops > self.__MAX_RVS_LOOPS:
+                raise ArithmeticError(f"Unable to generate valid copula rvs. "
+                                      f"Max number of retries reached: "
+                                      f"{self.__MAX_RVS_LOOPS}")
+        return np.concatenate(valid_copula_rvs, axis=0)
 
     def _get_components_summary(self,
                                 fitted_mv_object: FittedContinuousMultivariate,
@@ -1008,11 +1028,20 @@ class PreFitCopula(NotImplementedBase):
                              "params do not match.")
 
         # generating data to use when calculating statistics
-        data_array: np.ndarray = self.rvs(
-            size=10**3, copula_params=fitted_mv_object.params,
-            mdists=mdists_dict, ppf_approx=True
-        ) if data is None \
-            else check_multivariate_data(data, allow_1d=True, allow_nans=True)
+        try:
+            data_array: np.ndarray = self.rvs(
+                size=10**3, copula_params=fitted_mv_object.params,
+                mdists=mdists_dict, ppf_approx=True) if data is None \
+                else check_multivariate_data(
+                data, allow_1d=True, allow_nans=True)
+
+        except ArithmeticError as e:
+            if str(e) != (f"Unable to generate valid copula rvs. Max number "
+                          f"of retries reached: {self.__MAX_RVS_LOOPS}"):
+                raise
+            else:
+                data_array: np.ndarray = np.full((10**3, d), np.nan,
+                                                 dtype=float)
 
         # fitting TypeKeeper object
         type_keeper: TypeKeeper = TypeKeeper(data_array)

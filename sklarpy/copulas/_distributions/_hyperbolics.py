@@ -4,7 +4,7 @@ from typing import Union, Callable
 
 from sklarpy.copulas._distributions._generalized_hyperbolic import \
     gen_hyperbolic_copula_gen
-from sklarpy._utils import Params
+from sklarpy.utils._params import Params
 
 __all__ = ['marginal_hyperbolic_copula_gen', 'hyperbolic_copula_gen',
            'nig_copula_gen']
