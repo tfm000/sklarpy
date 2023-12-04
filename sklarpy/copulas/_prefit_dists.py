@@ -21,6 +21,8 @@ __all__ = ['PreFitCopula']
 
 class PreFitCopula(NotImplementedBase):
     """A pre-fit copula model"""
+    __MAX_RVS_LOOPS: int = 100
+
     def __init__(self, name: str, mv_object: PreFitContinuousMultivariate):
         """A pre-fit copula model.
 
@@ -800,7 +802,6 @@ class PreFitCopula(NotImplementedBase):
             distribution. These correspond to randomly sampled cdf /
             pseudo-observation values of the univariate marginals.
         """
-        max_num_loops: int = 100
         num_loops: int = 0
         d: int = self._mv_object._get_dim(
             self._mv_object._get_params(copula_params))
@@ -821,10 +822,10 @@ class PreFitCopula(NotImplementedBase):
             # repeating until sample size reached
             size -= copula_rvs.shape[0]
             num_loops += 1
-            if num_loops > max_num_loops:
+            if num_loops > self.__MAX_RVS_LOOPS:
                 raise ArithmeticError(f"Unable to generate valid copula rvs. "
-                                      f"number of retries reached "
-                                      f"{max_num_loops}")
+                                      f"Max number of retries reached: "
+                                      f"{self.__MAX_RVS_LOOPS}")
         return np.concatenate(valid_copula_rvs, axis=0)
 
     def _get_components_summary(self,
@@ -1027,11 +1028,20 @@ class PreFitCopula(NotImplementedBase):
                              "params do not match.")
 
         # generating data to use when calculating statistics
-        data_array: np.ndarray = self.rvs(
-            size=10**3, copula_params=fitted_mv_object.params,
-            mdists=mdists_dict, ppf_approx=True
-        ) if data is None \
-            else check_multivariate_data(data, allow_1d=True, allow_nans=True)
+        try:
+            data_array: np.ndarray = self.rvs(
+                size=10**3, copula_params=fitted_mv_object.params,
+                mdists=mdists_dict, ppf_approx=True) if data is None \
+                else check_multivariate_data(
+                data, allow_1d=True, allow_nans=True)
+
+        except ArithmeticError as e:
+            if str(e) != (f"Unable to generate valid copula rvs. Max number "
+                          f"of retries reached: {self.__MAX_RVS_LOOPS}"):
+                raise
+            else:
+                data_array: np.ndarray = np.full((10**3, d), np.nan,
+                                                 dtype=float)
 
         # fitting TypeKeeper object
         type_keeper: TypeKeeper = TypeKeeper(data_array)
