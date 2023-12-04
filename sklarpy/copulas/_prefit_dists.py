@@ -802,7 +802,8 @@ class PreFitCopula(NotImplementedBase):
         """
         max_num_loops: int = 100
         num_loops: int = 0
-        d: int = self._mv_object._get_dim(copula_params)
+        d: int = self._mv_object._get_dim(
+            self._mv_object._get_params(copula_params))
         valid_copula_rvs: deque = deque()
         while size > 0:
             # generating random variables from multivariate distribution
@@ -820,7 +821,6 @@ class PreFitCopula(NotImplementedBase):
             # repeating until sample size reached
             size -= copula_rvs.shape[0]
             num_loops += 1
-
             if num_loops > max_num_loops:
                 raise ArithmeticError(f"Unable to generate valid copula rvs. "
                                       f"number of retries reached "
