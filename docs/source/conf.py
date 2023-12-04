@@ -2,7 +2,8 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
+sys.path.insert(0, os.path.abspath("../../sklarpy"))
+# sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
 
 # -- Project information
 
@@ -32,6 +33,7 @@ intersphinx_mapping = {
 intersphinx_disabled_domains = ['std']
 
 templates_path = ['_templates']
+exclude_patterns = ["_build"]
 
 # -- Options for HTML output
 
@@ -39,3 +41,9 @@ html_theme = 'sphinx_rtd_theme'
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
+
+source_suffix = ".rst"
+
+master_doc = "index"
+
+todo_include_todos = False
