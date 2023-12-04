@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sklarpy.tests.misc package &mdash; SklarPy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SklarPy
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html#for-developers">For Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Univariate.html">Univariate Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multivariate.html">Multivariate Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Copulas.html">Copula Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Misc.html">Miscellaneous Tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SklarPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">sklarpy.tests.misc package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/sklarpy.tests.misc.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sklarpy-tests-misc-package">
+<h1>sklarpy.tests.misc package<a class="headerlink" href="#sklarpy-tests-misc-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="sklarpy-tests-misc-conftest-module">
+<h2>sklarpy.tests.misc.conftest module<a class="headerlink" href="#sklarpy-tests-misc-conftest-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-sklarpy.tests.misc.helpers">
+<span id="sklarpy-tests-misc-helpers-module"></span><h2>sklarpy.tests.misc.helpers module<a class="headerlink" href="#module-sklarpy.tests.misc.helpers" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="sklarpy.tests.misc.helpers.Exp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sklarpy.tests.misc.helpers.</span></span><span class="sig-name descname"><span class="pre">Exp</span></span><a class="reference internal" href="_modules/sklarpy/tests/misc/helpers.html#Exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.misc.helpers.Exp" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DifferentiableBase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.tests.misc.helpers.Exp.dfdx">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dfdx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/tests/misc/helpers.html#Exp.dfdx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.misc.helpers.Exp.dfdx" title="Link to this definition"></a></dt>
+<dd><p>The first derivative of the function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>np.ndarray</em><em>]</em>) – Values to evaluate the derivative at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dfdx</strong> – The derivative evaluated at the given values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a>, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.tests.misc.helpers.Exp.f">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/tests/misc/helpers.html#Exp.f"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.misc.helpers.Exp.f" title="Link to this definition"></a></dt>
+<dd><p>The function to evaluate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>np.ndarray</em><em>]</em>) – Values to evaluate the function at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>fx</strong> – The function evaluated at the given values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a>, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sklarpy.tests.misc.helpers.Log">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sklarpy.tests.misc.helpers.</span></span><span class="sig-name descname"><span class="pre">Log</span></span><a class="reference internal" href="_modules/sklarpy/tests/misc/helpers.html#Log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.misc.helpers.Log" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DifferentiableBase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.tests.misc.helpers.Log.dfdx">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dfdx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/tests/misc/helpers.html#Log.dfdx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.misc.helpers.Log.dfdx" title="Link to this definition"></a></dt>
+<dd><p>The first derivative of the function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>np.ndarray</em><em>]</em>) – Values to evaluate the derivative at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dfdx</strong> – The derivative evaluated at the given values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a>, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.tests.misc.helpers.Log.f">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/tests/misc/helpers.html#Log.f"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.misc.helpers.Log.f" title="Link to this definition"></a></dt>
+<dd><p>The function to evaluate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>np.ndarray</em><em>]</em>) – Values to evaluate the function at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>fx</strong> – The function evaluated at the given values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a>, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="sklarpy.tests.misc.helpers.XCubed">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sklarpy.tests.misc.helpers.</span></span><span class="sig-name descname"><span class="pre">XCubed</span></span><a class="reference internal" href="_modules/sklarpy/tests/misc/helpers.html#XCubed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.misc.helpers.XCubed" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DifferentiableBase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.tests.misc.helpers.XCubed.dfdx">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dfdx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/tests/misc/helpers.html#XCubed.dfdx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.misc.helpers.XCubed.dfdx" title="Link to this definition"></a></dt>
+<dd><p>The first derivative of the function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>np.ndarray</em><em>]</em>) – Values to evaluate the derivative at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dfdx</strong> – The derivative evaluated at the given values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a>, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.tests.misc.helpers.XCubed.f">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">f</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/tests/misc/helpers.html#XCubed.f"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.misc.helpers.XCubed.f" title="Link to this definition"></a></dt>
+<dd><p>The function to evaluate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>np.ndarray</em><em>]</em>) – Values to evaluate the function at.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>fx</strong> – The function evaluated at the given values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a>, np.ndarray]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="sklarpy-tests-misc-test-correlation-module">
+<h2>sklarpy.tests.misc.test_correlation module<a class="headerlink" href="#sklarpy-tests-misc-test-correlation-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-sklarpy.tests.misc.test_debye">
+<span id="sklarpy-tests-misc-test-debye-module"></span><h2>sklarpy.tests.misc.test_debye module<a class="headerlink" href="#module-sklarpy.tests.misc.test_debye" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.misc.test_debye.test_debye">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.misc.test_debye.</span></span><span class="sig-name descname"><span class="pre">test_debye</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/misc/test_debye.html#test_debye"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.misc.test_debye.test_debye" title="Link to this definition"></a></dt>
+<dd><p>Testing debye function.</p>
+</dd></dl>
+
+</section>
+<section id="module-sklarpy.tests.misc.test_gradient">
+<span id="sklarpy-tests-misc-test-gradient-module"></span><h2>sklarpy.tests.misc.test_gradient module<a class="headerlink" href="#module-sklarpy.tests.misc.test_gradient" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.misc.test_gradient.test_gradient_1d">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.misc.test_gradient.</span></span><span class="sig-name descname"><span class="pre">test_gradient_1d</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/misc/test_gradient.html#test_gradient_1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.misc.test_gradient.test_gradient_1d" title="Link to this definition"></a></dt>
+<dd><p>Testing gradient_1d function.</p>
+</dd></dl>
+
+</section>
+<section id="sklarpy-tests-misc-test-modified-bessel-module">
+<h2>sklarpy.tests.misc.test_modified_bessel module<a class="headerlink" href="#sklarpy-tests-misc-test-modified-bessel-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-sklarpy.tests.misc">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-sklarpy.tests.misc" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Tyler Mitchell.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sklarpy.tests.univariate package &mdash; SklarPy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SklarPy
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html#for-developers">For Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Univariate.html">Univariate Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multivariate.html">Multivariate Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Copulas.html">Copula Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Misc.html">Miscellaneous Tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SklarPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">sklarpy.tests.univariate package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/sklarpy.tests.univariate.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sklarpy-tests-univariate-package">
+<h1>sklarpy.tests.univariate package<a class="headerlink" href="#sklarpy-tests-univariate-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="sklarpy-tests-univariate-conftest-module">
+<h2>sklarpy.tests.univariate.conftest module<a class="headerlink" href="#sklarpy-tests-univariate-conftest-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-sklarpy.tests.univariate.helpers">
+<span id="sklarpy-tests-univariate-helpers-module"></span><h2>sklarpy.tests.univariate.helpers module<a class="headerlink" href="#module-sklarpy.tests.univariate.helpers" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.helpers.get_data">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.helpers.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/tests/univariate/helpers.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.helpers.get_data" title="Link to this definition"></a></dt>
+<dd><p>contains logic for selecting the correct data for a given distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the distribution as in distributions_map</p></li>
+<li><p><strong>continuous_data</strong> (<em>np.ndarray</em>) – Random numbers generated from a continuous distribution</p></li>
+<li><p><strong>discrete_data</strong> (<em>np.ndarray</em>) – Random numbers generated from a discrete distribution</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>data</strong> – The data to fit the distribution too.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.helpers.get_dist">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.helpers.</span></span><span class="sig-name descname"><span class="pre">get_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a></span></span><a class="reference internal" href="_modules/sklarpy/tests/univariate/helpers.html#get_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.helpers.get_dist" title="Link to this definition"></a></dt>
+<dd><p>Fits a distribution to data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the distribution as in distributions_map</p></li>
+<li><p><strong>data</strong> (<em>np.ndarray</em>) – The data to fit the distribution too</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>res</strong> – non-fitted dist, fitted dist, parameters for fitted dist</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.helpers.get_target_fit">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.helpers.</span></span><span class="sig-name descname"><span class="pre">get_target_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/tests/univariate/helpers.html#get_target_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.helpers.get_target_fit" title="Link to this definition"></a></dt>
+<dd><p>contains logic for selecting the correct data for a given distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the distribution as in distributions_map</p></li>
+<li><p><strong>continuous_data</strong> (<em>np.ndarray</em>) – Random numbers generated from a continuous distribution</p></li>
+<li><p><strong>discrete_data</strong> (<em>np.ndarray</em>) – Random numbers generated from a discrete distribution</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>target_fit</strong> – The fitted distribution object target.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-sklarpy.tests.univariate.test_fitted_dists">
+<span id="sklarpy-tests-univariate-test-fitted-dists-module"></span><h2>sklarpy.tests.univariate.test_fitted_dists module<a class="headerlink" href="#module-sklarpy.tests.univariate.test_fitted_dists" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_cdfs">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_cdfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_cdfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_cdfs" title="Link to this definition"></a></dt>
+<dd><p>Testing the cdf functions of fitted univariate distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_continuous_or_discretes">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_continuous_or_discretes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_continuous_or_discretes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_continuous_or_discretes" title="Link to this definition"></a></dt>
+<dd><p>Testing the continuous_or_discrete functions of fitted univariate
+distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_domains">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_domains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_domains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_domains" title="Link to this definition"></a></dt>
+<dd><p>Testing the fitted domain functions of fitted univariate distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_fitted_to_data">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_fitted_to_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_fitted_to_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_fitted_to_data" title="Link to this definition"></a></dt>
+<dd><p>Testing the fitted to data functions of fitted univariate distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_gofs">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_gofs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_gofs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_gofs" title="Link to this definition"></a></dt>
+<dd><p>Testing the gof functions of fitted univariate distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_integers">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_integers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_integers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_integers" title="Link to this definition"></a></dt>
+<dd><p>Testing the num_params and fitted_num_data_points functions of fitted
+univariate distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_logpdfs">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_logpdfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_logpdfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_logpdfs" title="Link to this definition"></a></dt>
+<dd><p>Testing the log-pdf functions of all fitted univariate distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_names">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_names" title="Link to this definition"></a></dt>
+<dd><p>Testing the names functions of fitted univariate distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_pdfs">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_pdfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_pdfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_pdfs" title="Link to this definition"></a></dt>
+<dd><p>Testing the pdf functions of fitted univariate distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_plots">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_plots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_plots" title="Link to this definition"></a></dt>
+<dd><p>Testing the plot functions of fitted univariate distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_ppfs">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_ppfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uniform_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_ppfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_ppfs" title="Link to this definition"></a></dt>
+<dd><p>Testing the ppf functions of fitted univariate distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_rvs">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_rvs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_rvs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_rvs" title="Link to this definition"></a></dt>
+<dd><p>Testing the rvs functions of fitted univariate distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_saves">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_saves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_saves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_saves" title="Link to this definition"></a></dt>
+<dd><p>Testing the save functions of all fitted univariate distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_scalars">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_scalars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_scalars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_scalars" title="Link to this definition"></a></dt>
+<dd><p>Testing the likelihood, loglikelihood, AIC, BIC and SSE functions of
+fitted distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_summaries">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_summaries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_summaries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_summaries" title="Link to this definition"></a></dt>
+<dd><p>Testing the summary functions of fitted univariate distributions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.tests.univariate.test_fitted_dists.test_fitted_supports">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.tests.univariate.test_fitted_dists.</span></span><span class="sig-name descname"><span class="pre">test_fitted_supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">discrete_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuous_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dists_to_test</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/tests/univariate/test_fitted_dists.html#test_fitted_supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.tests.univariate.test_fitted_dists.test_fitted_supports" title="Link to this definition"></a></dt>
+<dd><p>Testing the support functions of fitted univariate distributions.</p>
+</dd></dl>
+
+</section>
+<section id="sklarpy-tests-univariate-test-prefit-dists-module">
+<h2>sklarpy.tests.univariate.test_prefit_dists module<a class="headerlink" href="#sklarpy-tests-univariate-test-prefit-dists-module" title="Link to this heading"></a></h2>
+</section>
+<section id="sklarpy-tests-univariate-test-univariate-fitter-module">
+<h2>sklarpy.tests.univariate.test_univariate_fitter module<a class="headerlink" href="#sklarpy-tests-univariate-test-univariate-fitter-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-sklarpy.tests.univariate">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-sklarpy.tests.univariate" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Tyler Mitchell.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

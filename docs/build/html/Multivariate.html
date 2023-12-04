@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multivariate Distributions &mdash; SklarPy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Copula Models" href="Copulas.html" />
+    <link rel="prev" title="Univariate Distributions" href="Univariate.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SklarPy
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html#for-developers">For Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Univariate.html">Univariate Distributions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multivariate Distributions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#which-multivariate-distributions-are-implemented">Which multivariate distributions are implemented?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prefitcontinuousmultivariate">PreFitContinuousMultivariate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fittedcontinuousmultivariate">FittedContinuousMultivariate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multivariate-example">Multivariate Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Copulas.html">Copula Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Misc.html">Miscellaneous Tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SklarPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Multivariate Distributions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Multivariate.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="multivariate-distributions">
+<span id="multivariate"></span><h1>Multivariate Distributions<a class="headerlink" href="#multivariate-distributions" title="Link to this heading"></a></h1>
+<p>This SklarPy package contains many different multivariate distributions.
+Unlike univariate distributions, these are not wrappers of scipy objects (with the exceptions of mvt_normal and mvt_student_t).</p>
+<p>All implemented multivariate distributions are able to be fitted to both multivariate numpy and pandas data and contain easy saving and plotting methods.</p>
+<section id="which-multivariate-distributions-are-implemented">
+<h2>Which multivariate distributions are implemented?<a class="headerlink" href="#which-multivariate-distributions-are-implemented" title="Link to this heading"></a></h2>
+<p>Currently, the following multivariate distributions are implemented:</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Multivariate Distributions</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Family</p></th>
+<th class="head"><p>Name</p></th>
+<th class="head"><p>SklarPy Model</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Normal Mixture</p></td>
+<td><p>Normal / Gaussian</p></td>
+<td><p>mvt_normal</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normal Mixture</p></td>
+<td><p>Student-T</p></td>
+<td><p>mvt_student_t</p></td>
+</tr>
+<tr class="row-even"><td><p>Normal Mixture</p></td>
+<td><p>Skewed-T</p></td>
+<td><p>mvt_skewed_t</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normal Mixture</p></td>
+<td><p>Generalized Hyperbolic</p></td>
+<td><p>mvt_gh</p></td>
+</tr>
+<tr class="row-even"><td><p>Normal Mixture</p></td>
+<td><p>Symmetric Generalized Hyperbolic</p></td>
+<td><p>mvt_sgh</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normal Mixture</p></td>
+<td><p>Hyperbolic</p></td>
+<td><p>mvt_hyperbolic</p></td>
+</tr>
+<tr class="row-even"><td><p>Normal Mixture</p></td>
+<td><p>Symmetric Hyperbolic</p></td>
+<td><p>mvt_shyperbolic</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normal Mixture</p></td>
+<td><p>Normal-Inverse Gaussian (NIG)</p></td>
+<td><p>mvt_nig</p></td>
+</tr>
+<tr class="row-even"><td><p>Normal Mixture</p></td>
+<td><p>Symmetric Normal-Inverse Gaussian</p></td>
+<td><p>mvt_snig</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normal Mixture</p></td>
+<td><p>Marginal Hyperbolic</p></td>
+<td><p>mvt_mh</p></td>
+</tr>
+<tr class="row-even"><td><p>Normal Mixture</p></td>
+<td><p>Symmetric Marginal Hyperbolic</p></td>
+<td><p>mvt_smh</p></td>
+</tr>
+<tr class="row-odd"><td><p>Numerical</p></td>
+<td><p>Gaussian KDE</p></td>
+<td><p>mvt_gaussian_kde</p></td>
+</tr>
+</tbody>
+</table>
+<p>All Normal-Mixture models use the parameterization specified by McNeil, Frey and Embrechts (2005).</p>
+</section>
+<section id="prefitcontinuousmultivariate">
+<h2>PreFitContinuousMultivariate<a class="headerlink" href="#prefitcontinuousmultivariate" title="Link to this heading"></a></h2>
+<p>This is the base class for all multivariate distributions. It implements the following methods and attributes:</p>
+<ul class="simple">
+<li><p>logpdf (log of the probability density function)</p></li>
+<li><p>pdf (probability density function)</p></li>
+<li><p>cdf (cumulative distribution function)</p></li>
+<li><p>mc_cdf (Monte Carlo approximation of the cumulative distribution function)</p></li>
+<li><p>rvs (random variate generator / sampler)</p></li>
+<li><p>likelihood (likelihood function)</p></li>
+<li><p>loglikelihood (log of the likelihood function)</p></li>
+<li><p>aic (Akaike Information Criterion)</p></li>
+<li><p>bic (Bayesian Information Criterion)</p></li>
+<li><p>marginal_pairplot (pairplot of the marginal distributions)</p></li>
+<li><p>pdf_plot (plot of the probability density function)</p></li>
+<li><p>cdf_plot (plot of the cumulative distribution function)</p></li>
+<li><p>mc_cdf_plot (plot of the Monte Carlo approximation of the cumulative distribution function)</p></li>
+<li><p>num_params (The number of parameters in the distribution)</p></li>
+<li><p>num_scalar_params (The number of scalar values across all parameters in the distribution)</p></li>
+<li><p>fit (fitting the distribution to data)</p></li>
+</ul>
+<p>mc_cdf is a numerical approximation of the cumulative distribution function.
+This is usually necessary for distributions that do not have a closed form cumulative distribution function,
+as the numerical integration alternative is computationally expensive.</p>
+<p>num_params is the number of parameter objects in the distribution, i.e. a vector / matrix is counted as 1.
+num_scalar_params counts the number of unique scalar values across all parameter objects.</p>
+<p>Also note that pdf and cdf plots are only implemented for 2-dimensional distributions.</p>
+</section>
+<section id="fittedcontinuousmultivariate">
+<h2>FittedContinuousMultivariate<a class="headerlink" href="#fittedcontinuousmultivariate" title="Link to this heading"></a></h2>
+<p>This class is the fitted version of PreFitContinuousMultivariate’s subclasses.
+It implements the same methods as PreFitContinuousMultivariate, but does not require params as an argument.
+It also implements the following additional methods and attributes:</p>
+<ul class="simple">
+<li><p>params (the fitted parameters)</p></li>
+<li><p>num_variables (the number of variables the distribution is fitted too)</p></li>
+<li><p>fitted_num_data_points (the number of observations used to fit the distribution)</p></li>
+<li><p>converged (whether the fitting algorithm converged)</p></li>
+<li><p>summary (a summary of the fitted distribution)</p></li>
+<li><p>save (save the fitted distribution object)</p></li>
+</ul>
+</section>
+<section id="multivariate-example">
+<h2>Multivariate Example<a class="headerlink" href="#multivariate-example" title="Link to this heading"></a></h2>
+<p>Here we use the multivariate normal and multivariate symmetric hyperbolic
+distributions, though all methods and attributes are generalized:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># specifying the parameters of the multivariate normal distribution we are</span>
+<span class="c1"># sampling from</span>
+<span class="n">my_mu</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">33</span><span class="p">,</span> <span class="mi">44</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">my_corr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">my_sig</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">])</span>
+<span class="n">my_cov</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">my_sig</span><span class="p">)</span> <span class="o">@</span> <span class="n">my_corr</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">my_sig</span><span class="p">)</span>
+<span class="n">my_mvn_params</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">my_mu</span><span class="p">,</span> <span class="n">my_cov</span><span class="p">)</span>
+
+<span class="c1"># generating multivariate random normal variables</span>
+<span class="kn">from</span> <span class="nn">sklarpy.multivariate</span> <span class="kn">import</span> <span class="n">mvt_normal</span>
+
+<span class="n">rvs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">mvt_normal</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="n">my_mvn_params</span><span class="p">)</span>
+<span class="n">rvs_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rvs</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Wife Age&#39;</span><span class="p">,</span> <span class="s1">&#39;Husband Age&#39;</span><span class="p">],</span>
+                                    <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+<span class="c1"># fitting a symmetric hyperbolic dist to our generated data using</span>
+<span class="c1"># Maximum Likelihood Estimation</span>
+<span class="kn">from</span> <span class="nn">sklarpy.multivariate</span> <span class="kn">import</span> <span class="n">mvt_shyperbolic</span>
+
+<span class="n">fitted_msh</span> <span class="o">=</span> <span class="n">mvt_shyperbolic</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">rvs_df</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;mle&#39;</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># printing our fitted parameters</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fitted_msh</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">to_dict</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fitted_msh</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">cov</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;chi&#39;: 6.817911964473556, &#39;psi&#39;: 10.0, &#39;loc&#39;: array([[32.99012429],
+   [43.91822886]]), &#39;shape&#39;: array([[1.72408489, 2.27711492],
+   [2.27711492, 6.27443288]])}
+
+[[1.78702958 2.36025021]
+[2.36025021 6.50350643]]
+</pre></div>
+</div>
+<p>Printing a summary of our fit:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">fitted_msh</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                             summary
+Distribution         mvt_shyperbolic
+#Variables                         2
+#Params                            4
+#Scalar Params                     7
+Converged                       True
+Likelihood                       0.0
+Log-Likelihood           -3664.49604
+AIC                       7342.99208
+BIC                      7377.346367
+#Fitted Data Points             1000
+</pre></div>
+</div>
+<p>Plotting our fitted distribution:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fitted_msh</span><span class="o">.</span><span class="n">pdf_plot</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fitted_msh</span><span class="o">.</span><span class="n">mc_cdf_plot</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fitted_msh</span><span class="o">.</span><span class="n">marginal_pairplot</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="https://github.com/tfm000/sklarpy/blob/main/media/PDF_Mvt_Shyperbolic_PDF_Plot_Plot.png?raw=true"><img alt="Symmetric Hyperbolic PDF" class="align-center" src="https://github.com/tfm000/sklarpy/blob/main/media/PDF_Mvt_Shyperbolic_PDF_Plot_Plot.png?raw=true" /></a>
+<a class="reference internal image-reference" href="https://github.com/tfm000/sklarpy/blob/main/media/MC_CDF_Mvt_Shyperbolic_MC_CDF_Plot_Plot.png?raw=true"><img alt="Symmetric Hyperbolic PDF" class="align-center" src="https://github.com/tfm000/sklarpy/blob/main/media/MC_CDF_Mvt_Shyperbolic_MC_CDF_Plot_Plot.png?raw=true" /></a>
+<a class="reference internal image-reference" href="https://github.com/tfm000/sklarpy/blob/main/media/mvt_shyperbolic_marginal_pair_plot.png?raw=true"><img alt="Symmetric Hyperbolic PDF" class="align-center" src="https://github.com/tfm000/sklarpy/blob/main/media/mvt_shyperbolic_marginal_pair_plot.png?raw=true" /></a>
+<p>Saving our fitted parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fitted_msh</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Reloading and fitting to another distribution of the same type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklarpy</span> <span class="kn">import</span> <span class="n">load</span>
+
+<span class="n">loaded_msh_params</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;mvt_shyperbolic.pickle&#39;</span><span class="p">)</span>
+<span class="n">param_fitted_msh</span> <span class="o">=</span> <span class="n">mvt_shyperbolic</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">loaded_msh_params</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Univariate.html" class="btn btn-neutral float-left" title="Univariate Distributions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Copulas.html" class="btn btn-neutral float-right" title="Copula Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Tyler Mitchell.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

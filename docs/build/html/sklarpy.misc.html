@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sklarpy.misc package &mdash; SklarPy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SklarPy
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html#for-developers">For Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Univariate.html">Univariate Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multivariate.html">Multivariate Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Copulas.html">Copula Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Misc.html">Miscellaneous Tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SklarPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">sklarpy.misc package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/sklarpy.misc.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sklarpy-misc-package">
+<h1>sklarpy.misc package<a class="headerlink" href="#sklarpy-misc-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-sklarpy.misc.correlation">
+<span id="sklarpy-misc-correlation-module"></span><h2>sklarpy.misc.correlation module<a class="headerlink" href="#module-sklarpy.misc.correlation" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sklarpy.misc.correlation.</span></span><span class="sig-name descname"><span class="pre">CorrelationMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class for fitting covariance and correlation matrices to data.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.IMPLEMENTED">
+<span class="sig-name descname"><span class="pre">IMPLEMENTED</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('pearson',</span> <span class="pre">'spearman',</span> <span class="pre">'kendall',</span> <span class="pre">'pp_kendall',</span> <span class="pre">'rm_pearson',</span> <span class="pre">'rm_spearman',</span> <span class="pre">'rm_kendall',</span> <span class="pre">'rm_pp_kendall',</span> <span class="pre">'laloux_pearson',</span> <span class="pre">'laloux_spearman',</span> <span class="pre">'laloux_kendall',</span> <span class="pre">'laloux_pp_kendall')</span></em><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.IMPLEMENTED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.check_correlation_matrix">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_correlation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">corr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.check_correlation_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.check_correlation_matrix" title="Link to this definition"></a></dt>
+<dd><p>Performs checks on a given numpy array to see if it is a valid
+correlation matrix. I.e. checks matrix is square, symmetric, positive
+semi-definite and has all elements equal to 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>corr</strong> (<em>np.ndarray</em>) – the matrix to check</p></li>
+<li><p><strong>raise_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – True to raise an error if corr is not a valid correlation matrix.
+Default is True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>passes_checks</strong> – True if the array is a valid correlation matrix, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.check_covariance_matrix">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_covariance_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.check_covariance_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.check_covariance_matrix" title="Link to this definition"></a></dt>
+<dd><p>Performs checks on a given numpy array to see if it is a valid
+covariance matrix. I.e. checks matrix is square, symmetric and positive
+definite.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cov</strong> (<em>np.ndarray</em>) – the matrix to check</p></li>
+<li><p><strong>raise_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – Whether to raise an error if corr is not a valid covariance matrix.
+Default is True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>passes_checks</strong> – True if the array is a valid covariance matrix, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.corr">
+<span class="sig-name descname"><span class="pre">corr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.corr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.corr" title="Link to this definition"></a></dt>
+<dd><p>Calculates correlation matrix estimators using a specified method.
+The user can use this method or the individual correlation methods
+directly (i.e. CorrelationMatrix.pearson), to produce the same results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the method to use to estimate the correlation matrix.
+Can be ‘pearson’, ‘spearman’, ‘kendall’, ‘pp_kendall’,
+‘rm_pearson’, ‘rm_spearman’, ‘rm_kendall’, ‘rm_pp_kendall’,
+‘laloux_pearson’, ‘laloux_spearman’, ‘laloux_kendall’,
+‘laloux_pp_kendall’. See individual method implementations for
+specifics.</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>raise_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – For ‘pearson’, ‘spearman’, ‘kendall’ and ‘pp_kendall’ methods only.
+True to raise an error if the resultant matrix is not a valid
+correlation matrix. I.e. if the result is not square, symmetric,
+positive semi-definite and contains 1’s in the diagonal.
+Default is False.</p></li>
+<li><p><strong>renormalise</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – For ‘rm_pearson’, ‘rm_spearman’, ‘rm_kendall’, ‘rm_pp_kendall’
+methods only.
+True to set the diagonal elements of the resultant matrix to be
+exactly 1.0.
+Default is True.</p></li>
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – For ‘rm_pearson’, ‘rm_spearman’, ‘rm_kendall’, ‘rm_pp_kendall’,
+‘laloux_pearson’, ‘laloux_spearman’, ‘laloux_kendall’,
+‘laloux_pp_kendall’ methods only.
+The value to replace any negative eigenvalues with.
+Default is 10 ** -9</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>corr</strong> – A correlation matrix estimator.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.cov">
+<span class="sig-name descname"><span class="pre">cov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.cov"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.cov" title="Link to this definition"></a></dt>
+<dd><p>Calculates covariance matrix estimators. First a correlation matrix
+estimator is calculated using a specified method. A covariance matrix
+estimator is then calculated using this and sample estimators for the
+standard deivation.</p>
+<p>The user can use this method, or calculate a correlation matrix
+estimator using one onf the implemented methods, before transforming
+this into a covariance matrix estimator using the cov_from_corr method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the method to use to estimate the correlation matrix.
+Can be ‘pearson’, ‘spearman’, ‘kendall’, ‘pp_kendall’,
+‘rm_pearson’, ‘rm_spearman’, ‘rm_kendall’, ‘rm_pp_kendall’,
+‘laloux_pearson’, ‘laloux_spearman’, ‘laloux_kendall’,
+‘laloux_pp_kendall’. See individual method implementations for
+specifics.</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>raise_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – For ‘pearson’, ‘spearman’, ‘kendall’ and ‘pp_kendall’ methods only.
+True to raise an error if the resultant matrix is not a valid
+correlation matrix. I.e. if the result is not square, symmetric,
+positive semi-definite and contains 1’s in the diagonal.
+Default is False.</p></li>
+<li><p><strong>renormalise</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – For ‘rm_pearson’, ‘rm_spearman’, ‘rm_kendall’, ‘rm_pp_kendall’
+methods only.
+True to set the diagonal elements of the correlation matrix to be
+exactly 1.0.
+Default is True.</p></li>
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – For ‘rm_pearson’, ‘rm_spearman’, ‘rm_kendall’, ‘rm_pp_kendall’,
+‘laloux_pearson’, ‘laloux_spearman’, ‘laloux_kendall’,
+‘laloux_pp_kendall’ methods only.
+The value to replace any negative eigenvalues of the correlation
+with during the rm step.
+Default is 10 ** -9</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cov</strong> – A covariance matrix estimator.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.cov_from_corr">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cov_from_corr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">corr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.cov_from_corr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.cov_from_corr" title="Link to this definition"></a></dt>
+<dd><p>Calculates the covariance matrix from a given covariance matrix and
+standard deviations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>corr</strong> (<em>np.ndarray</em>) – A correlation matrix.</p></li>
+<li><p><strong>std</strong> (<em>np.ndarray</em>) – A vector / numpy array containing the standard deviations of each
+variable. Note, the indexing of the correlation matrix and standard
+deviation arrays must match.</p></li>
+<li><p><strong>raise_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – True to raise an error if corr is not a valid correlation matrix.
+Default is True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>cov</strong> – The covariance matrix corresponding to corr and std.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.kendall">
+<span class="sig-name descname"><span class="pre">kendall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raise_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.kendall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.kendall" title="Link to this definition"></a></dt>
+<dd><p>Fits a Kendall rank correlation matrix estimator to the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>raise_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – True to raise an error if the resultant matrix is not a valid
+correlation matrix. I.e. if the result is not square, symmetric,
+positive semi-definite and contains 1’s in the diagonal.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Kendall correlation matrix estimator.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pearson_corr np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.laloux_kendall">
+<span class="sig-name descname"><span class="pre">laloux_kendall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.laloux_kendall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.laloux_kendall" title="Link to this definition"></a></dt>
+<dd><p>Fits a Kendall rank correlation matrix estimator to the dataset, in
+addition to applying Laloux et al.’s technique to ensure the
+matrix is transformed to be positive definite and denoised.
+Any negative eigenvalues are replaced with a positive delta value. The
+bulk of the matrix is then calculated, with any eigenvalues below the
+bulk upper bound being replaced with their mean.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The value to replace any negative eigenvalues with.</p></li>
+<li><p><strong>also</strong> (<em>See</em>) – </p></li>
+<li><p><strong>---------</strong> – </p></li>
+<li><p><strong>high-dimensional</strong> (<em>The benefit</em><em> of </em><em>using Random Matrix Theory to fit</em>) – </p></li>
+<li><p><strong>Brin.</strong> (<em>t-copulas by Jiali Xu and Loïc</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Kendall rank correlation matrix estimator, transformed to be
+positive definite and denoised.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>laloux_kendall_corr np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.laloux_pearson">
+<span class="sig-name descname"><span class="pre">laloux_pearson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.laloux_pearson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.laloux_pearson" title="Link to this definition"></a></dt>
+<dd><p>Fits a Pearson correlation matrix estimator to the dataset, in
+addition to applying Laloux et al.’s technique to ensure the
+matrix is transformed to be positive definite and denoised.
+Any negative eigenvalues are replaced with a positive delta value. The
+bulk of the matrix is then calculated, with any eigenvalues below the
+bulk upper bound being replaced with their mean.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The value to replace any negative eigenvalues with.</p></li>
+<li><p><strong>also</strong> (<em>See</em>) – </p></li>
+<li><p><strong>---------</strong> – </p></li>
+<li><p><strong>high-dimensional</strong> (<em>The benefit</em><em> of </em><em>using Random Matrix Theory to fit</em>) – </p></li>
+<li><p><strong>Brin.</strong> (<em>t-copulas by Jiali Xu and Loïc</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Pearson correlation matrix estimator, transformed to be positive
+definite and denoised.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>laloux_pearson_corr np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.laloux_pp_kendall">
+<span class="sig-name descname"><span class="pre">laloux_pp_kendall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.laloux_pp_kendall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.laloux_pp_kendall" title="Link to this definition"></a></dt>
+<dd><p>Fits a Pseudo-Pearson Kendall (PP-Kendall) correlation matrix
+estimator to the dataset, in addition to applying Laloux et al.’s
+technique to ensure the matrix is transformed to be positive definite
+and denoised. Any negative eigenvalues are replaced with a positive
+delta value. The bulk of the matrix is then calculated, with any
+eigenvalues below the bulk upper bound being replaced with their mean.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The value to replace any negative eigenvalues with.</p></li>
+<li><p><strong>also</strong> (<em>See</em>) – </p></li>
+<li><p><strong>---------</strong> – </p></li>
+<li><p><strong>high-dimensional</strong> (<em>The benefit</em><em> of </em><em>using Random Matrix Theory to fit</em>) – </p></li>
+<li><p><strong>Brin.</strong> (<em>t-copulas by Jiali Xu and Loïc</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A PP-Kendall rank correlation matrix estimator, transformed to be
+positive definite and denoised.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>laloux_pp_kendall_corr np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.laloux_spearman">
+<span class="sig-name descname"><span class="pre">laloux_spearman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.laloux_spearman"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.laloux_spearman" title="Link to this definition"></a></dt>
+<dd><p>Fits a Spearman rank correlation matrix estimator to the dataset, in
+addition to applying Laloux et al.’s technique to ensure the
+matrix is transformed to be positive definite and denoised.
+Any negative eigenvalues are replaced with a positive delta value. The
+bulk of the matrix is then calculated, with any eigenvalues below the
+bulk upper bound being replaced with their mean.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The value to replace any negative eigenvalues with.</p></li>
+<li><p><strong>also</strong> (<em>See</em>) – </p></li>
+<li><p><strong>---------</strong> – </p></li>
+<li><p><strong>high-dimensional</strong> (<em>The benefit</em><em> of </em><em>using Random Matrix Theory to fit</em>) – </p></li>
+<li><p><strong>Brin.</strong> (<em>t-copulas by Jiali Xu and Loïc</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Spearman rank correlation matrix estimator, transformed to be
+positive definite and denoised.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>laloux_spearman_corr np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.pearson">
+<span class="sig-name descname"><span class="pre">pearson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raise_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.pearson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.pearson" title="Link to this definition"></a></dt>
+<dd><p>Fits a Pearson correlation matrix estimator to the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>raise_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – True to raise an error if the resultant matrix is not a valid
+correlation matrix. I.e. if the result is not square, symmetric,
+positive semi-definite and contains 1’s in the diagonal.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Pearson correlation matrix estimator.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pearson_corr np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.pp_kendall">
+<span class="sig-name descname"><span class="pre">pp_kendall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raise_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.pp_kendall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.pp_kendall" title="Link to this definition"></a></dt>
+<dd><p>Fits the robust Pseudo-Pearson Kendall (PP-Kendall) correlation
+matrix estimator.</p>
+<section id="see-also">
+<h3>See also:<a class="headerlink" href="#see-also" title="Link to this heading"></a></h3>
+<p>The benefit of using Random Matrix Theory to fit high-dimensional
+t-copulas by Jiali Xu and Loïc Brin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pp_kendall_corr</strong> – A PP-Kendall correlation matrix estimator.</p>
+</dd>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>np.ndarray</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.rm_kendall">
+<span class="sig-name descname"><span class="pre">rm_kendall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renormalise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.rm_kendall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.rm_kendall" title="Link to this definition"></a></dt>
+<dd><p>Fits a Kendall rank correlation matrix estimator to the dataset, in
+addition to applying Rousseeuw and Molenberghs’ technique to ensure the
+matrix is transformed to be positive definite. Any negative eigenvalues
+are replaced with a positive delta value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The value to replace any negative eigenvalues with.</p></li>
+<li><p><strong>renormalise</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – True to set the diagonal elements of the resultant matrix to be
+exactly 1.0.</p></li>
+<li><p><strong>also</strong> (<em>See</em>) – </p></li>
+<li><p><strong>---------</strong> – </p></li>
+<li><p><strong>high-dimensional</strong> (<em>The benefit</em><em> of </em><em>using Random Matrix Theory to fit</em>) – </p></li>
+<li><p><strong>Brin.</strong> (<em>t-copulas by Jiali Xu and Loïc</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Kendall rank correlation matrix estimator, transformed to be
+positive definite.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>rm_kendall_corr np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.rm_pearson">
+<span class="sig-name descname"><span class="pre">rm_pearson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renormalise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.rm_pearson"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.rm_pearson" title="Link to this definition"></a></dt>
+<dd><p>Fits a Pearson correlation matrix estimator to the dataset, in
+addition to applying Rousseeuw and Molenberghs’ technique to ensure the
+matrix is transformed to be positive definite. Any negative eigenvalues
+are replaced with a positive delta value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The value to replace any negative eigenvalues with.</p></li>
+<li><p><strong>renormalise</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – True to set the diagonal elements of the resultant matrix to be
+exactly 1.0.</p></li>
+<li><p><strong>also</strong> (<em>See</em>) – </p></li>
+<li><p><strong>---------</strong> – </p></li>
+<li><p><strong>high-dimensional</strong> (<em>The benefit</em><em> of </em><em>using Random Matrix Theory to fit</em>) – </p></li>
+<li><p><strong>Brin.</strong> (<em>t-copulas by Jiali Xu and Loïc</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Pearson correlation matrix estimator, transformed to be positive
+definite.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>rm_pearson_corr np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.rm_pp_kendall">
+<span class="sig-name descname"><span class="pre">rm_pp_kendall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renormalise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.rm_pp_kendall"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.rm_pp_kendall" title="Link to this definition"></a></dt>
+<dd><p>Fits a Pseudo-Pearson Kendall (PP-Kendall) correlation matrix
+estimator to the dataset, in addition to applying Rousseeuw and
+Molenberghs’ technique to ensure the matrix is transformed to be
+positive definite. Any negative eigenvalues are replaced with a
+positive delta value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The value to replace any negative eigenvalues with.</p></li>
+<li><p><strong>renormalise</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – True to set the diagonal elements of the resultant matrix to be
+exactly 1.0.</p></li>
+<li><p><strong>also</strong> (<em>See</em>) – </p></li>
+<li><p><strong>---------</strong> – </p></li>
+<li><p><strong>high-dimensional</strong> (<em>The benefit</em><em> of </em><em>using Random Matrix Theory to fit</em>) – </p></li>
+<li><p><strong>Brin.</strong> (<em>t-copulas by Jiali Xu and Loïc</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A PP-Kendall rank correlation matrix estimator, transformed to be
+positive definite.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>rm_pp_kendall_corr np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.rm_spearman">
+<span class="sig-name descname"><span class="pre">rm_spearman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renormalise</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.rm_spearman"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.rm_spearman" title="Link to this definition"></a></dt>
+<dd><p>Fits a Spearman rank correlation matrix estimator to the dataset, in
+addition to applying Rousseeuw and Molenberghs’ technique to ensure the
+matrix is transformed to be positive definite. Any negative eigenvalues
+are replaced with a positive delta value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The value to replace any negative eigenvalues with.</p></li>
+<li><p><strong>renormalise</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – True to set the diagonal elements of the resultant matrix to be
+exactly 1.0.</p></li>
+<li><p><strong>also</strong> (<em>See</em>) – </p></li>
+<li><p><strong>---------</strong> – </p></li>
+<li><p><strong>high-dimensional</strong> (<em>The benefit</em><em> of </em><em>using Random Matrix Theory to fit</em>) – </p></li>
+<li><p><strong>Brin.</strong> (<em>t-copulas by Jiali Xu and Loïc</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Spearman rank correlation matrix estimator, transformed to be
+positive definite.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>rm_spearman_corr np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.correlation.CorrelationMatrix.spearman">
+<span class="sig-name descname"><span class="pre">spearman</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raise_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/correlation.html#CorrelationMatrix.spearman"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.correlation.CorrelationMatrix.spearman" title="Link to this definition"></a></dt>
+<dd><p>Fits a Spearman’s rank correlation matrix estimator to the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>raise_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a>) – True to raise an error if the resultant matrix is not a valid
+correlation matrix. I.e. if the result is not square, symmetric,
+positive semi-definite and contains 1’s in the diagonal.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A Spearman’s rank correlation matrix estimator.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>spearman_corr np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-sklarpy.misc.debye">
+<span id="sklarpy-misc-debye-module"></span><h2>sklarpy.misc.debye module<a class="headerlink" href="#module-sklarpy.misc.debye" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.misc.debye.debye">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.misc.debye.</span></span><span class="sig-name descname"><span class="pre">debye</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="_modules/sklarpy/misc/debye.html#debye"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.debye.debye" title="Link to this definition"></a></dt>
+<dd><p>Used to evaluate the family of Debye functions, D_n(x).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>]</em>) – The n parameter, which specifies the member of the Debye function
+family to evaluate.</p></li>
+<li><p><strong>x</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>]</em>) – The scalar value to evaluate the Debye function at.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">https</span></code></dt><dd><p>//en.wikipedia.org/wiki/Debye_function</p>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>debye</strong> – The value of D_n(x)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-sklarpy.misc.gradient">
+<span id="sklarpy-misc-gradient-module"></span><h2>sklarpy.misc.gradient module<a class="headerlink" href="#module-sklarpy.misc.gradient" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="sklarpy.misc.gradient.gradient_1d">
+<span class="sig-prename descclassname"><span class="pre">sklarpy.misc.gradient.</span></span><span class="sig-name descname"><span class="pre">gradient_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Series</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.12)"><span class="pre">Iterable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/sklarpy/misc/gradient.html#gradient_1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.gradient.gradient_1d" title="Link to this definition"></a></dt>
+<dd><p>Calculates the numerical first derivative / gradient of a given
+1-dimensional function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>Callable</em>) – The function to differentiate. Must accept scalar values as arguments.</p></li>
+<li><p><strong>x</strong> (<em>Union</em><em>[</em><em>pd.DataFrame</em><em>, </em><em>pd.Series</em><em>, </em><em>np.ndarray</em><em>, </em><em>Iterable</em><em>]</em>) – The data points to calculate the derivative at. Must be a 1-dimensional
+array, dataframe, series or iterable containing integer or scalar
+values.</p></li>
+<li><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The epsilon value to use when computing the numerical first derivative.
+Default is 0.01.</p></li>
+<li><p><strong>domain</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><em>tuple</em></a>) – The domain on which your function is valid. Optional.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>gradient</strong> – The numerical gradient of your function.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-sklarpy.misc.modified_bessel">
+<span id="sklarpy-misc-modified-bessel-module"></span><h2>sklarpy.misc.modified_bessel module<a class="headerlink" href="#module-sklarpy.misc.modified_bessel" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="sklarpy.misc.modified_bessel.kv">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sklarpy.misc.modified_bessel.</span></span><span class="sig-name descname"><span class="pre">kv</span></span><a class="reference internal" href="_modules/sklarpy/misc/modified_bessel.html#kv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.modified_bessel.kv" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Modified Bessel function of the 2nd kind.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.modified_bessel.kv.kv">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="_modules/sklarpy/misc/modified_bessel.html#kv.kv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.modified_bessel.kv.kv" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the Modified Bessel function of the 2nd kind.
+Accounts for the limits of z and v.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>]</em>) – The v parameter, which specifies the member of the Modified Bessel
+function of the 2nd kind family to evaluate.</p></li>
+<li><p><strong>z</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>]</em>) – The scalar value to evaluate the Modified Bessel function of the
+2nd kind at.</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>small_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The value of which, if z is below, we assume K_v(z) tends to the
+limit of K_v(0).
+Default is 10 ** -5</p></li>
+<li><p><strong>large_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The value of which, if z is above, we assume K_v(z) tends to the
+limit of K_v(inf).
+Default is 100</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kv</strong> – The value of K_v(z)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sklarpy.misc.modified_bessel.kv.logkv">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">logkv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></span><a class="reference internal" href="_modules/sklarpy/misc/modified_bessel.html#kv.logkv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sklarpy.misc.modified_bessel.kv.logkv" title="Link to this definition"></a></dt>
+<dd><p>Evaluates the log of the Modified Bessel function of the 2nd kind.
+Accounts for the limits of z and v.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>]</em>) – The v parameter, which specifies the member of the Modified Bessel
+function of the 2nd kind family to evaluate.</p></li>
+<li><p><strong>z</strong> (<em>Union</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>]</em>) – The scalar value to evaluate the Modified Bessel function of the
+2nd kind at.</p></li>
+<li><p><strong>kwargs</strong> – See below</p></li>
+</ul>
+</dd>
+<dt class="field-even">Keyword Arguments<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>small_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The value of which, if z is below, we assume K_v(z) tends to the
+limit of K_v(0).
+Default is 10 ** -5</p></li>
+<li><p><strong>large_value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – The value of which, if z is above, we assume K_v(z) tends to the
+limit of K_v(inf).
+Default is 100</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>logkv</strong> – The value of log(K_v(z))</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-sklarpy.misc">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-sklarpy.misc" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Tyler Mitchell.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Copula Models &mdash; SklarPy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=8d563738"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Miscellaneous Tools" href="Misc.html" />
+    <link rel="prev" title="Multivariate Distributions" href="Multivariate.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SklarPy
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html#for-developers">For Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Univariate.html">Univariate Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Multivariate.html">Multivariate Distributions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Copula Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#which-copula-models-are-implemented">Which copula models are implemented?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#marginalfitter">MarginalFitter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prefitcopula">PreFitCopula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fittedcopula">FittedCopula</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#marginalfitter-example">MarginalFitter Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#copula-example">Copula Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Misc.html">Miscellaneous Tools</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SklarPy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Copula Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Copulas.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="copula-models">
+<span id="copulas"></span><h1>Copula Models<a class="headerlink" href="#copula-models" title="Link to this heading"></a></h1>
+<p>This SklarPy package contains many different copula models.
+Unlike univariate distributions, these are not wrappers of scipy objects.</p>
+<p>All implemented copula models are able to be fitted to both multivariate numpy and pandas data and contain easy saving and plotting methods.</p>
+<p>An important concept to remember when using these models that they are composed of 2 overall parts:</p>
+<ol class="arabic simple">
+<li><p>The marginal distributions. These are univariate distributions of each random variable.</p></li>
+<li><p>The copula distribution. This multivariate model captures the dependence structure between the variables.</p></li>
+</ol>
+<p>The overall multivariate joint distribution is created by combining these two parts,
+which is handled by SklarPy’s copula models.</p>
+<section id="which-copula-models-are-implemented">
+<h2>Which copula models are implemented?<a class="headerlink" href="#which-copula-models-are-implemented" title="Link to this heading"></a></h2>
+<p>Currently, the following copula models are implemented:</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Copula Models</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Family</p></th>
+<th class="head"><p>Name</p></th>
+<th class="head"><p>Dimensions</p></th>
+<th class="head"><p>SklarPy Model</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Normal Mixture</p></td>
+<td><p>Normal / Gaussian</p></td>
+<td><p>Multivariate</p></td>
+<td><p>gaussian_copula</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normal Mixture</p></td>
+<td><p>Student-T</p></td>
+<td><p>Multivariate</p></td>
+<td><p>student_t_copula</p></td>
+</tr>
+<tr class="row-even"><td><p>Normal Mixture</p></td>
+<td><p>Skewed-T</p></td>
+<td><p>Multivariate</p></td>
+<td><p>skewed_t_copula</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normal Mixture</p></td>
+<td><p>Generalized Hyperbolic</p></td>
+<td><p>Multivariate</p></td>
+<td><p>gh_copula</p></td>
+</tr>
+<tr class="row-even"><td><p>Normal Mixture</p></td>
+<td><p>Symmetric Generalized Hyperbolic</p></td>
+<td><p>Multivariate</p></td>
+<td><p>sgh_copula</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normal Mixture</p></td>
+<td><p>Hyperbolic</p></td>
+<td><p>Multivariate</p></td>
+<td><p>hyperbolic_copula</p></td>
+</tr>
+<tr class="row-even"><td><p>Normal Mixture</p></td>
+<td><p>Symmetric Hyperbolic</p></td>
+<td><p>Multivariate</p></td>
+<td><p>shyperbolic_copula</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normal Mixture</p></td>
+<td><p>Normal-Inverse Gaussian (NIG)</p></td>
+<td><p>Multivariate</p></td>
+<td><p>nig_copula</p></td>
+</tr>
+<tr class="row-even"><td><p>Normal Mixture</p></td>
+<td><p>Symmetric Normal-Inverse Gaussian</p></td>
+<td><p>Multivariate</p></td>
+<td><p>snig_copula</p></td>
+</tr>
+<tr class="row-odd"><td><p>Normal Mixture</p></td>
+<td><p>Marginal Hyperbolic</p></td>
+<td><p>Multivariate</p></td>
+<td><p>mh_copula</p></td>
+</tr>
+<tr class="row-even"><td><p>Normal Mixture</p></td>
+<td><p>Symmetric Marginal Hyperbolic</p></td>
+<td><p>Multivariate</p></td>
+<td><p>smh_copula</p></td>
+</tr>
+<tr class="row-odd"><td><p>Archimedean</p></td>
+<td><p>Clayton</p></td>
+<td><p>Multivariate</p></td>
+<td><p>clayton_copula</p></td>
+</tr>
+<tr class="row-even"><td><p>Archimedean</p></td>
+<td><p>Gumbel</p></td>
+<td><p>Multivariate</p></td>
+<td><p>gumbel_copula</p></td>
+</tr>
+<tr class="row-odd"><td><p>Archimedean</p></td>
+<td><p>Frank</p></td>
+<td><p>Bivariate</p></td>
+<td><p>frank_copula</p></td>
+</tr>
+<tr class="row-even"><td><p>Numerical</p></td>
+<td><p>Gaussian KDE</p></td>
+<td><p>Multivariate</p></td>
+<td><p>gaussian_kde_copula</p></td>
+</tr>
+</tbody>
+</table>
+<p>All Normal-Mixture models use the parameterization specified by McNeil, Frey and Embrechts (2005).</p>
+</section>
+<section id="marginalfitter">
+<h2>MarginalFitter<a class="headerlink" href="#marginalfitter" title="Link to this heading"></a></h2>
+<p>This class is used to fit multiple univariate distributions to data easily and evaluate their methods.
+It implements the following methods and attributes:</p>
+<ul class="simple">
+<li><p>marginal_logpdf (log of the probability density functions of the marginal distributions)</p></li>
+<li><p>marginal_pdfs (the probability density functions of the fitted marginal distributions)</p></li>
+<li><p>marginal_cdfs (the cumulative distribution functions of the fitted marginal distributions)</p></li>
+<li><p>marginal_ppfs (the percent point functions / inverse cdfs of the fitted marginal distributions)</p></li>
+<li><p>marginal_rvs (random variate generators / samplers of the fitted marginal distributions)</p></li>
+<li><p>pairplot (pairplot of the fitted marginal distributions)</p></li>
+<li><p>marginals (the fitted marginal distributions as a dictionary)</p></li>
+<li><p>summary (a summary of the fitted marginal distributions)</p></li>
+<li><p>num_variables (the number of variables present in the original dataset)</p></li>
+<li><p>fitted (whether the marginal distributions have been fitted to data)</p></li>
+<li><p>fit (fitting the marginal distributions to data)</p></li>
+</ul>
+</section>
+<section id="prefitcopula">
+<h2>PreFitCopula<a class="headerlink" href="#prefitcopula" title="Link to this heading"></a></h2>
+<p>This is the base class for all copula models. It implements the following methods and attributes:</p>
+<ul class="simple">
+<li><p>logpdf (log of the probability density function of the overall joint distribution)</p></li>
+<li><p>pdf (probability density function of the overall joint distribution)</p></li>
+<li><p>cdf (cumulative distribution function of the overall joint distribution)</p></li>
+<li><p>mc_cdf (Monte Carlo approximation of the cumulative distribution function of the overall joint distribution)</p></li>
+<li><p>rvs (random variate generator / sampler of the overall joint distribution)</p></li>
+<li><p>copula_logpdf (log of the probability density function of the copula distribution)</p></li>
+<li><p>copula_pdf (probability density function of the copula distribution)</p></li>
+<li><p>copula_cdf (cumulative distribution function of the copula distribution)</p></li>
+<li><p>copula_mc_cdf (Monte Carlo approximation of the cumulative distribution function of the copula distribution)</p></li>
+<li><p>copula_rvs (random variate generator / sampler of the copula distribution)</p></li>
+<li><p>num_marginal_params (number of parameters in the marginal distributions)</p></li>
+<li><p>num_copula_params (number of parameters in the copula distribution)</p></li>
+<li><p>num_scalar_params (number of scalar parameters in the overall joint distribution)</p></li>
+<li><p>num_params (number of parameters in the overall joint distribution)</p></li>
+<li><p>likelihood (likelihood of the overall joint distribution)</p></li>
+<li><p>loglikelihood (log of the likelihood of the overall joint distribution)</p></li>
+<li><p>aic (Akaike Information Criterion of the overall joint distribution)</p></li>
+<li><p>bic (Bayesian Information Criterion of the overall joint distribution)</p></li>
+<li><p>marginal_pairplot (pairplot of the marginal distributions)</p></li>
+<li><p>pdf_plot (plot of the probability density function of the overall joint distribution)</p></li>
+<li><p>cdf_plot (plot of the cumulative distribution function of the overall joint distribution)</p></li>
+<li><p>mc_cdf_plot (plot of the Monte Carlo approximation of the cumulative distribution function of the overall joint distribution)</p></li>
+<li><p>copula_pdf_plot (plot of the probability density function of the copula distribution)</p></li>
+<li><p>copula_cdf_plot (plot of the cumulative distribution function of the copula distribution)</p></li>
+<li><p>copula_mc_cdf_plot (plot of the Monte Carlo approximation of the cumulative distribution function of the copula distribution)</p></li>
+<li><p>fit (fitting the overall joint distribution to data)</p></li>
+</ul>
+<p>mc_cdf and copula_mc_cdf are numerical approximations of their respective cumulative distribution functions.
+These are usually necessary as the analytical forms of these functions are often not available and numerical integration is computationally expensive.</p>
+<p>Also note that pdf and cdf plots are only implemented for 2-dimensional distributions.</p>
+</section>
+<section id="fittedcopula">
+<h2>FittedCopula<a class="headerlink" href="#fittedcopula" title="Link to this heading"></a></h2>
+<p>This class is the fitted version of PreFitCopula’s subclasses.
+It implements the same methods as PreFitCopula, but does not require copula_params or mdists as arguments.
+It also implements the following additional methods and attributes:</p>
+<ul class="simple">
+<li><p>copula_params (the fitted parameters of the copula distribution)</p></li>
+<li><p>mdists (the fitted univariate marginal distributions)</p></li>
+<li><p>num_variables (the number of variables the distribution is fitted too)</p></li>
+<li><p>fitted_num_data_points (the number of observations used to fit the distribution)</p></li>
+<li><p>converged (whether the fitting algorithm converged)</p></li>
+<li><p>summary (a summary of the overall fitted distribution)</p></li>
+<li><p>save (save the overall fitted distribution object)</p></li>
+</ul>
+</section>
+<section id="marginalfitter-example">
+<h2>MarginalFitter Example<a class="headerlink" href="#marginalfitter-example" title="Link to this heading"></a></h2>
+<p>Generating data and fitting marginal distributions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># specifying the parameters of the multivariate normal distribution we are</span>
+<span class="c1"># sampling from</span>
+<span class="n">num_generate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">my_mu</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">33</span><span class="p">,</span> <span class="mi">44</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">my_corr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">my_sig</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.3</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">])</span>
+<span class="n">my_cov</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">my_sig</span><span class="p">)</span> <span class="o">@</span> <span class="n">my_corr</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">my_sig</span><span class="p">)</span>
+<span class="n">my_mvn_params</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="n">my_mu</span><span class="p">,</span> <span class="n">my_cov</span><span class="p">)</span>
+
+<span class="c1"># generating multivariate random normal variables</span>
+<span class="kn">from</span> <span class="nn">sklarpy.multivariate</span> <span class="kn">import</span> <span class="n">mvt_normal</span>
+
+<span class="n">rvs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">mvt_normal</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">num_generate</span><span class="p">,</span> <span class="n">my_mvn_params</span><span class="p">)</span>
+<span class="n">rvs_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rvs</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Wife Age&#39;</span><span class="p">,</span> <span class="s1">&#39;Husband Age&#39;</span>
+                                                  <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+<span class="c1"># applying MarginalFitter to our random variables</span>
+<span class="kn">from</span> <span class="nn">sklarpy.copulas</span> <span class="kn">import</span> <span class="n">MarginalFitter</span>
+
+<span class="n">mfitter</span><span class="p">:</span> <span class="n">MarginalFitter</span> <span class="o">=</span> <span class="n">MarginalFitter</span><span class="p">(</span><span class="n">rvs_df</span><span class="p">)</span>
+<span class="n">mfitter</span><span class="o">.</span><span class="n">fit</span><span class="p">({</span><span class="s1">&#39;pvalue&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">})</span>
+
+<span class="c1"># printing out a summary of our fits</span>
+<span class="kn">from</span> <span class="nn">sklarpy</span> <span class="kn">import</span> <span class="n">print_full</span>
+<span class="n">print_full</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">mfitter</span><span class="o">.</span><span class="n">summary</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                                                              Wife Age                              Husband Age
+Parametric/Non-Parametric                                   Parametric                               Parametric
+Discrete/Continuous                                         continuous                               continuous
+Distribution                                                   lognorm                                  lognorm
+#Params                                                              3                                        3
+param0                                                        0.000005                                 0.000001
+param1                                                  -262115.561308                          -2097116.799667
+param2                                                   262148.497841                           2097160.700641
+Support                                     (-262115.56130758836, inf)               (-2097116.7996667635, inf)
+Fitted Domain                 (28.438692411392555, 36.673753788627785)  (35.20033323448715, 51.735336956575935)
+Cramér-von Mises statistic                                    0.124954                                 0.102395
+Cramér-von Mises p-value                                      0.475847                                 0.573349
+Cramér-von Mises @ 10%                                            True                                     True
+Cramér-von Mises @ 5%                                             True                                     True
+Cramér-von Mises @ 1%                                             True                                     True
+Kolmogorov-Smirnov statistic                                  0.032827                                 0.024709
+Kolmogorov-Smirnov p-value                                    0.226385                                  0.56612
+Kolmogorov-Smirnov @ 10%                                          True                                     True
+Kolmogorov-Smirnov @ 5%                                           True                                     True
+Kolmogorov-Smirnov @ 1%                                           True                                     True
+Likelihood                                                         0.0                                      0.0
+Log-Likelihood                                            -1666.824453                             -2382.153726
+AIC                                                        3339.648906                              4770.307452
+BIC                                                        3354.372172                              4785.030718
+Sum of Squared Error                                         16.819752                                 6.322994
+#Fitted Data Points                                               1000                                     1000
+</pre></div>
+</div>
+<p>Printing Marginals:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">mfitter</span><span class="o">.</span><span class="n">marginals</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{0: lognorm(0.0, -262115.56, 262148.5), 1: lognorm(0.0, -2097116.8, 2097160.7)}
+</pre></div>
+</div>
+<p>Calculating marginal cdf values:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mcdf_values</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">mfitter</span><span class="o">.</span><span class="n">marginal_cdfs</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mcdf_values</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>     Wife Age  Husband Age
+0    0.446886     0.676438
+1    0.162115     0.107338
+2    0.631869     0.461236
+3    0.182751     0.589056
+4    0.827908     0.870150
+..        ...          ...
+995  0.732827     0.523818
+996  0.457342     0.372388
+997  0.319827     0.598163
+998  0.476477     0.350149
+999  0.353060     0.323429
+</pre></div>
+</div>
+<p>Producing a pairplot of the marginals:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">num_generate</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="p">(</span><span class="n">num_generate</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">data</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="p">(</span><span class="n">num_generate</span><span class="p">,))</span>
+<span class="n">data</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">data</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">num_generate</span><span class="p">,))</span>
+<span class="n">data</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">num_generate</span><span class="p">,))</span>
+<span class="n">data</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_t</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="n">num_generate</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">data</span><span class="p">[:,</span> <span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">num_generate</span><span class="p">,))</span>
+
+<span class="n">mfitter2</span><span class="p">:</span> <span class="n">MarginalFitter</span> <span class="o">=</span> <span class="n">MarginalFitter</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+
+<span class="n">mfitter2</span><span class="o">.</span><span class="n">pairplot</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="https://github.com/tfm000/sklarpy/blob/main/media/mfitter_pairplot.png?raw=true"><img alt="MarginalFitter Pair-Plot" class="align-center" src="https://github.com/tfm000/sklarpy/blob/main/media/mfitter_pairplot.png?raw=true" /></a>
+</section>
+<section id="copula-example">
+<h2>Copula Example<a class="headerlink" href="#copula-example" title="Link to this heading"></a></h2>
+<p>Here we use the generalized hyperbolic copula, though all methods and attributes are generalized:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># specifying the parameters of the multivariate hyperbolic distribution we are</span>
+<span class="c1"># generating from</span>
+<span class="n">my_loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">my_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">my_chi</span> <span class="o">=</span> <span class="mf">1.7</span>
+<span class="n">my_psi</span> <span class="o">=</span> <span class="mf">4.5</span>
+<span class="n">my_gamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+<span class="n">my_params</span> <span class="o">=</span> <span class="p">(</span><span class="n">my_chi</span><span class="p">,</span> <span class="n">my_psi</span><span class="p">,</span> <span class="n">my_loc</span><span class="p">,</span> <span class="n">my_shape</span><span class="p">,</span> <span class="n">my_gamma</span><span class="p">)</span>
+
+<span class="c1"># generating multivariate hyperbolic random variables</span>
+<span class="kn">from</span> <span class="nn">sklarpy.multivariate</span> <span class="kn">import</span> <span class="n">mvt_hyperbolic</span>
+
+<span class="n">num_generate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">rvs</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">mvt_hyperbolic</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">num_generate</span><span class="p">,</span> <span class="n">my_params</span><span class="p">)</span>
+<span class="n">rvs_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rvs</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Process A&#39;</span><span class="p">,</span> <span class="s1">&#39;Process B&#39;</span><span class="p">],</span>
+                                    <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+<span class="c1"># fitting a generalized hyperbolic copula to our generated data using</span>
+<span class="c1"># Maximum Likelihood Estimation</span>
+<span class="kn">from</span> <span class="nn">sklarpy.copulas</span> <span class="kn">import</span> <span class="n">gh_copula</span>
+
+<span class="n">fitted_copula</span> <span class="o">=</span> <span class="n">gh_copula</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">rvs_df</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;mle&#39;</span><span class="p">,</span>
+    <span class="n">univariate_fitter_options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;significant&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># prining our fitted parameters</span>
+<span class="kn">from</span> <span class="nn">sklarpy</span> <span class="kn">import</span> <span class="n">print_full</span>
+<span class="n">print_full</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">fitted_copula</span><span class="o">.</span><span class="n">copula_params</span><span class="o">.</span><span class="n">to_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{&#39;lamb&#39;: -10.0, &#39;chi&#39;: 8.460830761870396, &#39;psi&#39;: 10.0,
+&#39;loc&#39;: array([[0.], [0.]]),
+&#39;shape&#39;: array([[ 1.       , -0.5214283],
+                [-0.5214283,  1.       ]]),
+&#39;gamma&#39;: array([[0.99848424], [0.94696141]])}
+</pre></div>
+</div>
+<p>Printing marginal distributions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">fitted_copula</span><span class="o">.</span><span class="n">mdists</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{0: lognorm(0.38, -0.78, 4.02), 1: lognorm(0.0, -1276.15, 1268.45)}
+</pre></div>
+</div>
+<p>Printing covariance parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">fitted_copula</span><span class="o">.</span><span class="n">copula_params</span><span class="o">.</span><span class="n">cov</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[[ 0.39404386 -0.18821382]
+[-0.18821382  0.3928638 ]]
+</pre></div>
+</div>
+<p>Printing a summary of our joint fit:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">fitted_copula</span><span class="o">.</span><span class="n">summary</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                              Joint Distribution           gh                                     summary                                     summary
+Distribution                  Joint Distribution       mvt_gh                                     lognorm                                      cauchy
+#Variables                                     2            2                                         NaN                                         NaN
+#Params                                       11            6                                           3                                           2
+#Scalar Params                                11            6                                         NaN                                         NaN
+Converged                                   True         True                                         NaN                                         NaN
+Likelihood                                   0.0          0.0                                         0.0                                         0.0
+Log-Likelihood                      -4298.311941 -1032.490682                                -1880.434874                                -2561.765741
+AIC                                  8618.623881  2076.981365                                 3766.869748                                 5127.531482
+BIC                                  8672.609189  2106.427896                                 3781.593014                                 5137.346993
+#Fitted Data Points                         1000         1000                                        1000                                        1000
+Parametric/Non-Parametric                    NaN          NaN                                  Parametric                                  Parametric
+Discrete/Continuous                          NaN          NaN                                  continuous                                  continuous
+param0                                       NaN          NaN                                    0.328725                                   -6.937913
+param1                                       NaN          NaN                                   -1.596967                                    1.485756
+param2                                       NaN          NaN                                    4.826054                                         NaN
+Support                                      NaN          NaN                  (-1.5969673012994325, inf)                                 (-inf, inf)
+Fitted Domain                                NaN          NaN  (0.030085402918948567, 10.416203209871883)  (-28.483718062724616, -2.8836636097027206)
+Cramér-von Mises statistic                   NaN          NaN                                    0.055878                                    3.834238
+Cramér-von Mises p-value                     NaN          NaN                                    0.840024                                         0.0
+Cramér-von Mises @ 10%                       NaN          NaN                                        True                                       False
+Cramér-von Mises @ 5%                        NaN          NaN                                        True                                       False
+Cramér-von Mises @ 1%                        NaN          NaN                                        True                                       False
+Kolmogorov-Smirnov statistic                 NaN          NaN                                    0.018599                                    0.128949
+Kolmogorov-Smirnov p-value                   NaN          NaN                                    0.872994                                         0.0
+Kolmogorov-Smirnov @ 10%                     NaN          NaN                                        True                                       False
+Kolmogorov-Smirnov @ 5%                      NaN          NaN                                        True                                       False
+Kolmogorov-Smirnov @ 1%                      NaN          NaN                                        True                                       False
+Sum of Squared Error                         NaN          NaN                                   11.475127                                    8.464622
+</pre></div>
+</div>
+<p>Plotting our fit:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fitted_copula</span><span class="o">.</span><span class="n">copula_pdf_plot</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fitted_copula</span><span class="o">.</span><span class="n">pdf_plot</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fitted_copula</span><span class="o">.</span><span class="n">mc_cdf_plot</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="https://github.com/tfm000/sklarpy/blob/main/media/PDF_Gh_PDF_Plot_Plot2.png?raw=true"><img alt="Generalized Hyperbolic PDF" class="align-center" src="https://github.com/tfm000/sklarpy/blob/main/media/PDF_Gh_PDF_Plot_Plot2.png?raw=true" /></a>
+<a class="reference internal image-reference" href="https://github.com/tfm000/sklarpy/blob/main/media/Copula_PDF_Gh_Copula_PDF_Plot_Plot2.png?raw=true"><img alt="Generalized Hyperbolic Copula PDF" class="align-center" src="https://github.com/tfm000/sklarpy/blob/main/media/Copula_PDF_Gh_Copula_PDF_Plot_Plot2.png?raw=true" /></a>
+<a class="reference internal image-reference" href="https://github.com/tfm000/sklarpy/blob/main/media/MC_CDF_Gh_MC_CDF_Plot_Plot2.png?raw=true"><img alt="Generalized Hyperbolic CDF" class="align-center" src="https://github.com/tfm000/sklarpy/blob/main/media/MC_CDF_Gh_MC_CDF_Plot_Plot2.png?raw=true" /></a>
+<p>Saving our fitted copula:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fitted_copula</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>We can then easily reload this object later:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklarpy</span> <span class="kn">import</span> <span class="n">load</span>
+
+<span class="n">loaded_copula</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s1">&#39;gh.pickle&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">loaded_copula</span><span class="o">.</span><span class="n">summary</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Multivariate.html" class="btn btn-neutral float-left" title="Multivariate Distributions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Misc.html" class="btn btn-neutral float-right" title="Miscellaneous Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Tyler Mitchell.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
