@@ -12,7 +12,6 @@ from sklarpy.tests.univariate.helpers import get_data, get_target_fit, get_dist
 
 def test_correct_type():
     """Testing distributions are all SklarPy objects."""
-    print("\nTesting correct type")
     for name in distributions_map['all']:
         dist = eval(name)
         assert issubclass(type(dist), PreFitUnivariateBase), \
@@ -21,7 +20,6 @@ def test_correct_type():
 
 def test_fit_to_data(discrete_data, continuous_data, dists_to_test):
     """Testing we can fit distributions to data."""
-    print("\nTesting fit to data")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         target_fit = get_target_fit(name, continuous_data, discrete_data)
@@ -47,7 +45,6 @@ def test_fit_to_data(discrete_data, continuous_data, dists_to_test):
 
 def test_prefit_name():
     """Testing the name of pre-fit distributions is a string."""
-    print("\nTesting name")
     for name in distributions_map['all']:
         dist = eval(name)
         assert isinstance(dist.name, str), f"name of {name} is not a string."
@@ -55,7 +52,6 @@ def test_prefit_name():
 
 def test_prefit_continuous_or_parametric():
     """Testing dists are continuous or discrete."""
-    print("\nTesting continuous or discrete")
     for name in distributions_map['all']:
         dist = eval(name)
         s: str = dist.continuous_or_discrete
@@ -68,7 +64,6 @@ def test_prefit_continuous_or_parametric():
 def test_fit_to_params(discrete_data, continuous_data, dists_to_test):
     """Testing we can fit distributions to user specified parameters
     """
-    print("\nTesting fit to params")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         target_fit = get_target_fit(name, continuous_data, discrete_data)
@@ -94,7 +89,6 @@ def test_fit_to_params(discrete_data, continuous_data, dists_to_test):
 
 def test_prefit_pdfs(discrete_data, continuous_data, dists_to_test):
     """Testing the pdf functions of pre-fit distributions."""
-    print("\nTesting pdfs")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -132,7 +126,6 @@ def test_prefit_pdfs(discrete_data, continuous_data, dists_to_test):
 
 def test_prefit_cdfs(discrete_data, continuous_data, dists_to_test):
     """Testing the cdf functions of pre-fit distributions."""
-    print("\nTesting cdfs")
     eps: float = 10 ** -5
 
     for name in dists_to_test:
@@ -197,7 +190,6 @@ def test_prefit_cdfs(discrete_data, continuous_data, dists_to_test):
 def test_prefit_ppfs(uniform_data, discrete_data, continuous_data,
                      dists_to_test):
     """Testing the ppf functions of pre-fit distributions."""
-    print("\nTesting ppfs")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -237,7 +229,6 @@ def test_prefit_ppfs(uniform_data, discrete_data, continuous_data,
 
 def test_prefit_supports(discrete_data, continuous_data, dists_to_test):
     """Testing the support functions of pre-fit distributions."""
-    print("\nTesting supports")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -275,7 +266,6 @@ def test_prefit_supports(discrete_data, continuous_data, dists_to_test):
 
 def test_prefit_rvs(discrete_data, continuous_data, dists_to_test):
     """Testing the rvs functions of pre-fit distributions."""
-    print("\nTesting rvs")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -319,7 +309,6 @@ def test_prefit_rvs(discrete_data, continuous_data, dists_to_test):
 def test_prefit_logpdfs(discrete_data, continuous_data,
                                    dists_to_test):
     """Testing the log-pdf functions of pre-fit distributions."""
-    print("\nTesting logpdfs")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -354,7 +343,6 @@ def test_prefit_logpdfs(discrete_data, continuous_data,
 def test_prefit_scalars(discrete_data, continuous_data, dists_to_test):
     """Testing the likelihood, loglikelihood, AIC, BIC and SSE functions of
     pre-fit distributions."""
-    print("\nTesting scalars")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -388,7 +376,6 @@ def test_prefit_scalars(discrete_data, continuous_data, dists_to_test):
 
 def test_prefit_gofs(discrete_data, continuous_data, dists_to_test):
     """Testing the gof functions of pre-fit distributions"""
-    print("\nTesting gofs")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:
@@ -416,7 +403,6 @@ def test_prefit_gofs(discrete_data, continuous_data, dists_to_test):
 
 def test_prefit_plots(discrete_data, continuous_data, dists_to_test):
     """Testing the plot functions of pre-fit distributions"""
-    print("\nTesting plots")
     for name in dists_to_test:
         data: np.ndarray = get_data(name, continuous_data, discrete_data)
         try:

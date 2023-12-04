@@ -9,14 +9,12 @@ from sklarpy.utils._errors import FitError
 
 def test_init(all_mvt_data):
     """Testing whether MarginalFitter initialises without errors."""
-    print("\nTesting init")
     for data in all_mvt_data.values():
         mfitter = MarginalFitter(data)
 
 
 def test_fit(all_mvt_data):
     """Testing the fit method for MarginalFitter"""
-    print("\nTesting fit")
     for dataset_name, data in all_mvt_data.items():
         # testing fit with default arguments
         mfitter1: MarginalFitter = MarginalFitter(data)
@@ -46,7 +44,6 @@ def test_fit(all_mvt_data):
 
 def test_pdfs_cdfs_ppfs_logpdf(all_mvt_data, all_mvt_uniform_data):
     """Testing the cdfs method for MarginalFitter"""
-    print("\nTesting pdfs, cdfs, ppfs and logpdfs")
     for dataset_name in ('mvt_mixed', 'pd_mvt_mixed'):
         data = all_mvt_data[dataset_name]
         mfitter: MarginalFitter = MarginalFitter(data)

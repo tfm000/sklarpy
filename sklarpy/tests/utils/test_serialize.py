@@ -10,7 +10,6 @@ from sklarpy.utils._errors import LoadError
 
 def test_load():
     """Testing SklarPy's load function."""
-    print("\nTesting load")
     # Testing if loading a non-existent file raises an error
     with pytest.raises(LoadError):
         load(r'dont\put\a\file\here\test.pickle')
@@ -19,7 +18,6 @@ def test_load():
 def test_univariate_serialization(continuous_data, discrete_data):
     """Testing serialization and deserialization of a univariate distribution.
     """
-    print("\nTesting univariate serialization")
     for dist, data in {normal: continuous_data, poisson: discrete_data
                        }.items():
         # fitting distribution

@@ -8,7 +8,6 @@ from sklarpy.misc import kv
 
 def test_kv():
     """Testing the Modified Bessel function of the 2nd kind."""
-    print("\nTesting kv")
     v_values = [0, 0.1, 4.3, 9.7]
     z_values = [0, *np.random.uniform(0, 200, 100)]
 

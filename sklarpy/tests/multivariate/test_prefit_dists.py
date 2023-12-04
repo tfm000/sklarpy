@@ -13,7 +13,6 @@ from sklarpy.tests.multivariate.helpers import get_dist
 
 
 def test_correct_type():
-    print('\nTesting correct type')
     """Testing multivariate distributions are all SklarPy objects."""
     for name in distributions_map['all']:
         dist = eval(name)
@@ -21,131 +20,131 @@ def test_correct_type():
             f"{name} is not a child class of PreFitContinuousMultivariate"
 
 
-# def test_fit_to_data(mvt_continuous_data, mvt_discrete_data,
-#                      pd_mvt_continuous_data, pd_mvt_discrete_data,
-#                      mv_dists_to_test):
-#     """Testing we can fit multivariate distributions to data."""
-#     print('\nTesting fitting to data')
-#     for name in mv_dists_to_test:
-#         dist = eval(name)
-#
-#         # fitting to both continuous and discrete data,
-#         # in both numpy and pandas format
-#         for method in dist._DATA_FIT_METHODS:
-#             for data in (mvt_continuous_data, pd_mvt_continuous_data,
-#                          mvt_discrete_data, pd_mvt_discrete_data):
-#                 if isinstance(data, np.ndarray):
-#                     d: int = data.shape[1]
-#                 else:
-#                     d: int = len(data.columns)
-#
-#                 try:
-#                     # fitting to data
-#                     fitted = dist.fit(data=data, method=method)
-#                 except RuntimeError:
-#                     continue
-#
-#                 # testing fitted to correct type
-#                 assert issubclass(type(fitted), FittedContinuousMultivariate
-#                                   ), f"{name} is not fitted to a child " \
-#                                      f"class of FittedContinuousMultivariate."
-#
-#                 # testing parameters object
-#                 params = fitted.params
-#                 assert issubclass(type(params), Params), \
-#                     f"{name} fitted parameters are not a child class of " \
-#                     f"Params."
-#                 assert params.name == name, \
-#                     f"{name} fitted parameters is not the correct type."
-#                 assert len(params) > 0, \
-#                     f"{name} fitted parameter object is empty."
-#
-#                 vector_attributes: tuple = ('loc', 'mean', 'gamma')
-#                 matrix_attributes: tuple = ('cov', 'corr')
-#                 scale_attributes: tuple = ('dof', 'chi', 'psi',
-#                                            'lamb', 'theta')
-#                 to_obj_attributes: tuple = ('dict', 'tuple', 'list')
-#
-#                 for vect_str in vector_attributes:
-#                     if vect_str in dir(params):
-#                         vect = eval(f'params.{vect_str}')
-#                         assert isinstance(vect, np.ndarray), \
-#                             f"{vect_str} fitted parameter is not an array " \
-#                             f"for {name}."
-#                         assert vect.size == d, \
-#                             f"{vect_str} fitted parameter does not contain " \
-#                             f"the correct number of elements for {name}."
-#                         assert vect.shape == (d, 1), \
-#                             f"{vect_str} fitted parameter is not of {(d, 1)}" \
-#                             f" shape for {name}."
-#                         assert np.isnan(vect).sum() == 0, \
-#                             f"{vect_str} fitted parameter contains nan " \
-#                             f"values for {name}."
-#
-#                 for mat_str in matrix_attributes:
-#                     if mat_str in dir(params):
-#                         mat = eval(f'params.{mat_str}')
-#                         assert isinstance(mat, np.ndarray), \
-#                             f"{mat_str} fitted parameter is not an array " \
-#                             f"for {name}."
-#                         assert mat.shape == (d, d), \
-#                             f"{mat_str} fitted parameter is not of {(d, d)} " \
-#                             f"shape for {name}."
-#                         assert np.isnan(mat).sum() == 0, \
-#                             f"{mat_str} fitted parameter contains nan " \
-#                             f"values for {name}."
-#
-#                 for scale_str in scale_attributes:
-#                     if scale_str in dir(params):
-#                         scale = eval(f'params.{scale_str}')
-#                         assert (isinstance(scale, float)
-#                                 or isinstance(scale, int)), \
-#                             f"{scale_str} fitted parameter is not a scalar " \
-#                             f"value for {name}."
-#                         assert not np.isnan(scale),\
-#                             f"{scale_str} fitted parameter is nan for {name}."
-#
-#                 for obj_str in to_obj_attributes:
-#                     assert f'to_{obj_str}' in dir(params), \
-#                         f"to_{obj_str} attribute does not exist for {name}"
-#                     obj_target_type = eval(obj_str)
-#                     obj = eval(f'params.to_{obj_str}')
-#                     assert isinstance(obj, obj_target_type), \
-#                         f"to_{obj_str} attribute does not return a " \
-#                         f"{obj_target_type} for {name}."
-#                     assert len(obj) == len(params), \
-#                         f"to_{obj_str} attribute does not contain the " \
-#                         f"correct number of parameters for {name}."
-#
-#                 # testing we can fit distribution using parameters object.
-#                 params_fitted = dist.fit(params=params)
-#                 assert issubclass(type(params_fitted),
-#                                   FittedContinuousMultivariate), \
-#                     f"{name} is not fitted to a child class of " \
-#                     f"FittedContinuousMultivariate."
-#
-#                 # testing we can fit distribution using tuple object.
-#                 tuple_fitted = dist.fit(params=params.to_tuple)
-#                 assert issubclass(type(tuple_fitted),
-#                                   FittedContinuousMultivariate), \
-#                     f"{name} is not fitted to a child class of " \
-#                     f"FittedContinuousMultivariate."
-#
-#         # testing for errors if incorrect params object provided
-#         with pytest.raises(
-#                 TypeError,
-#                 match=f"if params provided, must be a "
-#                       f"{dist._params_obj} type or tuple of length "
-#                       f"{dist.num_params}"):
-#             dist.fit(params=range(1000))
+@pytest.mark.test_local_only
+def test_fit_to_data(mvt_continuous_data, mvt_discrete_data,
+                     pd_mvt_continuous_data, pd_mvt_discrete_data,
+                     mv_dists_to_test):
+    """Testing we can fit multivariate distributions to data."""
+    for name in mv_dists_to_test:
+        dist = eval(name)
+
+        # fitting to both continuous and discrete data,
+        # in both numpy and pandas format
+        for method in dist._DATA_FIT_METHODS:
+            for data in (mvt_continuous_data, pd_mvt_continuous_data,
+                         mvt_discrete_data, pd_mvt_discrete_data):
+                if isinstance(data, np.ndarray):
+                    d: int = data.shape[1]
+                else:
+                    d: int = len(data.columns)
+
+                try:
+                    # fitting to data
+                    fitted = dist.fit(data=data, method=method)
+                except RuntimeError:
+                    continue
+
+                # testing fitted to correct type
+                assert issubclass(type(fitted), FittedContinuousMultivariate
+                                  ), f"{name} is not fitted to a child " \
+                                     f"class of FittedContinuousMultivariate."
+
+                # testing parameters object
+                params = fitted.params
+                assert issubclass(type(params), Params), \
+                    f"{name} fitted parameters are not a child class of " \
+                    f"Params."
+                assert params.name == name, \
+                    f"{name} fitted parameters is not the correct type."
+                assert len(params) > 0, \
+                    f"{name} fitted parameter object is empty."
+
+                vector_attributes: tuple = ('loc', 'mean', 'gamma')
+                matrix_attributes: tuple = ('cov', 'corr')
+                scale_attributes: tuple = ('dof', 'chi', 'psi',
+                                           'lamb', 'theta')
+                to_obj_attributes: tuple = ('dict', 'tuple', 'list')
+
+                for vect_str in vector_attributes:
+                    if vect_str in dir(params):
+                        vect = eval(f'params.{vect_str}')
+                        assert isinstance(vect, np.ndarray), \
+                            f"{vect_str} fitted parameter is not an array " \
+                            f"for {name}."
+                        assert vect.size == d, \
+                            f"{vect_str} fitted parameter does not contain " \
+                            f"the correct number of elements for {name}."
+                        assert vect.shape == (d, 1), \
+                            f"{vect_str} fitted parameter is not of {(d, 1)}" \
+                            f" shape for {name}."
+                        assert np.isnan(vect).sum() == 0, \
+                            f"{vect_str} fitted parameter contains nan " \
+                            f"values for {name}."
+
+                for mat_str in matrix_attributes:
+                    if mat_str in dir(params):
+                        mat = eval(f'params.{mat_str}')
+                        assert isinstance(mat, np.ndarray), \
+                            f"{mat_str} fitted parameter is not an array " \
+                            f"for {name}."
+                        assert mat.shape == (d, d), \
+                            f"{mat_str} fitted parameter is not of {(d, d)} " \
+                            f"shape for {name}."
+                        assert np.isnan(mat).sum() == 0, \
+                            f"{mat_str} fitted parameter contains nan " \
+                            f"values for {name}."
+
+                for scale_str in scale_attributes:
+                    if scale_str in dir(params):
+                        scale = eval(f'params.{scale_str}')
+                        assert (isinstance(scale, float)
+                                or isinstance(scale, int)), \
+                            f"{scale_str} fitted parameter is not a scalar " \
+                            f"value for {name}."
+                        assert not np.isnan(scale),\
+                            f"{scale_str} fitted parameter is nan for {name}."
+
+                for obj_str in to_obj_attributes:
+                    assert f'to_{obj_str}' in dir(params), \
+                        f"to_{obj_str} attribute does not exist for {name}"
+                    obj_target_type = eval(obj_str)
+                    obj = eval(f'params.to_{obj_str}')
+                    assert isinstance(obj, obj_target_type), \
+                        f"to_{obj_str} attribute does not return a " \
+                        f"{obj_target_type} for {name}."
+                    assert len(obj) == len(params), \
+                        f"to_{obj_str} attribute does not contain the " \
+                        f"correct number of parameters for {name}."
+
+                # testing we can fit distribution using parameters object.
+                params_fitted = dist.fit(params=params)
+                assert issubclass(type(params_fitted),
+                                  FittedContinuousMultivariate), \
+                    f"{name} is not fitted to a child class of " \
+                    f"FittedContinuousMultivariate."
+
+                # testing we can fit distribution using tuple object.
+                tuple_fitted = dist.fit(params=params.to_tuple)
+                assert issubclass(type(tuple_fitted),
+                                  FittedContinuousMultivariate), \
+                    f"{name} is not fitted to a child class of " \
+                    f"FittedContinuousMultivariate."
+
+        # testing for errors if incorrect params object provided
+        with pytest.raises(
+                TypeError,
+                match=f"if params provided, must be a "
+                      f"{dist._params_obj} type or tuple of length "
+                      f"{dist.num_params}"):
+            dist.fit(params=range(1000))
 
 
+@pytest.mark.test_local_only
 def test_prefit_logpdf_pdf_cdf_mc_cdfs(
         mvt_continuous_data, mvt_discrete_data, pd_mvt_continuous_data,
         pd_mvt_discrete_data, mv_dists_to_test, params_2d):
     """Testing the logpdf, pdf, cdf and mc-cdf functions of pre-fit
     multivariate distributions."""
-    print("\nTesting logpdf, pdf, cdf and mc-cdf functions")
     eps: float = 10 ** -5
     num_generate: int = 10
     cdf_num: int = 10
@@ -201,7 +200,6 @@ def test_prefit_logpdf_pdf_cdf_mc_cdfs(
 
 def test_prefit_rvs(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the rvs functions of pre-fit multivariate distributions."""
-    print("\nTesting the rvs")
     for name in mv_dists_to_test:
         dist, _, params = get_dist(name, params_2d, mvt_continuous_data)
         for size in (1, 2, 5, 101):
@@ -226,7 +224,6 @@ def test_prefit_scalars(mvt_continuous_data, mvt_discrete_data,
                         mv_dists_to_test, params_2d):
     """Testing the likelihood, loglikelihood, AIC and BIC functions of
     multivariate pre-fit distributions."""
-    print("\nTesting scalars")
     for name in mv_dists_to_test:
         dist, _, params = get_dist(name, params_2d, mvt_continuous_data)
         for func_str in ('likelihood', 'loglikelihood', 'aic', 'bic'):
@@ -264,7 +261,6 @@ def test_prefit_scalars(mvt_continuous_data, mvt_discrete_data,
 def test_prefit_plots(params_2d, params_3d, mvt_continuous_data):
     """Testing the marginal_pairplot, pdf_plot, cdf_plot and mc_cdf_plot
     methods of pre-fit multivariate distributions."""
-    print("\nTesting plots")
     mvt_continuous_data_3d: np.ndarray = scipy.stats.multivariate_normal.rvs(
         size=(mvt_continuous_data.shape[0], 3))
     kwargs: dict = {'num_points': 2, 'num_generate': 10, 'mc_num_generate': 10,
@@ -296,7 +292,6 @@ def test_prefit_plots(params_2d, params_3d, mvt_continuous_data):
 
 def test_prefit_names(mv_dists_to_test):
     """Testing that name of pre-fit multivariate distributions is a string."""
-    print("\nTesting name")
     for name in mv_dists_to_test:
         dist = eval(name)
         assert isinstance(dist.name, str), f"name of {name} is not a string."
@@ -305,7 +300,6 @@ def test_prefit_names(mv_dists_to_test):
 def test_prefit_integers(mv_dists_to_test, params_2d, mvt_continuous_data):
     """Testing the num_params and num_scalar_params of pre-fit multivariate
     distributions."""
-    print("\nTesting integers")
     for name in mv_dists_to_test:
         dist, _, params = get_dist(name, params_2d, mvt_continuous_data)
 
